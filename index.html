@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tracker Torso/Pierna V4</title>
+    <title>Tracker Torso/Pierna V5</title>
     <style>
         :root {
             --bg-color: #121212;
@@ -105,7 +105,7 @@
 
         /* Vistas de Estadísticas */
         .stat-row { display: flex; flex-direction: column; padding: 15px 0; border-bottom: 1px solid var(--border-color); }
-        .stat-header { display: flex; justify-content: space-between; margin-bottom: 8px; font-weight: bold; color: var(--primary-color); }
+        .stat-header { display: flex; justify-content: space-between; margin-bottom: 8px; font-weight: bold; color: var(--primary-color); font-size: 0.9rem;}
         .stat-sets { display: flex; flex-wrap: wrap; gap: 8px; }
         .stat-set-badge { background-color: rgba(255,255,255,0.05); border: 1px solid var(--border-color); padding: 4px 8px; border-radius: 4px; font-size: 0.85rem; color: var(--text-muted); }
         
@@ -118,6 +118,11 @@
         .day-bar-fill { height: 100%; background: var(--secondary-color); width: 0%; transition: width 0.5s; }
         .day-bar-count { width: 30px; font-weight: bold; }
 
+        /* Botones Backup */
+        .backup-btn { background-color: transparent; border: 1px solid var(--text-muted); color: var(--text-color); font-size: 0.85rem; padding: 8px; flex: 1; text-align: center; border-radius: 6px; }
+        .backup-btn.export { border-color: var(--secondary-color); color: var(--secondary-color); }
+        .backup-btn.import { border-color: var(--danger-color); color: var(--danger-color); }
+
         #toast { visibility: hidden; min-width: 250px; background-color: var(--secondary-color); color: #000; text-align: center; border-radius: 8px; padding: 16px; position: fixed; z-index: 1000; left: 50%; bottom: 30px; transform: translateX(-50%); font-size: 1rem; font-weight: bold; }
         #toast.show { visibility: visible; animation: fadein 0.3s, fadeout 0.4s 2.5s; }
         @keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 30px; opacity: 1;} }
@@ -127,7 +132,7 @@
 <body>
 
     <header>
-        <h1>Tracker Torso/Pierna</h1>
+        <h1>Tracker Torso/Pierna V5</h1>
     </header>
 
     <nav class="main-nav">
@@ -194,6 +199,17 @@
                 </select>
                 <div id="stats-list"></div>
             </div>
+
+            <!-- COPIA DE SEGURIDAD (BACKUP) -->
+            <div class="card" style="margin-top: 30px; border-color: rgba(255,255,255,0.1);">
+                <h3 style="display:flex; align-items:center; gap:8px;">💾 Copia de Seguridad</h3>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px;">Guarda tus datos en un archivo para no perderlos, o restáuralos en otro móvil. Los datos guardados nunca caducan.</p>
+                <div style="display: flex; gap: 10px;">
+                    <button class="backup-btn export" onclick="exportBackup()">⬇️ Exportar JSON</button>
+                    <button class="backup-btn import" onclick="document.getElementById('import-file').click()">⬆️ Importar JSON</button>
+                    <input type="file" id="import-file" style="display: none;" accept=".json" onchange="importBackup(event)">
+                </div>
+            </div>
         </div>
     </div>
 
@@ -238,11 +254,10 @@
             ]}
         };
 
-        // Combina base con las modificadas/creadas y oculta las eliminadas
         function getMergedRoutines() {
             const custom = JSON.parse(localStorage.getItem('custom_routines') || '{}');
             const hidden = JSON.parse(localStorage.getItem('hidden_routines') || '[]');
-            let merged = JSON.parse(JSON.stringify(baseRoutine)); // Deep copy
+            let merged = JSON.parse(JSON.stringify(baseRoutine)); 
             Object.assign(merged, custom);
             hidden.forEach(id => { delete merged[id]; });
             return merged;
@@ -254,7 +269,7 @@
             loadRoutineForEdit();
         };
 
-        /* --- NAVEGACIÓN PRINCIPAL --- */
+        /* --- NAVEGACIÓN --- */
         function switchTab(tab) {
             document.querySelectorAll('.section').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('nav.main-nav button').forEach(el => el.classList.remove('active'));
@@ -270,7 +285,7 @@
             }
         }
 
-        /* --- LÓGICA DE ENTRENAMIENTO --- */
+        /* --- ENTRENAR --- */
         function populateDaySelector() {
             const selector = document.getElementById('day-selector');
             const currentVal = selector.value;
@@ -283,7 +298,6 @@
                 option.textContent = routines[key].title;
                 selector.appendChild(option);
             }
-            // Restaurar selección si la rutina sigue existiendo
             if (routines[currentVal]) selector.value = currentVal; 
         }
 
@@ -356,13 +370,11 @@
             if (!name) return;
             const numSets = parseInt(prompt("Número de series:", "3")) || 3;
             const target = prompt("Repeticiones objetivo:", "8-12 reps") || "";
-            
             const exId = 'extra_' + Date.now();
             let emptySets = Array(numSets).fill({ weight: "", reps: "" });
             
             const list = document.getElementById('exercise-list');
             const currentIndex = list.querySelectorAll('.workout-card').length + 1;
-            
             const muscleChoice = prompt(`Grupo muscular (Escribe una opción: ${muscleOptions.join(", ")}):`, M_OTHER);
             
             list.insertAdjacentHTML('beforeend', buildCardHTML(exId, name, target, muscleChoice, emptySets, currentIndex));
@@ -429,7 +441,7 @@
             document.getElementById('workout-container').innerHTML = "";
         }
 
-        /* --- LÓGICA DEL BUILDER (Editor de Rutinas) --- */
+        /* --- EDITOR RUTINAS --- */
         function populateBuilderDropdown() {
             const select = document.getElementById('routine-edit-select');
             const currentVal = select.value;
@@ -442,10 +454,7 @@
                 option.textContent = "Editar: " + routines[key].title;
                 select.appendChild(option);
             }
-            // Restaurar selección
-            if (currentVal === 'NEW' || routines[currentVal]) {
-                select.value = currentVal;
-            }
+            if (currentVal === 'NEW' || routines[currentVal]) { select.value = currentVal; }
         }
 
         function loadRoutineForEdit() {
@@ -467,7 +476,6 @@
             document.getElementById('new-routine-name').value = routine.title;
             document.getElementById('new-routine-rule').value = routine.rule || '';
             document.getElementById('btn-delete-routine').style.display = 'block';
-
             routine.exercises.forEach(ex => addBuilderExerciseRow(ex));
         }
 
@@ -495,7 +503,6 @@
                 </div>
                 <button class="btn-delete" onclick="this.parentElement.remove()">✕</button>
             </div>`;
-            
             document.getElementById('builder-exercises').insertAdjacentHTML('beforeend', rowHtml);
         }
 
@@ -514,23 +521,17 @@
                 const sets = parseInt(row.querySelector('.b-sets').value) || 3;
                 const target = row.querySelector('.b-target').value.trim() || "-";
                 
-                if(exName) {
-                    exercises.push({ id: exId, name: exName, muscle: muscle, sets: sets, target: target });
-                }
+                if(exName) { exercises.push({ id: exId, name: exName, muscle: muscle, sets: sets, target: target }); }
             });
 
             if(exercises.length === 0) { alert("Añade al menos un ejercicio"); return; }
 
             let routineId = document.getElementById('routine-edit-select').value;
-            if (routineId === 'NEW') {
-                routineId = 'custom_' + Date.now();
-            }
+            if (routineId === 'NEW') routineId = 'custom_' + Date.now();
 
             const customRoutines = JSON.parse(localStorage.getItem('custom_routines') || '{}');
             customRoutines[routineId] = { title: name, rule: rule, exercises: exercises };
             localStorage.setItem('custom_routines', JSON.stringify(customRoutines));
-
-            // Si editas una rutina, limpiamos su borrador activo por si había desajustes de ejercicios
             localStorage.removeItem('draft_' + routineId);
 
             showToast("Rutina Guardada con éxito");
@@ -548,14 +549,13 @@
                     hiddenRoutines.push(routineId);
                     localStorage.setItem('hidden_routines', JSON.stringify(hiddenRoutines));
                 }
-                
                 showToast("Rutina eliminada");
                 populateBuilderDropdown();
-                loadRoutineForEdit(); // Vuelve a 'NEW'
+                loadRoutineForEdit(); 
             }
         }
 
-        /* --- SUB-NAVEGACIÓN ESTADÍSTICAS --- */
+        /* --- ESTADÍSTICAS --- */
         function switchStatView(viewId) {
             document.querySelectorAll('.stat-view').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.stats-nav button').forEach(el => el.classList.remove('active'));
@@ -563,7 +563,6 @@
             document.getElementById(`sbtn-${viewId}`).classList.add('active');
         }
 
-        /* --- MOTOR ANALÍTICO --- */
         function getRecentHistory(days = 30) {
             const history = JSON.parse(localStorage.getItem('workout_history') || '[]');
             const cutoff = new Date();
@@ -574,7 +573,6 @@
         function renderHabitsStats() {
             const history30 = getRecentHistory(30);
             const container = document.getElementById('habits-container');
-            
             if (history30.length === 0) {
                 container.innerHTML = "<p style='text-align:center; color:var(--text-muted);'>No hay datos de los últimos 30 días.</p>";
                 return;
@@ -582,20 +580,15 @@
 
             const dayNames = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
             const dayCounts = [0,0,0,0,0,0,0];
-            
-            history30.forEach(w => {
-                const dateObj = new Date(w.date);
-                dayCounts[dateObj.getDay()]++;
-            });
+            history30.forEach(w => { dayCounts[new Date(w.date).getDay()]++; });
 
             const maxDays = Math.max(...dayCounts);
-            const totalWorkouts = history30.length;
             const favDayIdx = dayCounts.indexOf(maxDays);
 
             let html = `
                 <div class="habit-block">
                     <h4>Total Entrenamientos</h4>
-                    <div class="number">${totalWorkouts}</div>
+                    <div class="number">${history30.length}</div>
                 </div>
                 <div class="habit-block">
                     <h4>Día más frecuente</h4>
@@ -605,40 +598,31 @@
                     <h4 style="margin-bottom:15px; color:var(--text-muted);">Distribución Semanal</h4>
             `;
 
-            const order = [1, 2, 3, 4, 5, 6, 0]; // Lunes a Domingo
-            order.forEach(dayIdx => {
+            [1, 2, 3, 4, 5, 6, 0].forEach(dayIdx => {
                 const count = dayCounts[dayIdx];
                 const width = maxDays > 0 ? (count / maxDays) * 100 : 0;
                 html += `
                 <div class="day-bar-container">
                     <div class="day-bar-label">${dayNames[dayIdx].substring(0,3)}.</div>
-                    <div class="day-bar-track">
-                        <div class="day-bar-fill" style="width: ${width}%;"></div>
-                    </div>
+                    <div class="day-bar-track"><div class="day-bar-fill" style="width: ${width}%;"></div></div>
                     <div class="day-bar-count">${count}</div>
                 </div>`;
             });
-
-            html += `</div>`;
-            container.innerHTML = html;
+            container.innerHTML = html + `</div>`;
         }
 
         function renderMuscleStats() {
             const history30 = getRecentHistory(30);
             const container = document.getElementById('muscles-container');
-            
             if (history30.length === 0) {
                 container.innerHTML = "<p style='text-align:center; color:var(--text-muted);'>No hay datos de los últimos 30 días.</p>";
                 return;
             }
 
             const muscleTally = {};
-            
             history30.forEach(workout => {
                 for (const exId in workout.exercises) {
-                    const sets = workout.exercises[exId];
-                    const validSets = sets.filter(s => s.weight !== "" || s.reps !== "").length;
-                    
+                    const validSets = workout.exercises[exId].filter(s => s.weight !== "" || s.reps !== "").length;
                     if (validSets > 0 && workout.exerciseMetadata && workout.exerciseMetadata[exId]) {
                         const m = workout.exerciseMetadata[exId].muscle || M_OTHER;
                         muscleTally[m] = (muscleTally[m] || 0) + validSets;
@@ -647,7 +631,6 @@
             });
 
             const sortedMuscles = Object.keys(muscleTally).sort((a,b) => muscleTally[b] - muscleTally[a]);
-            
             if (sortedMuscles.length === 0) {
                 container.innerHTML = "<p style='text-align:center;'>Ninguna serie registrada válida.</p>";
                 return;
@@ -655,24 +638,19 @@
 
             const maxSets = muscleTally[sortedMuscles[0]];
             let html = "";
-
             sortedMuscles.forEach(m => {
                 const count = muscleTally[m];
                 const width = (count / maxSets) * 100;
                 html += `
                 <div class="day-bar-container">
                     <div class="day-bar-label" style="text-align:left;">${m}</div>
-                    <div class="day-bar-track">
-                        <div class="day-bar-fill" style="width: ${width}%; background: var(--primary-color);"></div>
-                    </div>
+                    <div class="day-bar-track"><div class="day-bar-fill" style="width: ${width}%; background: var(--primary-color);"></div></div>
                     <div class="day-bar-count">${count}</div>
                 </div>`;
             });
-
             container.innerHTML = html;
         }
 
-        /* --- LÓGICA DE HISTORIAL DE EJERCICIOS --- */
         function populateStatsDropdown() {
             const select = document.getElementById('stat-exercise-selector');
             select.innerHTML = '<option value="">-- Selecciona un Ejercicio --</option>';
@@ -681,24 +659,19 @@
             const routines = getMergedRoutines();
             let allExercises = {};
 
-            // Priorizar nombres de rutinas activas
             Object.values(routines).forEach(day => {
                 day.exercises.forEach(ex => { allExercises[ex.id] = ex.name; });
             });
 
-            // Añadir históricos de rutinas borradas o ejercicios extra
             history.forEach(workout => {
                 if(workout.exerciseMetadata) {
                     Object.keys(workout.exerciseMetadata).forEach(id => {
-                        if (!allExercises[id]) {
-                            allExercises[id] = workout.exerciseMetadata[id].name;
-                        }
+                        if (!allExercises[id]) allExercises[id] = workout.exerciseMetadata[id].name;
                     });
                 }
             });
 
             const sortedIds = Object.keys(allExercises).sort((a, b) => allExercises[a].localeCompare(allExercises[b]));
-            
             sortedIds.forEach(id => {
                 const option = document.createElement('option');
                 option.value = id;
@@ -720,7 +693,9 @@
                     const hasData = workout.exercises[exId].some(set => set.weight !== "" || set.reps !== "");
                     if (hasData) {
                         const dateObj = new Date(workout.date);
-                        exStats.push({ date: dateObj.toLocaleDateString(), sets: workout.exercises[exId] });
+                        // Extraemos la fecha y la hora exacta de finalización
+                        const dateStr = dateObj.toLocaleDateString() + ' - ' + dateObj.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                        exStats.push({ date: dateStr, sets: workout.exercises[exId] });
                     }
                 }
             });
@@ -742,6 +717,74 @@
                 });
                 list.innerHTML += `<div class="stat-row"><div class="stat-header"><span>${stat.date}</span></div><div class="stat-sets">${setsHtml}</div></div>`;
             });
+        }
+
+        /* --- IMPORTAR / EXPORTAR (BACKUP) --- */
+        function exportBackup() {
+            const data = {
+                workout_history: JSON.parse(localStorage.getItem('workout_history') || '[]'),
+                custom_routines: JSON.parse(localStorage.getItem('custom_routines') || '{}'),
+                hidden_routines: JSON.parse(localStorage.getItem('hidden_routines') || '[]')
+            };
+            
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            
+            // Nombre de archivo con fecha
+            const dateStr = new Date().toISOString().split('T')[0];
+            a.href = url;
+            a.download = `backup_entrenamiento_${dateStr}.json`;
+            
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            showToast("Datos exportados correctamente");
+        }
+
+        function importBackup(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const importedData = JSON.parse(e.target.result);
+                    
+                    if (!importedData.workout_history) {
+                        alert("El archivo no parece tener el formato correcto. Faltan datos.");
+                        return;
+                    }
+
+                    if (confirm("⚠️ ADVERTENCIA: Importar este archivo sobrescribirá tus datos actuales en este dispositivo. ¿Estás seguro?")) {
+                        
+                        localStorage.setItem('workout_history', JSON.stringify(importedData.workout_history || []));
+                        localStorage.setItem('custom_routines', JSON.stringify(importedData.custom_routines || {}));
+                        localStorage.setItem('hidden_routines', JSON.stringify(importedData.hidden_routines || []));
+                        
+                        showToast("Datos restaurados con éxito");
+                        
+                        // Resetea el input para poder importar el mismo archivo si hace falta
+                        event.target.value = '';
+                        
+                        // Recarga las vistas
+                        populateDaySelector();
+                        populateBuilderDropdown();
+                        populateStatsDropdown();
+                        renderHabitsStats();
+                        renderMuscleStats();
+                        
+                        // Limpia la vista de entrenamiento activa para evitar desajustes
+                        document.getElementById('day-selector').value = "";
+                        document.getElementById('workout-container').innerHTML = "";
+                    }
+                } catch (error) {
+                    alert("Error crítico al leer el archivo JSON. Asegúrate de que no está corrupto.");
+                }
+            };
+            reader.readAsText(file);
         }
 
         function showToast(msg) {
