@@ -2,170 +2,177 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tracker Torso/Pierna V5</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Tracker Premium V7</title>
     <style>
         :root {
-            --bg-color: #121212;
-            --surface-color: #1e1e1e;
-            --primary-color: #bb86fc;
-            --secondary-color: #03dac6;
-            --danger-color: #cf6679;
-            --text-color: #e0e0e0;
-            --text-muted: #a0a0a0;
-            --border-color: #333;
+            /* Paleta Deep Dark Premium */
+            --bg-color: #09090b; /* Zinc 950 */
+            --surface-color: #18181b; /* Zinc 900 */
+            --surface-elevated: #27272a; /* Zinc 800 */
+            --primary-color: #8b5cf6; /* Violet 500 */
+            --primary-gradient: linear-gradient(135deg, #8b5cf6, #6d28d9);
+            --secondary-color: #14b8a6; /* Teal 500 */
+            --cardio-color: #f97316; /* Orange 500 */
+            --cardio-gradient: linear-gradient(135deg, #f97316, #ea580c);
+            --danger-color: #ef4444; /* Red 500 */
+            --text-color: #f4f4f5; /* Zinc 100 */
+            --text-muted: #a1a1aa; /* Zinc 400 */
+            --border-color: rgba(255, 255, 255, 0.08);
+            --border-glow: rgba(139, 92, 246, 0.3);
+            --radius-lg: 16px;
+            --radius-md: 12px;
+            --safe-bottom: env(safe-area-inset-bottom, 20px);
+            --safe-top: env(safe-area-inset-top, 40px);
         }
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            margin: 0;
-            padding: 0;
-            line-height: 1.6;
-        }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
-        header {
-            background-color: var(--surface-color);
-            padding: 15px 20px;
-            text-align: center;
-            border-bottom: 1px solid var(--border-color);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
+        body { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif; background-color: var(--bg-color); color: var(--text-color); margin: 0; padding: 0; line-height: 1.5; overflow-x: hidden;}
 
-        h1 { margin: 0; font-size: 1.3rem; color: var(--primary-color); }
+        /* Header Superior */
+        header { padding: calc(15px + var(--safe-top)) 20px 15px; text-align: center; background: rgba(24, 24, 27, 0.8); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid var(--border-color); position: sticky; top: 0; z-index: 100; }
+        h1 { margin: 0; font-size: 1.25rem; font-weight: 700; background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
-        nav.main-nav {
-            display: flex;
-            justify-content: center;
-            gap: 8px;
-            padding: 10px 15px;
-            background: var(--bg-color);
-        }
-
-        button {
-            background-color: var(--surface-color);
-            color: var(--primary-color);
-            border: 1px solid var(--primary-color);
-            padding: 10px;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            cursor: pointer;
-            flex: 1;
-            font-weight: bold;
-            transition: 0.2s;
-        }
-
-        button.active, button:active { background-color: var(--primary-color); color: var(--bg-color); }
-        .btn-secondary { background-color: transparent; border: 1px dashed var(--primary-color); color: var(--primary-color); width: 100%; padding: 12px; margin-bottom: 15px; }
-        .btn-delete { background-color: rgba(207, 102, 121, 0.1); border: 1px solid var(--danger-color); color: var(--danger-color); font-size: 1.2rem; cursor: pointer; padding: 0 12px; border-radius: 8px;}
-        .btn-save { background-color: var(--primary-color); color: var(--bg-color); width: 100%; padding: 15px; font-size: 1.1rem; border: none; margin-top: 10px; margin-bottom: 30px; border-radius: 8px; }
-
-        .container { padding: 0 15px 80px 15px; }
-        .section { display: none; }
+        /* Contenedor Principal */
+        .container { padding: 20px 15px calc(90px + var(--safe-bottom)) 15px; }
+        .section { display: none; animation: fadeIn 0.3s ease; }
         .section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
-        select, input {
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 10px;
-            background-color: var(--surface-color);
-            color: var(--text-color);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            font-size: 1rem;
-            box-sizing: border-box;
-        }
+        /* Inputs y Selects */
+        select, input, textarea { width: 100%; padding: 14px; margin-bottom: 12px; background-color: var(--surface-color); color: var(--text-color); border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 1rem; font-family: inherit; transition: border-color 0.2s; outline: none;}
+        select:focus, input:focus, textarea:focus { border-color: var(--primary-color); }
+        textarea { resize: vertical; min-height: 80px; }
 
-        .card { background-color: var(--surface-color); border-radius: 10px; padding: 15px; margin-bottom: 15px; border: 1px solid var(--border-color); }
-        .card h3 { margin: 0 0 5px 0; font-size: 1.1rem; }
-        .card .target { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center;}
-        .muscle-tag { background-color: rgba(3, 218, 198, 0.15); color: var(--secondary-color); padding: 4px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: bold; }
+        /* Tarjetas */
+        .card { background-color: var(--surface-color); border-radius: var(--radius-lg); padding: 18px; margin-bottom: 18px; border: 1px solid var(--border-color); box-shadow: 0 4px 20px rgba(0,0,0,0.2); }
+        .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;}
+        .card h3 { margin: 0; font-size: 1.1rem; font-weight: 600; color: var(--text-color); }
+        .target-box { display: inline-block; background: rgba(255,255,255,0.05); padding: 4px 8px; border-radius: 6px; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 15px;}
+        .muscle-tag { background-color: rgba(20, 184, 166, 0.15); color: var(--secondary-color); padding: 4px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: 600; }
 
-        .set-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
-        .set-row span { width: 60px; font-weight: bold; font-size: 0.9rem;}
-        .set-row input { margin-bottom: 0; text-align: center; }
+        /* Diseño de Series (Tabla) */
+        .sets-header { display: flex; gap: 10px; font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; margin-bottom: 8px; padding: 0 5px;}
+        .col-serie { width: 50px; } .col-input { flex: 1; text-align: center; }
+        .set-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; background: rgba(0,0,0,0.2); padding: 8px; border-radius: 8px;}
+        .set-row span { width: 50px; font-weight: 600; font-size: 0.9rem; text-align: center; color: var(--text-muted);}
+        .set-row input { margin-bottom: 0; text-align: center; padding: 10px; border: none; background: var(--surface-elevated); font-size: 1.1rem;}
 
-        .rule-box { background-color: rgba(187, 134, 252, 0.1); border-left: 4px solid var(--primary-color); padding: 10px 15px; margin-bottom: 20px; border-radius: 4px; font-size: 0.9rem; }
+        /* Botones */
+        .btn-add-set { background-color: transparent; border: 1px dashed var(--border-color); color: var(--text-muted); font-size: 0.85rem; padding: 10px; border-radius: 8px; width: 100%; margin-top: 5px; cursor: pointer; transition: 0.2s;}
+        .btn-add-set:active { background-color: var(--surface-elevated); }
+        .btn-secondary { background-color: rgba(139, 92, 246, 0.1); border: 1px dashed var(--primary-color); color: var(--primary-color); width: 100%; padding: 14px; border-radius: var(--radius-md); font-weight: 600; margin-bottom: 15px; cursor: pointer;}
+        .btn-save { background: var(--primary-gradient); color: #fff; width: 100%; padding: 16px; font-size: 1.1rem; font-weight: bold; border: none; margin-top: 10px; margin-bottom: 10px; border-radius: var(--radius-md); box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3); cursor: pointer;}
+        .btn-save-cardio { background: var(--cardio-gradient); box-shadow: 0 4px 15px rgba(249, 115, 22, 0.3); }
+        .btn-delete { background-color: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); color: var(--danger-color); font-size: 1.2rem; cursor: pointer; padding: 0 16px; border-radius: var(--radius-md);}
 
-        /* Estilos Builder */
-        .builder-row { display: flex; gap: 10px; margin-bottom: 10px; align-items: stretch; background: rgba(0,0,0,0.2); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);}
-        .builder-row input, .builder-row select { margin-bottom: 0; }
+        .rule-box { background-color: rgba(139, 92, 246, 0.1); border-left: 4px solid var(--primary-color); padding: 12px 16px; margin-bottom: 20px; border-radius: 0 var(--radius-md) var(--radius-md) 0; font-size: 0.9rem; }
+
+        /* Builder (Editor) */
+        .builder-row { display: flex; gap: 10px; margin-bottom: 12px; align-items: stretch; background: var(--surface-elevated); padding: 12px; border-radius: var(--radius-md); border: 1px solid var(--border-color);}
+        .builder-row input, .builder-row select { margin-bottom: 0; background: var(--surface-color); border-color: transparent;}
         .builder-inputs { flex-grow: 1; display: flex; flex-direction: column; gap: 8px; }
         .builder-flex { display: flex; gap: 8px; }
 
-        /* Sub-Navegación de Estadísticas */
-        .stats-nav { display: flex; gap: 5px; margin-bottom: 15px; }
-        .stats-nav button { font-size: 0.8rem; padding: 8px 5px; border-color: var(--border-color); color: var(--text-muted); }
-        .stats-nav button.active { background-color: var(--surface-color); color: var(--primary-color); border-color: var(--primary-color); }
+        /* Segmented Control iOS Style */
+        .stats-nav { display: flex; background: var(--surface-color); padding: 4px; border-radius: 12px; margin-bottom: 20px; border: 1px solid var(--border-color);}
+        .stats-nav button { flex: 1; background: transparent; border: none; color: var(--text-muted); font-size: 0.8rem; font-weight: 600; padding: 10px 4px; border-radius: 8px; transition: 0.3s; }
+        .stats-nav button.active { background: var(--surface-elevated); color: var(--text-color); box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+        
+        /* Stats Visuals */
         .stat-view { display: none; }
-        .stat-view.active { display: block; }
-
-        /* Vistas de Estadísticas */
-        .stat-row { display: flex; flex-direction: column; padding: 15px 0; border-bottom: 1px solid var(--border-color); }
+        .stat-view.active { display: block; animation: fadeIn 0.3s ease; }
+        .stat-row { padding: 15px 0; border-bottom: 1px solid var(--border-color); }
+        .stat-row:last-child { border-bottom: none; }
         .stat-header { display: flex; justify-content: space-between; margin-bottom: 8px; font-weight: bold; color: var(--primary-color); font-size: 0.9rem;}
         .stat-sets { display: flex; flex-wrap: wrap; gap: 8px; }
-        .stat-set-badge { background-color: rgba(255,255,255,0.05); border: 1px solid var(--border-color); padding: 4px 8px; border-radius: 4px; font-size: 0.85rem; color: var(--text-muted); }
+        .stat-set-badge { background-color: var(--surface-elevated); border: 1px solid var(--border-color); padding: 6px 10px; border-radius: 8px; font-size: 0.85rem; color: var(--text-color); }
         
-        .habit-block { text-align: center; padding: 15px 0; border-bottom: 1px solid var(--border-color); }
-        .habit-block h4 { margin: 0 0 5px 0; color: var(--text-muted); font-size: 0.9rem; }
-        .habit-block .number { font-size: 2.5rem; font-weight: bold; color: var(--primary-color); margin: 0;}
-        .day-bar-container { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; font-size: 0.85rem;}
-        .day-bar-label { width: 80px; text-align: right; }
-        .day-bar-track { flex-grow: 1; background: var(--bg-color); height: 12px; border-radius: 6px; overflow: hidden; }
-        .day-bar-fill { height: 100%; background: var(--secondary-color); width: 0%; transition: width 0.5s; }
+        .habit-block { text-align: center; padding: 20px 0; border-bottom: 1px solid var(--border-color); }
+        .habit-block h4 { margin: 0 0 5px 0; color: var(--text-muted); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px;}
+        .habit-block .number { font-size: 2.8rem; font-weight: 800; background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin: 0; line-height: 1;}
+        
+        .day-bar-container { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; font-size: 0.85rem; font-weight: 500;}
+        .day-bar-label { width: 80px; text-align: right; color: var(--text-muted);}
+        .day-bar-track { flex-grow: 1; background: var(--surface-elevated); height: 8px; border-radius: 4px; overflow: hidden; }
+        .day-bar-fill { height: 100%; background: var(--primary-gradient); width: 0%; transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1); }
         .day-bar-count { width: 30px; font-weight: bold; }
 
-        /* Botones Backup */
-        .backup-btn { background-color: transparent; border: 1px solid var(--text-muted); color: var(--text-color); font-size: 0.85rem; padding: 8px; flex: 1; text-align: center; border-radius: 6px; }
-        .backup-btn.export { border-color: var(--secondary-color); color: var(--secondary-color); }
-        .backup-btn.import { border-color: var(--danger-color); color: var(--danger-color); }
+        /* Calendario Premium */
+        .cal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .cal-btn { width: 40px; height: 40px; border-radius: 20px; background: var(--surface-elevated); border: none; color: var(--text-color); display: flex; justify-content: center; align-items: center; cursor: pointer; }
+        .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; text-align: center; }
+        .cal-day-name { font-size: 0.75rem; color: var(--text-muted); font-weight: 700; margin-bottom: 10px; text-transform: uppercase;}
+        .cal-cell { aspect-ratio: 1; display: flex; justify-content: center; align-items: center; border-radius: 50%; font-size: 0.95rem; font-weight: 500; cursor: pointer; position: relative; transition: 0.2s;}
+        .cal-cell.today { background: rgba(255,255,255,0.1); color: #fff;}
+        .cal-cell.empty { background: transparent; cursor: default; }
+        .cal-indicators { position: absolute; bottom: 4px; display: flex; gap: 3px; }
+        .dot { width: 4px; height: 4px; border-radius: 50%; }
+        .dot.strength { background-color: var(--primary-color); box-shadow: 0 0 4px var(--primary-color);}
+        .dot.cardio { background-color: var(--cardio-color); box-shadow: 0 0 4px var(--cardio-color);}
 
-        #toast { visibility: hidden; min-width: 250px; background-color: var(--secondary-color); color: #000; text-align: center; border-radius: 8px; padding: 16px; position: fixed; z-index: 1000; left: 50%; bottom: 30px; transform: translateX(-50%); font-size: 1rem; font-weight: bold; }
-        #toast.show { visibility: visible; animation: fadein 0.3s, fadeout 0.4s 2.5s; }
-        @keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 30px; opacity: 1;} }
-        @keyframes fadeout { from {bottom: 30px; opacity: 1;} to {bottom: 0; opacity: 0;} }
+        /* Modal Bottom Sheet */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); z-index: 200; align-items: flex-end; }
+        .modal-overlay.active { display: flex; animation: fadeInModal 0.3s ease; }
+        .modal-content { background: var(--surface-color); width: 100%; max-height: 85vh; border-radius: 24px 24px 0 0; padding: 24px 20px calc(20px + var(--safe-bottom)); overflow-y: auto; box-shadow: 0 -10px 40px rgba(0,0,0,0.5); transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.1); }
+        .modal-overlay.active .modal-content { transform: translateY(0); }
+        .modal-handle { width: 40px; height: 5px; background: var(--surface-elevated); border-radius: 3px; margin: 0 auto 20px; }
+        .modal-title { font-size: 1.3rem; font-weight: 700; color: var(--text-color); margin-bottom: 20px; text-align: center;}
+        
+        .summary-card { background: var(--surface-elevated); padding: 16px; border-radius: var(--radius-md); margin-bottom: 12px; border: 1px solid var(--border-color); }
+        .summary-card h4 { margin: 0 0 8px 0; color: var(--primary-color); font-size: 1.05rem;}
+        .summary-card.cardio-theme h4 { color: var(--cardio-color); }
+        .summary-detail { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 4px;}
+        
+        /* Nav Inferior (iOS Tab Bar Style) */
+        .bottom-nav { display: flex; position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(24, 24, 27, 0.85); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border-top: 1px solid var(--border-color); padding: 10px 10px calc(10px + var(--safe-bottom)); z-index: 100; justify-content: space-around; }
+        .nav-item { background: transparent; border: none; color: var(--text-muted); display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 600; gap: 4px; transition: 0.2s; width: 33%;}
+        .nav-icon { font-size: 1.4rem; filter: grayscale(1) opacity(0.7); transition: 0.2s;}
+        .nav-item.active { color: var(--primary-color); }
+        .nav-item.active .nav-icon { filter: none; transform: scale(1.1); }
+
+        /* Backup */
+        .backup-btn { background-color: var(--surface-elevated); border: 1px solid var(--border-color); color: var(--text-color); font-size: 0.9rem; font-weight: 600; padding: 12px; flex: 1; text-align: center; border-radius: var(--radius-md); cursor: pointer;}
+        
+        /* Toast Notification */
+        #toast { visibility: hidden; min-width: 250px; background: rgba(20, 184, 166, 0.9); backdrop-filter: blur(8px); color: #fff; text-align: center; border-radius: 100px; padding: 14px 20px; position: fixed; z-index: 1000; left: 50%; bottom: calc(100px + var(--safe-bottom)); transform: translateX(-50%) translateY(20px); font-size: 0.95rem; font-weight: bold; opacity: 0; transition: all 0.3s ease;}
+        #toast.show { visibility: visible; opacity: 1; transform: translateX(-50%) translateY(0); }
+        @keyframes fadeInModal { from {opacity: 0;} to {opacity: 1;} }
     </style>
 </head>
 <body>
 
     <header>
-        <h1>Tracker Torso/Pierna V5</h1>
+        <h1>Tracker Premium</h1>
     </header>
-
-    <nav class="main-nav">
-        <button id="btn-train" class="active" onclick="switchTab('train')">Entrenar</button>
-        <button id="btn-build" onclick="switchTab('build')">Editor</button>
-        <button id="btn-stats" onclick="switchTab('stats')">Datos</button>
-    </nav>
 
     <div class="container">
         <!-- SECCIÓN ENTRENAR -->
         <div id="section-train" class="section active">
             <select id="day-selector" onchange="loadDay()">
                 <option value="">-- Selecciona el Entrenamiento --</option>
+                <option value="CARDIO">🏃 Registrar Cardio</option>
             </select>
             <div id="workout-container"></div>
         </div>
 
-        <!-- SECCIÓN CREAR / EDITAR RUTINAS -->
+        <!-- SECCIÓN EDITOR -->
         <div id="section-build" class="section">
-            <div class="card" style="background-color: var(--bg-color); border:none; padding:0;">
-                <select id="routine-edit-select" onchange="loadRoutineForEdit()" style="border-color: var(--primary-color); border-width: 2px;">
+            <div class="card" style="padding: 12px;">
+                <select id="routine-edit-select" onchange="loadRoutineForEdit()" style="margin: 0; border: none; background: transparent; font-weight: 600;">
                     <option value="NEW">+ Crear Nueva Rutina</option>
                 </select>
             </div>
             <div class="card">
                 <input type="text" id="new-routine-name" placeholder="Nombre (ej. Torso C, Push, etc.)">
                 <input type="text" id="new-routine-rule" placeholder="Regla/Nota (ej. Descanso 2 min)">
-                
                 <div id="builder-exercises"></div>
-                
                 <button class="btn-secondary" onclick="addBuilderExerciseRow()">+ Añadir Ejercicio a la rutina</button>
-                <div style="display:flex; gap:10px; margin-top: 20px;">
-                    <button id="btn-delete-routine" onclick="deleteCurrentRoutine()" style="display:none; background-color: transparent; border: 1px solid var(--danger-color); color: var(--danger-color);">🗑️ Eliminar</button>
+                <div style="display:flex; gap:10px; margin-top: 10px;">
+                    <button id="btn-delete-routine" class="btn-delete" onclick="deleteCurrentRoutine()" style="display:none;">🗑️ Eliminar</button>
                     <button class="btn-save" onclick="saveCustomRoutine()" style="margin:0;">Guardar Rutina</button>
                 </div>
             </div>
@@ -174,21 +181,36 @@
         <!-- SECCIÓN ESTADÍSTICAS -->
         <div id="section-stats" class="section">
             <div class="stats-nav">
-                <button id="sbtn-habits" class="active" onclick="switchStatView('habits')">Hábitos</button>
+                <button id="sbtn-calendar" class="active" onclick="switchStatView('calendar')">Calendario</button>
+                <button id="sbtn-habits" onclick="switchStatView('habits')">Hábitos</button>
                 <button id="sbtn-muscles" onclick="switchStatView('muscles')">Volumen</button>
                 <button id="sbtn-exercises" onclick="switchStatView('exercises')">Historial</button>
             </div>
 
+            <!-- Vista Calendario -->
+            <div id="stat-view-calendar" class="stat-view active card">
+                <div class="cal-header">
+                    <button class="cal-btn" onclick="changeMonth(-1)">&#10094;</button>
+                    <h3 id="cal-month-year" style="margin:0; font-size:1.1rem; color:var(--text-color);">Mes Año</h3>
+                    <button class="cal-btn" onclick="changeMonth(1)">&#10095;</button>
+                </div>
+                <div class="cal-grid">
+                    <div class="cal-day-name">L</div><div class="cal-day-name">M</div><div class="cal-day-name">X</div>
+                    <div class="cal-day-name">J</div><div class="cal-day-name">V</div><div class="cal-day-name">S</div><div class="cal-day-name">D</div>
+                </div>
+                <div id="cal-body" class="cal-grid" style="margin-top: 5px;"></div>
+            </div>
+
             <!-- Vista Hábitos -->
-            <div id="stat-view-habits" class="stat-view active card">
-                <h3>Resumen (Últimos 30 días)</h3>
+            <div id="stat-view-habits" class="stat-view card">
+                <h3 style="margin-bottom: 20px;">Últimos 30 días</h3>
                 <div id="habits-container"></div>
             </div>
 
             <!-- Vista Músculos -->
             <div id="stat-view-muscles" class="stat-view card">
-                <h3>Series Efectivas (Últimos 30 días)</h3>
-                <div class="target" style="margin-bottom: 15px;">Mide el volumen de trabajo por músculo</div>
+                <h3 style="margin-bottom: 5px;">Series Efectivas</h3>
+                <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 20px;">Volumen de fuerza (30 días)</div>
                 <div id="muscles-container"></div>
             </div>
 
@@ -200,24 +222,46 @@
                 <div id="stats-list"></div>
             </div>
 
-            <!-- COPIA DE SEGURIDAD (BACKUP) -->
-            <div class="card" style="margin-top: 30px; border-color: rgba(255,255,255,0.1);">
-                <h3 style="display:flex; align-items:center; gap:8px;">💾 Copia de Seguridad</h3>
-                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px;">Guarda tus datos en un archivo para no perderlos, o restáuralos en otro móvil. Los datos guardados nunca caducan.</p>
+            <!-- COPIA DE SEGURIDAD -->
+            <div class="card">
+                <h3 style="margin-bottom: 5px;">💾 Copia de Seguridad</h3>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 20px;">Tus datos se guardan en tu móvil. Exporta una copia periódicamente.</p>
                 <div style="display: flex; gap: 10px;">
-                    <button class="backup-btn export" onclick="exportBackup()">⬇️ Exportar JSON</button>
-                    <button class="backup-btn import" onclick="document.getElementById('import-file').click()">⬆️ Importar JSON</button>
+                    <button class="backup-btn" onclick="exportBackup()">⬇️ Exportar</button>
+                    <button class="backup-btn" onclick="document.getElementById('import-file').click()">⬆️ Importar</button>
                     <input type="file" id="import-file" style="display: none;" accept=".json" onchange="importBackup(event)">
                 </div>
             </div>
         </div>
     </div>
 
-    <div id="toast">✅ ¡Acción completada!</div>
+    <!-- NAVEGACIÓN INFERIOR iOS -->
+    <nav class="bottom-nav">
+        <button class="nav-item active" onclick="switchTab('train')" id="btn-train">
+            <span class="nav-icon">🏋️</span> Entrenar
+        </button>
+        <button class="nav-item" onclick="switchTab('build')" id="btn-build">
+            <span class="nav-icon">⚙️</span> Editor
+        </button>
+        <button class="nav-item" onclick="switchTab('stats')" id="btn-stats">
+            <span class="nav-icon">📊</span> Datos
+        </button>
+    </nav>
+
+    <!-- MODAL CALENDARIO (BOTTOM SHEET) -->
+    <div class="modal-overlay" id="day-modal" onclick="closeModal(event)">
+        <div class="modal-content" id="modal-content" onclick="event.stopPropagation()">
+            <div class="modal-handle"></div>
+            <h3 class="modal-title" id="modal-date-title">Fecha</h3>
+            <div id="modal-summaries"></div>
+        </div>
+    </div>
+
+    <div id="toast">✅ Acción completada</div>
 
     <script>
+        // === DATOS BASE ===
         const M_CHEST = "Pecho", M_BACK = "Espalda", M_SHOULDER = "Hombros", M_QUADS = "Cuádriceps", M_HAMS = "Isquios", M_GLUTES = "Glúteos", M_BICEPS = "Bíceps", M_TRICEPS = "Tríceps", M_CALVES = "Gemelos", M_CORE = "Core", M_OTHER = "Otro";
-
         const muscleOptions = [M_CHEST, M_BACK, M_SHOULDER, M_QUADS, M_HAMS, M_GLUTES, M_BICEPS, M_TRICEPS, M_CALVES, M_CORE, M_OTHER];
 
         const baseRoutine = {
@@ -267,14 +311,19 @@
             populateDaySelector();
             populateBuilderDropdown();
             loadRoutineForEdit();
+            initCalendar();
+            
+            // Forzar scroll al top
+            window.scrollTo(0,0);
         };
 
-        /* --- NAVEGACIÓN --- */
+        // === NAVEGACIÓN PRINCIPAL ===
         function switchTab(tab) {
             document.querySelectorAll('.section').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('nav.main-nav button').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.bottom-nav .nav-item').forEach(el => el.classList.remove('active'));
             document.getElementById(`section-${tab}`).classList.add('active');
             document.getElementById(`btn-${tab}`).classList.add('active');
+            window.scrollTo(0,0);
 
             if(tab === 'train') populateDaySelector();
             if(tab === 'build') populateBuilderDropdown();
@@ -282,14 +331,15 @@
                 populateStatsDropdown();
                 renderHabitsStats();
                 renderMuscleStats();
+                renderCalendar();
             }
         }
 
-        /* --- ENTRENAR --- */
+        // === SECCIÓN ENTRENAR ===
         function populateDaySelector() {
             const selector = document.getElementById('day-selector');
             const currentVal = selector.value;
-            selector.innerHTML = '<option value="">-- Selecciona el Entrenamiento --</option>';
+            selector.innerHTML = '<option value="">-- Selecciona el Entrenamiento --</option><option value="CARDIO">🏃 Registrar Cardio</option>';
             const routines = getMergedRoutines();
             
             for (const key in routines) {
@@ -298,7 +348,7 @@
                 option.textContent = routines[key].title;
                 selector.appendChild(option);
             }
-            if (routines[currentVal]) selector.value = currentVal; 
+            if (currentVal === 'CARDIO' || routines[currentVal]) selector.value = currentVal; 
         }
 
         function loadDay() {
@@ -307,14 +357,25 @@
             container.innerHTML = '';
             if (!dayKey) return;
 
+            if (dayKey === 'CARDIO') {
+                renderCardioForm(container);
+                return;
+            }
+
             const routines = getMergedRoutines();
             const dayData = routines[dayKey];
-            
             const draft = JSON.parse(localStorage.getItem('draft_' + dayKey) || 'null');
             const history = JSON.parse(localStorage.getItem('workout_history') || '[]');
-            const lastWorkout = history.filter(w => w.dayId === dayKey).pop();
+            const lastWorkout = history.filter(w => w.dayId === dayKey && w.type !== 'cardio').pop();
 
-            let html = `<div class="rule-box"><strong>Nota:</strong> ${dayData.rule || ''}</div>`;
+            let html = ``;
+            if (draft && draft.exercises && draft.exercises.length > 0) {
+                html += `<div style="text-align:center; font-size:0.8rem; color:var(--secondary-color); margin-bottom:10px;">Borrador recuperado</div>`;
+            }
+            if(dayData.rule) {
+                html += `<div class="rule-box"><strong>Nota:</strong> ${dayData.rule}</div>`;
+            }
+            
             html += `<div id="exercise-list">`;
 
             if (draft && draft.exercises && draft.exercises.length > 0) {
@@ -326,7 +387,7 @@
                     let prefilledSets = [];
                     for (let i = 0; i < ex.sets; i++) {
                         let w = "", r = "";
-                        if (lastWorkout && lastWorkout.exercises[ex.id] && lastWorkout.exercises[ex.id][i]) {
+                        if (lastWorkout && lastWorkout.exercises && lastWorkout.exercises[ex.id] && lastWorkout.exercises[ex.id][i]) {
                             w = lastWorkout.exercises[ex.id][i].weight;
                             r = lastWorkout.exercises[ex.id][i].reps;
                         }
@@ -337,9 +398,8 @@
             }
 
             html += `</div>`;
-            html += `<button class="btn-secondary" onclick="addExtraExercise('${dayKey}')">+ Añadir Ejercicio Extra (Puntual)</button>`;
-            html += `<button class="btn-save" onclick="saveWorkout('${dayKey}')">Guardar Entrenamiento</button>`;
-            
+            html += `<button class="btn-secondary" onclick="addExtraExercise('${dayKey}')">+ Ejercicio Extra (Puntual)</button>`;
+            html += `<button class="btn-save" onclick="saveWorkout('${dayKey}')">Guardar Sesión</button>`;
             container.innerHTML = html;
         }
 
@@ -347,35 +407,56 @@
             const safeMuscle = muscle || M_OTHER;
             let html = `
             <div class="card workout-card" id="ex-${id}" data-name="${name}" data-target="${target}" data-muscle="${safeMuscle}">
-                <h3 class="ex-title"><span>${index}. ${name}</span></h3>
-                <div class="target">
-                    <span>${target}</span>
+                <div class="card-header">
+                    <h3>${index}. ${name}</h3>
                     <span class="muscle-tag">${safeMuscle}</span>
                 </div>
+                <div class="target-box">🎯 ${target}</div>
+                <div class="sets-header">
+                    <div class="col-serie">Serie</div>
+                    <div class="col-input">Kg / Extra</div>
+                    <div class="col-input">Reps</div>
+                </div>
+                <div class="sets-container">
             `;
             setsData.forEach((set, i) => {
                 html += `
                 <div class="set-row">
-                    <span>Serie ${i + 1}</span>
-                    <input type="number" step="0.5" class="weight-input" placeholder="Kg/Extra" value="${set.weight}" oninput="autoSaveDraft()">
-                    <input type="number" class="reps-input" placeholder="Reps" value="${set.reps}" oninput="autoSaveDraft()">
+                    <span><span class="set-num">${i + 1}</span></span>
+                    <input type="number" inputmode="decimal" class="weight-input" placeholder="-" value="${set.weight}" oninput="autoSaveDraft()">
+                    <input type="number" inputmode="decimal" class="reps-input" placeholder="-" value="${set.reps}" oninput="autoSaveDraft()">
                 </div>`;
             });
-            html += `</div>`;
+            html += `</div><button class="btn-add-set" onclick="addDynamicSet('${id}')">+ 1 Serie</button></div>`;
             return html;
+        }
+
+        function addDynamicSet(exId) {
+            const card = document.getElementById('ex-' + exId);
+            const setsContainer = card.querySelector('.sets-container');
+            const currentSets = setsContainer.querySelectorAll('.set-row').length;
+            
+            const newSetHtml = `
+                <div class="set-row" style="animation: fadeIn 0.3s ease;">
+                    <span><span class="set-num">${currentSets + 1}</span></span>
+                    <input type="number" inputmode="decimal" class="weight-input" placeholder="-" value="" oninput="autoSaveDraft()">
+                    <input type="number" inputmode="decimal" class="reps-input" placeholder="-" value="" oninput="autoSaveDraft()">
+                </div>`;
+            setsContainer.insertAdjacentHTML('beforeend', newSetHtml);
+            autoSaveDraft();
         }
 
         function addExtraExercise(dayKey) {
             const name = prompt("Nombre del ejercicio extra:");
             if (!name) return;
             const numSets = parseInt(prompt("Número de series:", "3")) || 3;
-            const target = prompt("Repeticiones objetivo:", "8-12 reps") || "";
+            const target = prompt("Repeticiones objetivo:", "8-12 reps") || "Según sensaciones";
             const exId = 'extra_' + Date.now();
             let emptySets = Array(numSets).fill({ weight: "", reps: "" });
             
             const list = document.getElementById('exercise-list');
             const currentIndex = list.querySelectorAll('.workout-card').length + 1;
-            const muscleChoice = prompt(`Grupo muscular (Escribe una opción: ${muscleOptions.join(", ")}):`, M_OTHER);
+            const muscleChoice = prompt(`Grupo muscular (${muscleOptions.join(", ")}):`, M_OTHER);
             
             list.insertAdjacentHTML('beforeend', buildCardHTML(exId, name, target, muscleChoice, emptySets, currentIndex));
             autoSaveDraft();
@@ -383,7 +464,7 @@
 
         function autoSaveDraft() {
             const dayKey = document.getElementById('day-selector').value;
-            if(!dayKey) return;
+            if(!dayKey || dayKey === 'CARDIO') return;
 
             const cards = document.querySelectorAll('.workout-card');
             const draftData = { exercises: [] };
@@ -395,13 +476,7 @@
                     const rInput = card.querySelectorAll('.reps-input')[i];
                     sets.push({ weight: wInput.value, reps: rInput.value });
                 });
-                draftData.exercises.push({ 
-                    id: exId, 
-                    name: card.getAttribute('data-name'), 
-                    target: card.getAttribute('data-target'),
-                    muscle: card.getAttribute('data-muscle'),
-                    sets: sets 
-                });
+                draftData.exercises.push({ id: exId, name: card.getAttribute('data-name'), target: card.getAttribute('data-target'), muscle: card.getAttribute('data-muscle'), sets: sets });
             });
             localStorage.setItem('draft_' + dayKey, JSON.stringify(draftData));
         }
@@ -413,6 +488,7 @@
             const workoutRecord = {
                 date: new Date().toISOString(),
                 dayId: dayId,
+                type: 'strength',
                 exercises: {},
                 exerciseMetadata: {} 
             };
@@ -436,17 +512,89 @@
             localStorage.setItem('workout_history', JSON.stringify(history));
             localStorage.removeItem('draft_' + dayId);
             
-            showToast("Entrenamiento guardado");
+            showToast("Entrenamiento guardado 🏆");
             document.getElementById('day-selector').value = "";
             document.getElementById('workout-container').innerHTML = "";
+            switchTab('stats');
         }
 
-        /* --- EDITOR RUTINAS --- */
+        // === CARDIO ===
+        function renderCardioForm(container) {
+            const html = `
+            <div class="card" style="border: 1px solid rgba(249, 115, 22, 0.3);">
+                <h3 style="color: var(--cardio-color); margin-bottom: 20px;">Registro de Cardio</h3>
+                <label style="font-size:0.85rem; color:var(--text-muted); margin-bottom:5px; display:block;">Modalidad</label>
+                <select id="c-modality">
+                    <option value="Cinta de correr">Cinta de correr</option>
+                    <option value="Bicicleta estática">Bicicleta estática / Ciclo</option>
+                    <option value="Elíptica">Elíptica</option>
+                    <option value="Tenis / Pista">Tenis / Pista</option>
+                    <option value="Correr (Exterior)">Correr (Exterior)</option>
+                    <option value="Otro">Otro</option>
+                </select>
+                <div class="builder-flex">
+                    <div style="flex:1;">
+                        <label style="font-size:0.85rem; color:var(--text-muted); margin-bottom:5px; display:block;">Tiempo (min)</label>
+                        <input type="number" inputmode="decimal" id="c-duration" placeholder="Ej. 30">
+                    </div>
+                    <div style="flex:1;">
+                        <label style="font-size:0.85rem; color:var(--text-muted); margin-bottom:5px; display:block;">Distancia (Km)</label>
+                        <input type="number" inputmode="decimal" id="c-distance" placeholder="Opcional">
+                    </div>
+                </div>
+                <div class="builder-flex">
+                    <div style="flex:1;">
+                        <label style="font-size:0.85rem; color:var(--text-muted); margin-bottom:5px; display:block;">Kcal</label>
+                        <input type="number" inputmode="decimal" id="c-cal" placeholder="Opcional">
+                    </div>
+                    <div style="flex:1;">
+                        <label style="font-size:0.85rem; color:var(--text-muted); margin-bottom:5px; display:block;">FC Media</label>
+                        <input type="number" inputmode="decimal" id="c-fcmed" placeholder="Lpm">
+                    </div>
+                    <div style="flex:1;">
+                        <label style="font-size:0.85rem; color:var(--text-muted); margin-bottom:5px; display:block;">FC Max</label>
+                        <input type="number" inputmode="decimal" id="c-fcmax" placeholder="Lpm">
+                    </div>
+                </div>
+                <label style="font-size:0.85rem; color:var(--text-muted); margin-bottom:5px; display:block;">Notas</label>
+                <textarea id="c-notes" placeholder="Ej. Sensaciones buenas, HIIT, rodaje suave..."></textarea>
+                <button class="btn-save btn-save-cardio" onclick="saveCardio()">Guardar Sesión</button>
+            </div>`;
+            container.innerHTML = html;
+        }
+
+        function saveCardio() {
+            const modality = document.getElementById('c-modality').value;
+            const duration = document.getElementById('c-duration').value;
+            if(!duration) { alert("Añade al menos la duración en minutos"); return; }
+
+            const record = {
+                date: new Date().toISOString(),
+                type: 'cardio',
+                modality: modality,
+                duration: duration,
+                distance: document.getElementById('c-distance').value,
+                cal: document.getElementById('c-cal').value,
+                fcMed: document.getElementById('c-fcmed').value,
+                fcMax: document.getElementById('c-fcmax').value,
+                notes: document.getElementById('c-notes').value
+            };
+
+            const history = JSON.parse(localStorage.getItem('workout_history') || '[]');
+            history.push(record);
+            localStorage.setItem('workout_history', JSON.stringify(history));
+
+            showToast("Cardio guardado 🏃‍♂️");
+            document.getElementById('day-selector').value = "";
+            document.getElementById('workout-container').innerHTML = "";
+            switchTab('stats');
+        }
+
+        // === EDITOR RUTINAS ===
         function populateBuilderDropdown() {
             const select = document.getElementById('routine-edit-select');
             const currentVal = select.value;
             select.innerHTML = '<option value="NEW">+ Crear Nueva Rutina</option>';
-            
             const routines = getMergedRoutines();
             for (const key in routines) {
                 const option = document.createElement('option');
@@ -472,7 +620,6 @@
 
             const routines = getMergedRoutines();
             const routine = routines[id];
-            
             document.getElementById('new-routine-name').value = routine.title;
             document.getElementById('new-routine-rule').value = routine.rule || '';
             document.getElementById('btn-delete-routine').style.display = 'block';
@@ -487,9 +634,7 @@
             const muscle = ex ? ex.muscle : '';
 
             let optionsHtml = '<option value="">-- Músculo --</option>';
-            muscleOptions.forEach(opt => {
-                optionsHtml += `<option value="${opt}" ${opt === muscle ? 'selected' : ''}>${opt}</option>`;
-            });
+            muscleOptions.forEach(opt => { optionsHtml += `<option value="${opt}" ${opt === muscle ? 'selected' : ''}>${opt}</option>`; });
 
             const rowHtml = `
             <div class="builder-row" data-exid="${exId}">
@@ -497,11 +642,11 @@
                     <input type="text" class="b-name" placeholder="Nombre Ejercicio" value="${name}">
                     <div class="builder-flex">
                         <select class="b-muscle" style="flex:2;">${optionsHtml}</select>
-                        <input type="number" class="b-sets" placeholder="Series" style="flex:1;" value="${sets}">
-                        <input type="text" class="b-target" placeholder="Objetivo" style="flex:2;" value="${target}">
+                        <input type="number" inputmode="numeric" class="b-sets" placeholder="Series" style="flex:1;" value="${sets}">
+                        <input type="text" class="b-target" placeholder="Reps" style="flex:2;" value="${target}">
                     </div>
                 </div>
-                <button class="btn-delete" onclick="this.parentElement.remove()">✕</button>
+                <button class="btn-delete" style="padding: 0 12px; background: transparent; border: none; font-size:1.5rem;" onclick="this.parentElement.remove()">&times;</button>
             </div>`;
             document.getElementById('builder-exercises').insertAdjacentHTML('beforeend', rowHtml);
         }
@@ -513,14 +658,12 @@
 
             const rows = document.querySelectorAll('.builder-row');
             let exercises = [];
-            
             rows.forEach(row => {
                 const exId = row.getAttribute('data-exid');
                 const exName = row.querySelector('.b-name').value.trim();
                 const muscle = row.querySelector('.b-muscle').value || M_OTHER;
                 const sets = parseInt(row.querySelector('.b-sets').value) || 3;
                 const target = row.querySelector('.b-target').value.trim() || "-";
-                
                 if(exName) { exercises.push({ id: exId, name: exName, muscle: muscle, sets: sets, target: target }); }
             });
 
@@ -534,7 +677,7 @@
             localStorage.setItem('custom_routines', JSON.stringify(customRoutines));
             localStorage.removeItem('draft_' + routineId);
 
-            showToast("Rutina Guardada con éxito");
+            showToast("Rutina Guardada");
             populateBuilderDropdown();
             document.getElementById('routine-edit-select').value = routineId;
         }
@@ -542,8 +685,7 @@
         function deleteCurrentRoutine() {
             const routineId = document.getElementById('routine-edit-select').value;
             if(routineId === 'NEW') return;
-
-            if(confirm("¿Seguro que quieres borrar esta rutina? Tus entrenamientos anteriores seguirán en las estadísticas.")) {
+            if(confirm("¿Seguro que quieres borrar esta rutina?")) {
                 const hiddenRoutines = JSON.parse(localStorage.getItem('hidden_routines') || '[]');
                 if (!hiddenRoutines.includes(routineId)) {
                     hiddenRoutines.push(routineId);
@@ -555,12 +697,13 @@
             }
         }
 
-        /* --- ESTADÍSTICAS --- */
+        // === ESTADÍSTICAS ===
         function switchStatView(viewId) {
             document.querySelectorAll('.stat-view').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.stats-nav button').forEach(el => el.classList.remove('active'));
             document.getElementById(`stat-view-${viewId}`).classList.add('active');
             document.getElementById(`sbtn-${viewId}`).classList.add('active');
+            if(viewId === 'calendar') renderCalendar();
         }
 
         function getRecentHistory(days = 30) {
@@ -573,10 +716,7 @@
         function renderHabitsStats() {
             const history30 = getRecentHistory(30);
             const container = document.getElementById('habits-container');
-            if (history30.length === 0) {
-                container.innerHTML = "<p style='text-align:center; color:var(--text-muted);'>No hay datos de los últimos 30 días.</p>";
-                return;
-            }
+            if (history30.length === 0) { container.innerHTML = "<p style='text-align:center; color:var(--text-muted);'>No hay datos recientes.</p>"; return; }
 
             const dayNames = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
             const dayCounts = [0,0,0,0,0,0,0];
@@ -586,27 +726,14 @@
             const favDayIdx = dayCounts.indexOf(maxDays);
 
             let html = `
-                <div class="habit-block">
-                    <h4>Total Entrenamientos</h4>
-                    <div class="number">${history30.length}</div>
-                </div>
-                <div class="habit-block">
-                    <h4>Día más frecuente</h4>
-                    <div style="font-size:1.2rem; font-weight:bold; color:var(--primary-color);">${dayNames[favDayIdx]} (${maxDays} veces)</div>
-                </div>
-                <div style="margin-top: 20px;">
-                    <h4 style="margin-bottom:15px; color:var(--text-muted);">Distribución Semanal</h4>
-            `;
+                <div class="habit-block"><h4 style="color:var(--text-muted)">Sesiones Totales</h4><div class="number">${history30.length}</div></div>
+                <div class="habit-block"><h4 style="color:var(--text-muted)">Día Favorito</h4><div class="number" style="font-size:1.8rem;">${dayNames[favDayIdx]}</div></div>
+                <div style="margin-top: 25px;"><h4 style="margin-bottom:15px; font-size:0.9rem; color:var(--text-muted); text-transform:uppercase;">Distribución Semanal</h4>`;
 
             [1, 2, 3, 4, 5, 6, 0].forEach(dayIdx => {
                 const count = dayCounts[dayIdx];
                 const width = maxDays > 0 ? (count / maxDays) * 100 : 0;
-                html += `
-                <div class="day-bar-container">
-                    <div class="day-bar-label">${dayNames[dayIdx].substring(0,3)}.</div>
-                    <div class="day-bar-track"><div class="day-bar-fill" style="width: ${width}%;"></div></div>
-                    <div class="day-bar-count">${count}</div>
-                </div>`;
+                html += `<div class="day-bar-container"><div class="day-bar-label">${dayNames[dayIdx].substring(0,3)}.</div><div class="day-bar-track"><div class="day-bar-fill" style="width: ${width}%;"></div></div><div class="day-bar-count">${count}</div></div>`;
             });
             container.innerHTML = html + `</div>`;
         }
@@ -614,13 +741,9 @@
         function renderMuscleStats() {
             const history30 = getRecentHistory(30);
             const container = document.getElementById('muscles-container');
-            if (history30.length === 0) {
-                container.innerHTML = "<p style='text-align:center; color:var(--text-muted);'>No hay datos de los últimos 30 días.</p>";
-                return;
-            }
-
             const muscleTally = {};
-            history30.forEach(workout => {
+            
+            history30.filter(w => w.type !== 'cardio').forEach(workout => {
                 for (const exId in workout.exercises) {
                     const validSets = workout.exercises[exId].filter(s => s.weight !== "" || s.reps !== "").length;
                     if (validSets > 0 && workout.exerciseMetadata && workout.exerciseMetadata[exId]) {
@@ -631,22 +754,14 @@
             });
 
             const sortedMuscles = Object.keys(muscleTally).sort((a,b) => muscleTally[b] - muscleTally[a]);
-            if (sortedMuscles.length === 0) {
-                container.innerHTML = "<p style='text-align:center;'>Ninguna serie registrada válida.</p>";
-                return;
-            }
+            if (sortedMuscles.length === 0) { container.innerHTML = "<p style='text-align:center; color:var(--text-muted);'>Sin datos de fuerza recientes.</p>"; return; }
 
             const maxSets = muscleTally[sortedMuscles[0]];
             let html = "";
             sortedMuscles.forEach(m => {
                 const count = muscleTally[m];
                 const width = (count / maxSets) * 100;
-                html += `
-                <div class="day-bar-container">
-                    <div class="day-bar-label" style="text-align:left;">${m}</div>
-                    <div class="day-bar-track"><div class="day-bar-fill" style="width: ${width}%; background: var(--primary-color);"></div></div>
-                    <div class="day-bar-count">${count}</div>
-                </div>`;
+                html += `<div class="day-bar-container"><div class="day-bar-label" style="text-align:left;">${m}</div><div class="day-bar-track"><div class="day-bar-fill" style="width: ${width}%;"></div></div><div class="day-bar-count">${count}</div></div>`;
             });
             container.innerHTML = html;
         }
@@ -654,29 +769,18 @@
         function populateStatsDropdown() {
             const select = document.getElementById('stat-exercise-selector');
             select.innerHTML = '<option value="">-- Selecciona un Ejercicio --</option>';
-            
             const history = JSON.parse(localStorage.getItem('workout_history') || '[]');
             const routines = getMergedRoutines();
             let allExercises = {};
 
-            Object.values(routines).forEach(day => {
-                day.exercises.forEach(ex => { allExercises[ex.id] = ex.name; });
-            });
-
-            history.forEach(workout => {
-                if(workout.exerciseMetadata) {
-                    Object.keys(workout.exerciseMetadata).forEach(id => {
-                        if (!allExercises[id]) allExercises[id] = workout.exerciseMetadata[id].name;
-                    });
-                }
+            Object.values(routines).forEach(day => { day.exercises.forEach(ex => { allExercises[ex.id] = ex.name; }); });
+            history.forEach(w => {
+                if(w.exerciseMetadata) { Object.keys(w.exerciseMetadata).forEach(id => { if (!allExercises[id]) allExercises[id] = w.exerciseMetadata[id].name; }); }
             });
 
             const sortedIds = Object.keys(allExercises).sort((a, b) => allExercises[a].localeCompare(allExercises[b]));
             sortedIds.forEach(id => {
-                const option = document.createElement('option');
-                option.value = id;
-                option.textContent = allExercises[id];
-                select.appendChild(option);
+                const opt = document.createElement('option'); opt.value = id; opt.textContent = allExercises[id]; select.appendChild(opt);
             });
         }
 
@@ -688,109 +792,184 @@
             const history = JSON.parse(localStorage.getItem('workout_history') || '[]');
             const exStats = [];
 
-            history.forEach(workout => {
-                if (workout.exercises[exId]) {
-                    const hasData = workout.exercises[exId].some(set => set.weight !== "" || set.reps !== "");
+            history.forEach(w => {
+                if (w.type !== 'cardio' && w.exercises[exId]) {
+                    const hasData = w.exercises[exId].some(set => set.weight !== "" || set.reps !== "");
                     if (hasData) {
-                        const dateObj = new Date(workout.date);
-                        // Extraemos la fecha y la hora exacta de finalización
-                        const dateStr = dateObj.toLocaleDateString() + ' - ' + dateObj.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-                        exStats.push({ date: dateStr, sets: workout.exercises[exId] });
+                        const dateObj = new Date(w.date);
+                        exStats.push({ date: dateObj.toLocaleDateString() + ' ' + dateObj.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}), sets: w.exercises[exId] });
                     }
                 }
             });
 
-            if (exStats.length === 0) {
-                list.innerHTML = '<p style="text-align: center; color: var(--text-muted);">No hay datos registrados aún.</p>';
-                return;
-            }
-
+            if (exStats.length === 0) { list.innerHTML = '<p style="text-align: center; color:var(--text-muted); margin-top:20px;">No hay datos aún.</p>'; return; }
             list.innerHTML = "";
             exStats.reverse().forEach(stat => {
                 let setsHtml = '';
                 stat.sets.forEach((set, idx) => {
-                    if (set.weight !== "" || set.reps !== "") {
-                        const w = set.weight !== "" ? set.weight + 'kg' : '-';
-                        const r = set.reps !== "" ? set.reps : '-';
-                        setsHtml += `<div class="stat-set-badge">S${idx + 1}: ${w} × ${r}</div>`;
-                    }
+                    if (set.weight !== "" || set.reps !== "") { setsHtml += `<div class="stat-set-badge">S${idx + 1}: ${set.weight||'-'}kg × ${set.reps||'-'}</div>`; }
                 });
                 list.innerHTML += `<div class="stat-row"><div class="stat-header"><span>${stat.date}</span></div><div class="stat-sets">${setsHtml}</div></div>`;
             });
         }
 
-        /* --- IMPORTAR / EXPORTAR (BACKUP) --- */
+        // === CALENDARIO ===
+        let calDate = new Date();
+
+        function initCalendar() { renderCalendar(); }
+        function changeMonth(dir) { calDate.setMonth(calDate.getMonth() + dir); renderCalendar(); }
+
+        function renderCalendar() {
+            const monthYearEl = document.getElementById('cal-month-year');
+            const bodyEl = document.getElementById('cal-body');
+            bodyEl.innerHTML = '';
+
+            const year = calDate.getFullYear();
+            const month = calDate.getMonth();
+            const monthNames = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+            monthYearEl.textContent = `${monthNames[month]} ${year}`;
+
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            const today = new Date();
+            
+            const offset = (firstDay + 6) % 7;
+            for(let i=0; i<offset; i++) { bodyEl.innerHTML += `<div class="cal-cell empty"></div>`; }
+
+            const history = JSON.parse(localStorage.getItem('workout_history') || '[]');
+
+            for(let day=1; day<=daysInMonth; day++) {
+                const currentCellDate = new Date(year, month, day);
+                let hasStrength = false, hasCardio = false;
+
+                history.forEach(w => {
+                    const wDate = new Date(w.date);
+                    if(wDate.getFullYear() === year && wDate.getMonth() === month && wDate.getDate() === day) {
+                        if(w.type === 'cardio') hasCardio = true; else hasStrength = true;
+                    }
+                });
+
+                let classes = 'cal-cell';
+                if(currentCellDate.toDateString() === today.toDateString()) classes += ' today';
+                
+                let indicators = '';
+                if(hasStrength) indicators += '<div class="dot strength"></div>';
+                if(hasCardio) indicators += '<div class="dot cardio"></div>';
+                
+                const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+                
+                bodyEl.innerHTML += `
+                <div class="${classes}" onclick="openDaySummary('${dateStr}')">
+                    ${day}
+                    <div class="cal-indicators">${indicators}</div>
+                </div>`;
+            }
+        }
+
+        // === MODAL RESUMEN ===
+        function openDaySummary(dateStr) {
+            const history = JSON.parse(localStorage.getItem('workout_history') || '[]');
+            const routines = getMergedRoutines();
+            const [y, m, d] = dateStr.split('-');
+            const targetDate = new Date(y, m-1, d);
+            
+            const sessions = history.filter(w => {
+                const wDate = new Date(w.date);
+                return wDate.getFullYear() == y && wDate.getMonth() == m-1 && wDate.getDate() == d;
+            });
+
+            const modal = document.getElementById('day-modal');
+            const title = document.getElementById('modal-date-title');
+            const container = document.getElementById('modal-summaries');
+            
+            title.textContent = targetDate.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' });
+            container.innerHTML = '';
+
+            if (sessions.length === 0) {
+                container.innerHTML = '<p style="color:var(--text-muted); text-align:center; margin-top:30px;">Día de descanso.</p>';
+                modal.classList.add('active');
+                return;
+            }
+
+            sessions.forEach(s => {
+                const sDate = new Date(s.date);
+                const timeStr = sDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                
+                if (s.type === 'cardio') {
+                    let html = `<div class="summary-card cardio-theme">
+                        <h4>🏃 ${s.modality} <span style="float:right; font-size:0.8rem; color:var(--text-muted); font-weight:normal;">${timeStr}</span></h4>
+                        <div class="summary-detail">⏱️ ${s.duration} min ${s.distance ? `| 📏 ${s.distance} km` : ''} ${s.cal ? `| 🔥 ${s.cal} kcal` : ''}</div>
+                        ${s.fcMed || s.fcMax ? `<div class="summary-detail">❤️ FC: ${s.fcMed||'-'} med / ${s.fcMax||'-'} max</div>` : ''}
+                        ${s.notes ? `<div class="summary-detail" style="margin-top:8px; font-style:italic; border-top:1px solid rgba(255,255,255,0.05); padding-top:8px;">"${s.notes}"</div>` : ''}
+                    </div>`;
+                    container.innerHTML += html;
+                } else {
+                    const rTitle = s.dayId && routines[s.dayId] ? routines[s.dayId].title : "Fuerza";
+                    let html = `<div class="summary-card">
+                        <h4>💪 ${rTitle} <span style="float:right; font-size:0.8rem; color:var(--text-muted); font-weight:normal;">${timeStr}</span></h4>`;
+                    
+                    for (const exId in s.exercises) {
+                        const name = s.exerciseMetadata && s.exerciseMetadata[exId] ? s.exerciseMetadata[exId].name : "Ejercicio";
+                        const sets = s.exercises[exId].filter(set => set.weight !== "" || set.reps !== "");
+                        if(sets.length > 0) {
+                            html += `<div style="margin-top:12px; font-weight:600; font-size:0.9rem; color:var(--text-color);">${name}</div><div class="stat-sets" style="margin-top:5px;">`;
+                            sets.forEach((set, idx) => {
+                                html += `<span class="stat-set-badge">S${idx+1}: ${set.weight||'-'}kg × ${set.reps||'-'}</span>`;
+                            });
+                            html += `</div>`;
+                        }
+                    }
+                    html += `</div>`;
+                    container.innerHTML += html;
+                }
+            });
+            modal.classList.add('active');
+        }
+
+        function closeModal(event) {
+            const modal = document.getElementById('day-modal');
+            modal.classList.remove('active');
+        }
+
+        // === BACKUP ===
         function exportBackup() {
             const data = {
                 workout_history: JSON.parse(localStorage.getItem('workout_history') || '[]'),
                 custom_routines: JSON.parse(localStorage.getItem('custom_routines') || '{}'),
                 hidden_routines: JSON.parse(localStorage.getItem('hidden_routines') || '[]')
             };
-            
             const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
-            
-            // Nombre de archivo con fecha
-            const dateStr = new Date().toISOString().split('T')[0];
-            a.href = url;
-            a.download = `backup_entrenamiento_${dateStr}.json`;
-            
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-            
-            showToast("Datos exportados correctamente");
+            a.href = url; a.download = `tracker_backup_${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+            showToast("Backup exportado 💾");
         }
 
         function importBackup(event) {
             const file = event.target.files[0];
             if (!file) return;
-
             const reader = new FileReader();
             reader.onload = function(e) {
                 try {
                     const importedData = JSON.parse(e.target.result);
-                    
-                    if (!importedData.workout_history) {
-                        alert("El archivo no parece tener el formato correcto. Faltan datos.");
-                        return;
-                    }
-
-                    if (confirm("⚠️ ADVERTENCIA: Importar este archivo sobrescribirá tus datos actuales en este dispositivo. ¿Estás seguro?")) {
-                        
+                    if (!importedData.workout_history) { alert("Archivo no válido."); return; }
+                    if (confirm("⚠️ Importar sobrescribirá tus datos actuales. ¿Seguro?")) {
                         localStorage.setItem('workout_history', JSON.stringify(importedData.workout_history || []));
                         localStorage.setItem('custom_routines', JSON.stringify(importedData.custom_routines || {}));
                         localStorage.setItem('hidden_routines', JSON.stringify(importedData.hidden_routines || []));
-                        
-                        showToast("Datos restaurados con éxito");
-                        
-                        // Resetea el input para poder importar el mismo archivo si hace falta
+                        showToast("Datos restaurados ✅");
                         event.target.value = '';
-                        
-                        // Recarga las vistas
-                        populateDaySelector();
-                        populateBuilderDropdown();
-                        populateStatsDropdown();
-                        renderHabitsStats();
-                        renderMuscleStats();
-                        
-                        // Limpia la vista de entrenamiento activa para evitar desajustes
-                        document.getElementById('day-selector').value = "";
-                        document.getElementById('workout-container').innerHTML = "";
+                        setTimeout(() => location.reload(), 800);
                     }
-                } catch (error) {
-                    alert("Error crítico al leer el archivo JSON. Asegúrate de que no está corrupto.");
-                }
+                } catch (error) { alert("Error al leer el archivo JSON."); }
             };
             reader.readAsText(file);
         }
 
         function showToast(msg) {
             const toast = document.getElementById("toast");
-            toast.textContent = msg;
-            toast.className = "show";
+            toast.textContent = msg; toast.className = "show";
             setTimeout(() => { toast.className = toast.className.replace("show", ""); }, 3000);
         }
     </script>
