@@ -170,6 +170,11 @@
         .slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 3px; bottom: 3px; background-color: var(--text-muted); transition: .4s; border-radius: 50%; }
         input:checked + .slider { background-color: var(--primary-color); border-color: var(--primary-color);}
         input:checked + .slider:before { transform: translateX(22px); background-color: #fff; }
+
+        /* Estilos para el sistema de Sobrecarga Progresiva */
+        .overload-check { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; color: var(--text-muted); margin-top: 12px; padding-top: 12px; border-top: 1px dashed rgba(255,255,255,0.1); }
+        .overload-check input { width: 18px; height: 18px; margin: 0; accent-color: var(--primary-color); cursor: pointer; }
+        .reminder-tag { background-color: rgba(249, 115, 22, 0.15); color: var(--cardio-color); padding: 4px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: bold; margin-left: auto; display: inline-flex; align-items: center; gap: 4px; border: 1px solid rgba(249, 115, 22, 0.3);}
     </style>
 </head>
 <body>
@@ -444,7 +449,6 @@
             window.scrollTo(0,0);
         }
 
-        // === NAVEGACIÓN DE ESTADÍSTICAS (¡Corregido!) ===
         function switchStatView(view) {
             document.querySelectorAll('.stat-view').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.stats-nav button').forEach(el => el.classList.remove('active'));
@@ -461,6 +465,16 @@
 
         function getTodayStr() { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
         function getTimeStr() { const d = new Date(); return `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`; }
+
+        // === FUNCIÓN AUXILIAR DE SOBRECARGA (Optimizada) ===
+        function checkPreviousOverload(exId, sortedHistory) {
+            for (let w of sortedHistory) {
+                if (w.type === 'strength' && w.exerciseMetadata && w.exerciseMetadata[exId]) {
+                    return w.exerciseMetadata[exId].overloadNext === true;
+                }
+            }
+            return false;
+        }
 
         // === SECCIÓN ENTRENAR ===
         function populateDaySelector() {
@@ -488,7 +502,13 @@
 
             if (dayKey === 'CARDIO') { renderCardioForm(container); return; }
 
-            const routines = getMergedRoutines(); const history = JSON.parse(localStorage.getItem('workout_history') || '[]');
+            const routines = getMergedRoutines(); 
+            const history = JSON.parse(localStorage.getItem('workout_history') || '[]');
+            
+            // OPTIMIZACIÓN: Preparamos el historial UNA sola vez para evitar el cuello de botella
+            const filteredHistory = currentEditWorkoutId ? history.filter(w => w.id !== currentEditWorkoutId) : history;
+            const sortedHistory = [...filteredHistory].sort((a,b) => new Date(b.date) - new Date(a.date));
+
             let html = ``;
 
             if (currentEditWorkoutId) {
@@ -498,7 +518,9 @@
                     let index = 1;
                     for (const exId in workout.exercises) {
                         const meta = workout.exerciseMetadata[exId] || {name: "Ejercicio", muscle: M_OTHER};
-                        html += buildCardHTML(exId, meta.name, "Editando", meta.muscle, workout.exercises[exId], index++);
+                        const reminderActive = checkPreviousOverload(exId, sortedHistory);
+                        const isChecked = meta.overloadNext === true;
+                        html += buildCardHTML(exId, meta.name, "Editando", meta.muscle, workout.exercises[exId], index++, reminderActive, isChecked);
                     }
                     html += `</div>`;
                 }
@@ -512,7 +534,10 @@
                 html += `<div id="exercise-list">`;
 
                 if (draft && draft.exercises && draft.exercises.length > 0) {
-                    draft.exercises.forEach((ex, index) => html += buildCardHTML(ex.id, ex.name, ex.target, ex.muscle, ex.sets, index + 1));
+                    draft.exercises.forEach((ex, index) => {
+                        const reminderActive = checkPreviousOverload(ex.id, sortedHistory);
+                        html += buildCardHTML(ex.id, ex.name, ex.target, ex.muscle, ex.sets, index + 1, reminderActive, ex.overloadNext);
+                    });
                 } else {
                     dayData.exercises.forEach((ex, index) => {
                         let prefilledSets = [];
@@ -523,7 +548,8 @@
                             }
                             prefilledSets.push({ weight: w, reps: r, rir: rir });
                         }
-                        html += buildCardHTML(ex.id, ex.name, ex.target, ex.muscle, prefilledSets, index + 1);
+                        const reminderActive = checkPreviousOverload(ex.id, sortedHistory);
+                        html += buildCardHTML(ex.id, ex.name, ex.target, ex.muscle, prefilledSets, index + 1, reminderActive, false);
                     });
                 }
                 html += `</div>`;
@@ -533,11 +559,15 @@
             container.innerHTML = html;
         }
 
-        function buildCardHTML(id, name, target, muscle, setsData, index = "*") {
+        function buildCardHTML(id, name, target, muscle, setsData, index = "*", reminderActive = false, isChecked = false) {
             const safeMuscle = muscle || M_OTHER;
             let html = `
             <div class="card workout-card" id="ex-${id}" data-name="${name}" data-target="${target}" data-muscle="${safeMuscle}">
-                <div class="card-header"><h3>${index}. ${name}</h3><span class="muscle-tag">${safeMuscle}</span></div>
+                <div class="card-header">
+                    <h3>${index}. ${name}</h3>
+                    ${reminderActive ? '<span class="reminder-tag">📈 ¡Toca subir!</span>' : ''}
+                    <span class="muscle-tag" style="${reminderActive ? 'margin-left: 8px;' : ''}">${safeMuscle}</span>
+                </div>
                 <div class="target-box">🎯 ${target}</div>
                 <div class="sets-header"><div class="col-serie">S#</div><div class="col-input">Kg</div><div class="col-input">Reps</div><div class="col-input">RIR</div></div>
                 <div class="sets-container">`;
@@ -551,7 +581,13 @@
                     <input type="number" inputmode="decimal" class="rir-input" placeholder="RIR" value="${rirVal}" oninput="autoSaveDraft()">
                 </div>`;
             });
-            html += `</div><button class="btn-add-set" onclick="addDynamicSet('${id}')">+ 1 Serie</button></div>`;
+            html += `</div>
+                <button class="btn-add-set" onclick="addDynamicSet('${id}')">+ 1 Serie</button>
+                <div class="overload-check">
+                    <input type="checkbox" class="overload-input" id="check-${id}" ${isChecked ? 'checked' : ''} onchange="autoSaveDraft()">
+                    <label for="check-${id}">Recordar subir peso/reps la próxima vez</label>
+                </div>
+            </div>`;
             return html;
         }
 
@@ -569,21 +605,40 @@
             const exId = 'extra_' + Date.now(); let emptySets = Array(numSets).fill({ weight: "", reps: "", rir: "" });
             const list = document.getElementById('exercise-list'); const currentIndex = list.querySelectorAll('.workout-card').length + 1;
             const muscleChoice = prompt(`Grupo muscular (${muscleOptions.join(", ")}):`, M_OTHER);
-            list.insertAdjacentHTML('beforeend', buildCardHTML(exId, name, target, muscleChoice, emptySets, currentIndex)); autoSaveDraft();
+            list.insertAdjacentHTML('beforeend', buildCardHTML(exId, name, target, muscleChoice, emptySets, currentIndex, false, false)); autoSaveDraft();
         }
+
+        let draftTimeout; // Variable global para el temporizador del Debounce
 
         function autoSaveDraft() {
             if(currentEditWorkoutId) return; 
-            const dayKey = document.getElementById('day-selector').value; if(!dayKey || dayKey === 'CARDIO') return;
-            const cards = document.querySelectorAll('.workout-card'); const draftData = { exercises: [] };
-            cards.forEach(card => {
-                const exId = card.id.replace('ex-', ''); const sets = [];
-                card.querySelectorAll('.weight-input').forEach((wInput, i) => {
-                    sets.push({ weight: wInput.value, reps: card.querySelectorAll('.reps-input')[i].value, rir: card.querySelectorAll('.rir-input')[i].value });
+            const dayKey = document.getElementById('day-selector').value; 
+            if(!dayKey || dayKey === 'CARDIO') return;
+
+            // Limpiamos el temporizador anterior si el usuario sigue tecleando
+            clearTimeout(draftTimeout);
+            
+            // Esperamos 500ms sin actividad antes de guardar (Debounce)
+            draftTimeout = setTimeout(() => {
+                const cards = document.querySelectorAll('.workout-card'); 
+                const draftData = { exercises: [] };
+                cards.forEach(card => {
+                    const exId = card.id.replace('ex-', ''); const sets = [];
+                    card.querySelectorAll('.weight-input').forEach((wInput, i) => {
+                        sets.push({ weight: wInput.value, reps: card.querySelectorAll('.reps-input')[i].value, rir: card.querySelectorAll('.rir-input')[i].value });
+                    });
+                    const overloadChecked = card.querySelector('.overload-input').checked;
+                    draftData.exercises.push({ 
+                        id: exId, 
+                        name: card.getAttribute('data-name'), 
+                        target: card.getAttribute('data-target'), 
+                        muscle: card.getAttribute('data-muscle'), 
+                        sets: sets,
+                        overloadNext: overloadChecked
+                    });
                 });
-                draftData.exercises.push({ id: exId, name: card.getAttribute('data-name'), target: card.getAttribute('data-target'), muscle: card.getAttribute('data-muscle'), sets: sets });
-            });
-            localStorage.setItem('draft_' + dayKey, JSON.stringify(draftData));
+                localStorage.setItem('draft_' + dayKey, JSON.stringify(draftData));
+            }, 500);
         }
 
         function getTonnage(exercisesObj) {
@@ -606,8 +661,13 @@
                 card.querySelectorAll('.weight-input').forEach((wInput, i) => {
                     setsData.push({ weight: wInput.value || "", reps: card.querySelectorAll('.reps-input')[i].value || "", rir: card.querySelectorAll('.rir-input')[i].value || "" });
                 });
+                const overloadChecked = card.querySelector('.overload-input').checked;
                 workoutRecord.exercises[exId] = setsData;
-                workoutRecord.exerciseMetadata[exId] = { name: card.getAttribute('data-name'), muscle: card.getAttribute('data-muscle') };
+                workoutRecord.exerciseMetadata[exId] = { 
+                    name: card.getAttribute('data-name'), 
+                    muscle: card.getAttribute('data-muscle'),
+                    overloadNext: overloadChecked
+                };
             });
             workoutRecord.tonnage = getTonnage(workoutRecord.exercises);
 
