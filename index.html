@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Tracker Premium V12 (Bands Update)</title>
+    <title>Tracker Premium V14</title>
     
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -43,21 +43,29 @@
         select:focus, input:focus, textarea:focus { border-color: var(--primary-color); }
         textarea { resize: vertical; min-height: 80px; }
 
-        .card { background-color: var(--surface-color); border-radius: var(--radius-lg); padding: 18px; margin-bottom: 18px; border: 1px solid var(--border-color); box-shadow: 0 4px 20px rgba(0,0,0,0.2); }
+        .card { background-color: var(--surface-color); border-radius: var(--radius-lg); padding: 18px; margin-bottom: 18px; border: 1px solid var(--border-color); box-shadow: 0 4px 20px rgba(0,0,0,0.2); transition: all 0.3s ease; }
         .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;}
         .card h3 { margin: 0; font-size: 1.1rem; font-weight: 600; color: var(--text-color); }
         .target-box { display: inline-block; background: rgba(255,255,255,0.05); padding: 4px 8px; border-radius: 6px; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 15px;}
         .muscle-tag { background-color: rgba(20, 184, 166, 0.15); color: var(--secondary-color); padding: 4px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: 600; }
 
         .sets-header { display: flex; gap: 6px; font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; margin-bottom: 8px; padding: 0 5px;}
-        .col-serie { width: 30px; } .col-input { flex: 1; text-align: center; }
+        .col-serie { width: 32px; text-align:center;} .col-input { flex: 1; text-align: center; }
+        
         .set-row { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; background: rgba(0,0,0,0.2); padding: 8px; border-radius: 8px;}
-        .set-row span { width: 30px; font-weight: 600; font-size: 0.9rem; text-align: center; color: var(--text-muted);}
         .set-row input { margin-bottom: 0; text-align: center; padding: 10px 5px; border: none; background: var(--surface-elevated); font-size: 1.05rem; width: 33%;}
         
-        /* Estilos nuevos para el Selector de Equipamiento / Bandas */
-        .equip-toggle { background-color: rgba(255,255,255,0.05); color: var(--text-color); border: 1px solid var(--border-color); border-radius: 8px; padding: 6px; font-size: 0.8rem; outline: none; margin-left: auto; cursor: pointer; font-weight: 600; width: auto; margin-bottom: 0;}
+        /* Botón de Calentamiento (Warmup) */
+        .btn-warmup { background: var(--surface-elevated); border: 1px solid var(--border-color); color: var(--text-muted); border-radius: 6px; width: 32px; height: 32px; display:flex; justify-content:center; align-items:center; font-weight: bold; font-size: 0.9rem; cursor: pointer; transition: 0.2s; padding:0; flex-shrink: 0;}
+        .btn-warmup.is-warmup { background: rgba(249, 115, 22, 0.15); color: var(--cardio-color); border-color: var(--cardio-color); }
+
+        .equip-toggle { background-color: rgba(255,255,255,0.05); color: var(--text-color); border: 1px solid var(--border-color); border-radius: 8px; padding: 6px; font-size: 0.8rem; outline: none; cursor: pointer; font-weight: 600; width: auto; margin-bottom: 0;}
         select.band-input { margin-bottom: 0; text-align: center; padding: 10px 5px; border: none; background: var(--surface-elevated); font-size: 0.9rem; font-weight: 600; width: 33%; color: var(--secondary-color); appearance: none; border-radius: 6px;}
+
+        .btn-omit { background: transparent; border: 1px solid var(--border-color); color: var(--text-muted); border-radius: 8px; padding: 6px 10px; cursor: pointer; transition: 0.2s; font-size: 0.8rem; font-weight: 600;}
+        .btn-omit.active { background: rgba(239, 68, 68, 0.15); color: var(--danger-color); border-color: rgba(239, 68, 68, 0.3); }
+        .workout-card.skipped { opacity: 0.45; border-style: dashed; filter: grayscale(80%); }
+        .workout-card.skipped .sets-container, .workout-card.skipped .btn-add-set, .workout-card.skipped .overload-check, .workout-card.skipped .sets-header, .workout-card.skipped .target-box { display: none; }
 
         .btn-add-set { background-color: transparent; border: 1px dashed var(--border-color); color: var(--text-muted); font-size: 0.85rem; padding: 10px; border-radius: 8px; width: 100%; margin-top: 5px; cursor: pointer; transition: 0.2s;}
         .btn-secondary { background-color: rgba(139, 92, 246, 0.1); border: 1px dashed var(--primary-color); color: var(--primary-color); width: 100%; padding: 14px; border-radius: var(--radius-md); font-weight: 600; margin-bottom: 15px; cursor: pointer;}
@@ -332,7 +340,7 @@
         <div class="modal-content" style="max-height: 90vh;">
             <div class="modal-handle"></div>
             <h3 class="modal-title" id="pwm-title" style="margin-bottom: 5px;">¡Sesión Completada! 🏆</h3>
-            <p style="text-align:center; font-size:0.85rem; color:var(--text-muted); margin-bottom: 20px;">Comparativa con tu última sesión de esta rutina.</p>
+            <p style="text-align:center; font-size:0.85rem; color:var(--text-muted); margin-bottom: 20px;">Comparativa de series efectivas con tu última sesión de esta rutina.</p>
             <div id="pwm-content" style="margin-bottom: 20px;"></div>
             <button class="btn-save" onclick="closePostWorkoutModal()">Ir a Estadísticas</button>
         </div>
@@ -461,16 +469,49 @@
         function checkPreviousOverload(exId, sortedHistory) {
             for (let w of sortedHistory) {
                 if (w.type === 'strength' && w.exerciseMetadata && w.exerciseMetadata[exId]) {
+                    if (w.exerciseMetadata[exId].skipped) continue; 
                     return w.exerciseMetadata[exId].overloadNext === true;
                 }
             }
             return false;
         }
 
-        // LÓGICA DE CAMBIO DE EQUIPAMIENTO
+        // --- SISTEMA WARMUP (CALENTAMIENTO) ---
+        function toggleWarmup(btn) {
+            btn.classList.toggle('is-warmup');
+            const card = btn.closest('.workout-card');
+            updateSetNumbers(card);
+            autoSaveDraft();
+        }
+
+        function updateSetNumbers(card) {
+            let workingIdx = 1;
+            card.querySelectorAll('.btn-warmup').forEach(btn => {
+                if(btn.classList.contains('is-warmup')) {
+                    btn.textContent = 'W';
+                } else {
+                    btn.textContent = workingIdx++;
+                }
+            });
+        }
+
+        function toggleSkip(exId) {
+            const card = document.getElementById('ex-' + exId);
+            const btn = card.querySelector('.btn-omit');
+            card.classList.toggle('skipped');
+            if(card.classList.contains('skipped')) {
+                btn.classList.add('active');
+                btn.innerHTML = '❌ Omitido';
+            } else {
+                btn.classList.remove('active');
+                btn.innerHTML = '🚫 Omitir';
+            }
+            autoSaveDraft();
+        }
+
         function toggleEquip(selectEl, exId) {
             const card = document.getElementById('ex-' + exId);
-            const mode = selectEl.value; // 'kg' o 'band'
+            const mode = selectEl.value;
             const header = card.querySelector('.col-kg-header');
             if(header) header.textContent = mode === 'band' ? 'Banda' : 'Kg';
             
@@ -522,10 +563,10 @@
                     html += `<div style="text-align:center; font-size:0.8rem; color:var(--secondary-color); margin-bottom:10px;">Modo Edición Activado</div><div id="exercise-list">`;
                     let index = 1;
                     for (const exId in workout.exercises) {
-                        const meta = workout.exerciseMetadata[exId] || {name: "Ejercicio", muscle: M_OTHER, equip: 'kg'};
+                        const meta = workout.exerciseMetadata[exId] || {name: "Ejercicio", muscle: M_OTHER, equip: 'kg', skipped: false};
                         const reminderActive = checkPreviousOverload(exId, sortedHistory);
                         const isChecked = meta.overloadNext === true;
-                        html += buildCardHTML(exId, meta.name, "Editando", meta.muscle, workout.exercises[exId], index++, reminderActive, isChecked, meta.equip || 'kg');
+                        html += buildCardHTML(exId, meta.name, "Editando", meta.muscle, workout.exercises[exId], index++, reminderActive, isChecked, meta.equip || 'kg', meta.skipped || false);
                     }
                     html += `</div>`;
                 }
@@ -541,28 +582,32 @@
                 if (draft && draft.exercises && draft.exercises.length > 0) {
                     draft.exercises.forEach((ex, index) => {
                         const reminderActive = checkPreviousOverload(ex.id, sortedHistory);
-                        html += buildCardHTML(ex.id, ex.name, ex.target, ex.muscle, ex.sets, index + 1, reminderActive, ex.overloadNext, ex.equip || 'kg');
+                        html += buildCardHTML(ex.id, ex.name, ex.target, ex.muscle, ex.sets, index + 1, reminderActive, ex.overloadNext, ex.equip || 'kg', ex.skipped || false);
                     });
                 } else {
                     dayData.exercises.forEach((ex, index) => {
                         let prefilledSets = [];
                         let equip = "kg";
+                        let numSetsToRender = ex.sets;
+                        
                         if (lastWorkout && lastWorkout.exercises && lastWorkout.exercises[ex.id]) {
                             if (lastWorkout.exerciseMetadata && lastWorkout.exerciseMetadata[ex.id]) {
                                 equip = lastWorkout.exerciseMetadata[ex.id].equip || "kg";
                             }
-                            for (let i = 0; i < ex.sets; i++) {
-                                let w = "", r = "", rir = "";
-                                if (lastWorkout.exercises[ex.id][i]) {
-                                    w = lastWorkout.exercises[ex.id][i].weight; r = lastWorkout.exercises[ex.id][i].reps;
-                                }
-                                prefilledSets.push({ weight: w, reps: r, rir: rir });
+                            numSetsToRender = Math.max(ex.sets, lastWorkout.exercises[ex.id].length);
+                        }
+                        
+                        for (let i = 0; i < numSetsToRender; i++) {
+                            let w = "", r = "", rir = "", isW = false;
+                            if (lastWorkout && lastWorkout.exercises && lastWorkout.exercises[ex.id] && lastWorkout.exercises[ex.id][i]) {
+                                w = lastWorkout.exercises[ex.id][i].weight; 
+                                r = lastWorkout.exercises[ex.id][i].reps;
+                                isW = lastWorkout.exercises[ex.id][i].warmup || false;
                             }
-                        } else {
-                            for (let i = 0; i < ex.sets; i++) prefilledSets.push({ weight: "", reps: "", rir: "" });
+                            prefilledSets.push({ weight: w, reps: r, rir: rir, warmup: isW });
                         }
                         const reminderActive = checkPreviousOverload(ex.id, sortedHistory);
-                        html += buildCardHTML(ex.id, ex.name, ex.target, ex.muscle, prefilledSets, index + 1, reminderActive, false, equip);
+                        html += buildCardHTML(ex.id, ex.name, ex.target, ex.muscle, prefilledSets, index + 1, reminderActive, false, equip, false);
                     });
                 }
                 html += `</div>`;
@@ -572,10 +617,10 @@
             container.innerHTML = html;
         }
 
-        function buildCardHTML(id, name, target, muscle, setsData, index = "*", reminderActive = false, isChecked = false, equip = "kg") {
+        function buildCardHTML(id, name, target, muscle, setsData, index = "*", reminderActive = false, isChecked = false, equip = "kg", isSkipped = false) {
             const safeMuscle = muscle || M_OTHER;
             let html = `
-            <div class="card workout-card" id="ex-${id}" data-name="${name}" data-target="${target}" data-muscle="${safeMuscle}">
+            <div class="card workout-card ${isSkipped ? 'skipped' : ''}" id="ex-${id}" data-name="${name}" data-target="${target}" data-muscle="${safeMuscle}">
                 <div class="card-header" style="display:flex; justify-content:space-between; align-items:flex-start;">
                     <div style="display:flex; flex-direction:column; gap:6px;">
                         <h3 style="margin:0;">${index}. ${name}</h3>
@@ -584,20 +629,28 @@
                             ${reminderActive ? '<span class="reminder-tag" style="margin:0;">📈 ¡Toca subir!</span>' : ''}
                         </div>
                     </div>
-                    <select class="equip-toggle" onchange="toggleEquip(this, '${id}')">
-                        <option value="kg" ${equip==='kg'?'selected':''}>🏋️ Kg</option>
-                        <option value="band" ${equip==='band'?'selected':''}>〰️ Banda</option>
-                    </select>
+                    <div style="display:flex; flex-direction:column; gap:8px; align-items:flex-end;">
+                        <button class="btn-omit ${isSkipped ? 'active' : ''}" onclick="toggleSkip('${id}')">${isSkipped ? '❌ Omitido' : '🚫 Omitir'}</button>
+                        <select class="equip-toggle" onchange="toggleEquip(this, '${id}')">
+                            <option value="kg" ${equip==='kg'?'selected':''}>🏋️ Kg</option>
+                            <option value="band" ${equip==='band'?'selected':''}>〰️ Banda</option>
+                        </select>
+                    </div>
                 </div>
                 <div class="target-box">🎯 ${target}</div>
                 <div class="sets-header"><div class="col-serie">S#</div><div class="col-input col-kg-header">${equip==='band'?'Banda':'Kg'}</div><div class="col-input">Reps</div><div class="col-input">RIR</div></div>
                 <div class="sets-container">`;
+            
+            let workingIdx = 1;
             setsData.forEach((set, i) => {
                 const rirVal = set.rir !== undefined ? set.rir : "";
                 const wVal = set.weight || "";
+                const isW = set.warmup === true;
+                const sLabel = isW ? 'W' : workingIdx++;
+                
                 html += `
                 <div class="set-row">
-                    <span><span class="set-num">${i + 1}</span></span>
+                    <button type="button" class="btn-warmup ${isW ? 'is-warmup' : ''}" onclick="toggleWarmup(this)">${sLabel}</button>
                     <input type="number" inputmode="decimal" class="weight-input" placeholder="Kg" value="${wVal}" oninput="autoSaveDraft()" style="${equip==='band'?'display:none;':''}">
                     <select class="band-input" onchange="autoSaveDraft()" style="${equip==='kg'?'display:none;':''}">
                         <option value="">--</option>
@@ -621,11 +674,10 @@
 
         function addDynamicSet(exId) {
             const card = document.getElementById('ex-' + exId); const setsContainer = card.querySelector('.sets-container');
-            const currentSets = setsContainer.querySelectorAll('.set-row').length;
             const equip = card.querySelector('.equip-toggle').value;
             const newSetHtml = `
             <div class="set-row" style="animation: fadeIn 0.3s ease;">
-                <span><span class="set-num">${currentSets + 1}</span></span>
+                <button type="button" class="btn-warmup" onclick="toggleWarmup(this)">1</button>
                 <input type="number" inputmode="decimal" class="weight-input" placeholder="Kg" value="" oninput="autoSaveDraft()" style="${equip==='band'?'display:none;':''}">
                 <select class="band-input" onchange="autoSaveDraft()" style="${equip==='kg'?'display:none;':''}">
                     <option value="">--</option>
@@ -636,17 +688,21 @@
                 <input type="number" inputmode="decimal" class="reps-input" placeholder="Reps" value="" oninput="autoSaveDraft()">
                 <input type="number" inputmode="decimal" class="rir-input" placeholder="RIR" value="" oninput="autoSaveDraft()">
             </div>`;
-            setsContainer.insertAdjacentHTML('beforeend', newSetHtml); autoSaveDraft(); showTimer();
+            setsContainer.insertAdjacentHTML('beforeend', newSetHtml); 
+            updateSetNumbers(card);
+            autoSaveDraft(); 
+            showTimer();
         }
 
         function addExtraExercise(dayKey) {
             const name = prompt("Nombre del ejercicio extra:"); if (!name) return;
             const numSets = parseInt(prompt("Número de series:", "3")) || 3;
             const target = prompt("Repeticiones objetivo:", "8-12 reps") || "Según sensaciones";
-            const exId = 'extra_' + Date.now(); let emptySets = Array(numSets).fill({ weight: "", reps: "", rir: "" });
+            const exId = 'extra_' + Date.now(); 
+            let emptySets = Array(numSets).fill(null).map(() => ({ weight: "", reps: "", rir: "", warmup: false }));
             const list = document.getElementById('exercise-list'); const currentIndex = list.querySelectorAll('.workout-card').length + 1;
             const muscleChoice = prompt(`Grupo muscular (${muscleOptions.join(", ")}):`, M_OTHER);
-            list.insertAdjacentHTML('beforeend', buildCardHTML(exId, name, target, muscleChoice, emptySets, currentIndex, false, false, 'kg')); autoSaveDraft();
+            list.insertAdjacentHTML('beforeend', buildCardHTML(exId, name, target, muscleChoice, emptySets, currentIndex, false, false, 'kg', false)); autoSaveDraft();
         }
 
         let draftTimeout; 
@@ -662,15 +718,16 @@
                 cards.forEach(card => {
                     const exId = card.id.replace('ex-', ''); const sets = [];
                     const equip = card.querySelector('.equip-toggle').value;
-                    const wInputs = card.querySelectorAll('.weight-input');
-                    const bInputs = card.querySelectorAll('.band-input');
+                    const isSkipped = card.classList.contains('skipped');
                     
-                    for(let i=0; i<wInputs.length; i++) {
-                        let val = equip === 'band' ? bInputs[i].value : wInputs[i].value;
-                        sets.push({ weight: val, reps: card.querySelectorAll('.reps-input')[i].value, rir: card.querySelectorAll('.rir-input')[i].value });
-                    }
+                    card.querySelectorAll('.set-row').forEach(row => {
+                        let val = equip === 'band' ? row.querySelector('.band-input').value : row.querySelector('.weight-input').value;
+                        let isW = row.querySelector('.btn-warmup').classList.contains('is-warmup');
+                        sets.push({ weight: val, reps: row.querySelector('.reps-input').value, rir: row.querySelector('.rir-input').value, warmup: isW });
+                    });
+                    
                     const overloadChecked = card.querySelector('.overload-input').checked;
-                    draftData.exercises.push({ id: exId, name: card.getAttribute('data-name'), target: card.getAttribute('data-target'), muscle: card.getAttribute('data-muscle'), sets: sets, overloadNext: overloadChecked, equip: equip });
+                    draftData.exercises.push({ id: exId, name: card.getAttribute('data-name'), target: card.getAttribute('data-target'), muscle: card.getAttribute('data-muscle'), sets: sets, overloadNext: overloadChecked, equip: equip, skipped: isSkipped });
                 });
                 localStorage.setItem('draft_' + dayKey, JSON.stringify(draftData));
             }, 500);
@@ -679,9 +736,11 @@
         function getTonnage(exercisesObj, metaObj = null) {
             let ton = 0;
             for(let ex in exercisesObj) { 
+                if (metaObj && metaObj[ex] && metaObj[ex].skipped) continue; 
                 const equip = metaObj && metaObj[ex] && metaObj[ex].equip ? metaObj[ex].equip : 'kg';
-                if (equip === 'band') continue; // No sumamos bandas al tonelaje Kg
+                if (equip === 'band') continue; 
                 exercisesObj[ex].forEach(s => { 
+                    if(s.warmup) return; // Ignorar calentamiento en tonelaje
                     let w = parseFloat(s.weight); let r = parseInt(s.reps); 
                     if(!isNaN(w) && !isNaN(r)) ton += (w * r); 
                 }); 
@@ -692,6 +751,7 @@
         function calculateExerciseBest(sets, equip) {
             let maxW = 0; let totalRepsAtMaxW = 0;
             sets.forEach(s => {
+                if(s.warmup) return; // Ignorar calentamiento para Records
                 let w = equip === 'band' ? (bandValues[s.weight] || 0) : (parseFloat(s.weight) || 0);
                 let r = parseInt(s.reps) || 0;
                 if (w > maxW) { maxW = w; totalRepsAtMaxW = r; }
@@ -703,8 +763,11 @@
         function showPostWorkoutSummary(curr, prev) {
             let html = ""; let upgrades = 0;
             for(const exId in curr.exercises) {
-                const cSets = curr.exercises[exId].filter(s => s.weight !== "" || s.reps !== "");
-                const pSets = (prev.exercises[exId] || []).filter(s => s.weight !== "" || s.reps !== "");
+                if (curr.exerciseMetadata[exId] && curr.exerciseMetadata[exId].skipped) continue;
+
+                // Solo comparar series que no son warmup
+                const cSets = curr.exercises[exId].filter(s => (s.weight !== "" || s.reps !== "") && !s.warmup);
+                const pSets = (prev.exercises[exId] || []).filter(s => (s.weight !== "" || s.reps !== "") && !s.warmup);
                 if(cSets.length === 0 || pSets.length === 0) continue;
 
                 const cEquip = curr.exerciseMetadata[exId] ? curr.exerciseMetadata[exId].equip : 'kg';
@@ -750,7 +813,7 @@
                 if (statusHtml !== "") html += `<div class="result-item"><div class="result-ex-name">${exName}</div>${statusHtml}</div>`;
             }
 
-            if(html === "") html = "<p style='text-align:center; color:var(--text-muted);'>No hay datos comparables con la sesión anterior.</p>";
+            if(html === "") html = "<p style='text-align:center; color:var(--text-muted);'>No hay datos de series efectivas comparables.</p>";
 
             document.getElementById('pwm-title').textContent = upgrades > 0 ? `¡Superaste ${upgrades} récord${upgrades>1?'s':''}! 🚀` : `Sesión Completada 🏆`;
             document.getElementById('pwm-content').innerHTML = html;
@@ -783,16 +846,17 @@
             cards.forEach(card => {
                 const exId = card.id.replace('ex-', ''); let setsData = [];
                 const equip = card.querySelector('.equip-toggle').value;
-                const wInputs = card.querySelectorAll('.weight-input');
-                const bInputs = card.querySelectorAll('.band-input');
-
-                for(let i=0; i<wInputs.length; i++) {
-                    let val = equip === 'band' ? bInputs[i].value : wInputs[i].value;
-                    setsData.push({ weight: val || "", reps: card.querySelectorAll('.reps-input')[i].value || "", rir: card.querySelectorAll('.rir-input')[i].value || "" });
-                }
+                const isSkipped = card.classList.contains('skipped');
+                
+                card.querySelectorAll('.set-row').forEach(row => {
+                    let val = equip === 'band' ? row.querySelector('.band-input').value : row.querySelector('.weight-input').value;
+                    let isW = row.querySelector('.btn-warmup').classList.contains('is-warmup');
+                    setsData.push({ weight: val || "", reps: row.querySelector('.reps-input').value || "", rir: row.querySelector('.rir-input').value || "", warmup: isW });
+                });
+                
                 const overloadChecked = card.querySelector('.overload-input').checked;
                 workoutRecord.exercises[exId] = setsData;
-                workoutRecord.exerciseMetadata[exId] = { name: card.getAttribute('data-name'), muscle: card.getAttribute('data-muscle'), overloadNext: overloadChecked, equip: equip };
+                workoutRecord.exerciseMetadata[exId] = { name: card.getAttribute('data-name'), muscle: card.getAttribute('data-muscle'), overloadNext: overloadChecked, equip: equip, skipped: isSkipped };
             });
             workoutRecord.tonnage = getTonnage(workoutRecord.exercises, workoutRecord.exerciseMetadata);
 
@@ -875,7 +939,10 @@
             const container = document.getElementById('muscles-container'); const muscleTally = {}; const rirSum = {}; const rirCount = {};
             getRecentHistory(30).filter(w => w.type !== 'cardio').forEach(w => {
                 for (const exId in w.exercises) {
-                    const validSets = w.exercises[exId].filter(s => s.weight !== "" || s.reps !== "");
+                    if (w.exerciseMetadata && w.exerciseMetadata[exId] && w.exerciseMetadata[exId].skipped) continue;
+
+                    // Excluir warmup para medias de volumen efectivo y RIR
+                    const validSets = w.exercises[exId].filter(s => (s.weight !== "" || s.reps !== "") && !s.warmup);
                     if (validSets.length > 0 && w.exerciseMetadata && w.exerciseMetadata[exId]) {
                         const m = w.exerciseMetadata[exId].muscle || M_OTHER; muscleTally[m] = (muscleTally[m] || 0) + validSets.length;
                         validSets.forEach(s => { const r = parseFloat(s.rir); if(!isNaN(r)) { rirSum[m] = (rirSum[m] || 0) + r; rirCount[m] = (rirCount[m] || 0) + 1; } });
@@ -886,7 +953,7 @@
             if (labels.length === 0) { container.innerHTML = "<p style='text-align:center; color:var(--text-muted);'>Sin datos.</p>"; document.getElementById('radar-wrapper').style.display='none'; return; }
             document.getElementById('radar-wrapper').style.display='flex'; const dataSets = labels.map(l => muscleTally[l]);
             if (chartInstanceRadar) chartInstanceRadar.destroy();
-            chartInstanceRadar = new Chart(document.getElementById('chartRadar').getContext('2d'), { type: 'radar', data: { labels: labels, datasets: [{ label: 'Series', data: dataSets, backgroundColor: 'rgba(139, 92, 246, 0.4)', borderColor: '#8b5cf6', pointBackgroundColor: '#14b8a6', pointBorderColor: '#fff', pointHoverBackgroundColor: '#fff', pointHoverBorderColor: '#14b8a6' }] }, options: { responsive: true, maintainAspectRatio: false, scales: { r: { angleLines: { color: 'rgba(255, 255, 255, 0.1)' }, grid: { color: 'rgba(255, 255, 255, 0.1)' }, pointLabels: { color: '#a1a1aa', font: {size: 10} }, ticks: { display: false } } }, plugins: { legend: { display: false } } } });
+            chartInstanceRadar = new Chart(document.getElementById('chartRadar').getContext('2d'), { type: 'radar', data: { labels: labels, datasets: [{ label: 'Series Efectivas', data: dataSets, backgroundColor: 'rgba(139, 92, 246, 0.4)', borderColor: '#8b5cf6', pointBackgroundColor: '#14b8a6', pointBorderColor: '#fff', pointHoverBackgroundColor: '#fff', pointHoverBorderColor: '#14b8a6' }] }, options: { responsive: true, maintainAspectRatio: false, scales: { r: { angleLines: { color: 'rgba(255, 255, 255, 0.1)' }, grid: { color: 'rgba(255, 255, 255, 0.1)' }, pointLabels: { color: '#a1a1aa', font: {size: 10} }, ticks: { display: false } } }, plugins: { legend: { display: false } } } });
             let html = ""; const maxSets = Math.max(...dataSets);
             labels.sort((a,b) => muscleTally[b] - muscleTally[a]).forEach(m => { let avgRirText = rirCount[m] ? `(RIR Prom: ${(rirSum[m]/rirCount[m]).toFixed(1)})` : ''; html += `<div class="day-bar-container"><div class="day-bar-label" style="text-align:left;">${m}</div><div class="day-bar-track"><div class="day-bar-fill" style="width: ${(muscleTally[m] / maxSets) * 100}%;"></div></div><div class="day-bar-count" style="width:100px; text-align:right;">${muscleTally[m]}s <span style="color:var(--danger-color); font-size:0.7rem;">${avgRirText}</span></div></div>`; }); container.innerHTML = html;
         }
@@ -903,11 +970,15 @@
             history.filter(w => w.type === 'strength').forEach(w => { 
                 for (const exId in w.exercises) { 
                     const meta = w.exerciseMetadata && w.exerciseMetadata[exId] ? w.exerciseMetadata[exId] : {};
+                    if (meta.skipped) continue;
+
                     const exName = meta.name || 'Ejercicio'; 
                     const equip = meta.equip || 'kg';
                     if(!prs[exId]) prs[exId] = { name: exName, kg: { weight: 0, reps: 0, date: '' }, band: { score: 0, name: '', reps: 0, date: '' } };
 
                     w.exercises[exId].forEach(set => { 
+                        if(set.warmup) return; // Ignorar warmup en Récords
+
                         const reps = parseInt(set.reps) || 0;
                         if (equip === 'band') {
                             const bScore = bandValues[set.weight] || 0;
@@ -1031,8 +1102,11 @@
 
             JSON.parse(localStorage.getItem('workout_history') || '[]').sort((a,b) => new Date(a.date) - new Date(b.date)).forEach(w => { 
                 if (w.type !== 'cardio' && w.exercises[exId] && w.exercises[exId].some(set => set.weight !== "" || set.reps !== "")) { 
+                    const meta = w.exerciseMetadata && w.exerciseMetadata[exId] ? w.exerciseMetadata[exId] : {};
+                    if (meta.skipped) return; 
+
                     const d = new Date(w.date); 
-                    const equip = w.exerciseMetadata && w.exerciseMetadata[exId] ? w.exerciseMetadata[exId].equip || 'kg' : 'kg';
+                    const equip = meta.equip || 'kg';
                     if (equip === 'band') usesBands = true;
                     exStats.push({ dateStr: d.toLocaleDateString('es-ES', {day:'2-digit', month:'2-digit'}), dateFull: d.toLocaleDateString() + ' ' + (w.startTime||''), sets: w.exercises[exId], equip: equip }); 
                 } 
@@ -1043,12 +1117,14 @@
             exStats.forEach(stat => { 
                 let maxVal = 0; 
                 stat.sets.forEach(set => { 
+                    if(set.warmup) return; // Ignorar warmup en la gráfica
+
                     let r = parseInt(set.reps) || 0; 
                     if(stat.equip === 'band') {
                         const bandScores = { "Baja": 10, "Media": 20, "Alta": 30 };
                         let bVal = bandScores[set.weight];
                         if (bVal && r > 0) {
-                            let score = bVal + r; // Índice (Banda)
+                            let score = bVal + r;
                             if (score > maxVal) maxVal = score;
                         }
                     } else {
@@ -1070,10 +1146,12 @@
             list.innerHTML = "";
             [...exStats].reverse().forEach(stat => { 
                 let setsHtml = ''; 
+                let workingIdx = 1;
                 stat.sets.forEach((set, idx) => { 
                     if (set.weight !== "" || set.reps !== "") {
                         let wDisplay = stat.equip === 'band' ? (set.weight || '-') : (set.weight||'-') + 'kg';
-                        setsHtml += `<div class="stat-set-badge">S${idx + 1}: ${wDisplay} × ${set.reps||'-'}${set.rir ? ` <span style="color:var(--danger-color);font-size:0.75rem;">(RIR ${set.rir})</span>` : ''}</div>`; 
+                        let sLabel = set.warmup ? 'W' : `S${workingIdx++}`;
+                        setsHtml += `<div class="stat-set-badge" style="${set.warmup ? 'opacity:0.6;' : ''}">${sLabel}: ${wDisplay} × ${set.reps||'-'}${set.rir ? ` <span style="color:var(--danger-color);font-size:0.75rem;">(RIR ${set.rir})</span>` : ''}</div>`; 
                     }
                 }); 
                 list.innerHTML += `<div class="stat-row"><div class="stat-header"><span>${stat.dateFull}</span> <span style="color:var(--text-muted); font-size:0.7rem; font-weight:normal;">${stat.equip==='band'?'BANDA':'KILOS'}</span></div><div class="stat-sets">${setsHtml}</div></div>`; 
@@ -1115,18 +1193,27 @@
                 } else {
                     let html = `<div class="summary-card" id="card-${s.id}">${shareToggleHTML}<h4>💪 ${s.dayId && routines[s.dayId] ? routines[s.dayId].title : "Fuerza"} <span style="float:right; font-size:0.8rem; color:var(--text-muted); font-weight:normal;">${timeStr}${durationStr}</span></h4>`;
                     for (const exId in s.exercises) { 
+                        const exName = s.exerciseMetadata && s.exerciseMetadata[exId] ? s.exerciseMetadata[exId].name : "Ejercicio";
+                        
+                        if (s.exerciseMetadata && s.exerciseMetadata[exId] && s.exerciseMetadata[exId].skipped) {
+                            html += `<div style="margin-top:12px; font-weight:600; font-size:0.9rem; color:var(--text-muted); text-decoration: line-through;">${exName}</div><div style="font-size:0.8rem; color:var(--danger-color);">❌ Ejercicio omitido</div>`;
+                            continue;
+                        }
+
                         const sets = s.exercises[exId].filter(set => set.weight !== "" || set.reps !== ""); 
                         const equip = s.exerciseMetadata && s.exerciseMetadata[exId] ? s.exerciseMetadata[exId].equip : 'kg';
                         if(sets.length > 0) { 
-                            html += `<div style="margin-top:12px; font-weight:600; font-size:0.9rem; color:var(--text-color);">${s.exerciseMetadata && s.exerciseMetadata[exId] ? s.exerciseMetadata[exId].name : "Ejercicio"}</div><div class="stat-sets" style="margin-top:5px;">`; 
+                            html += `<div style="margin-top:12px; font-weight:600; font-size:0.9rem; color:var(--text-color);">${exName}</div><div class="stat-sets" style="margin-top:5px;">`; 
+                            let workingIdx = 1;
                             sets.forEach((set, idx) => { 
                                 let wDisplay = equip === 'band' ? (set.weight||'-') : (set.weight||'-') + 'kg';
-                                html += `<span class="stat-set-badge">S${idx+1}: ${wDisplay} × ${set.reps||'-'}${set.rir ? `<span style="color:var(--danger-color);font-size:0.75rem;"> RIR ${set.rir}</span>` : ''}</span>`; 
+                                let sLabel = set.warmup ? 'W' : `S${workingIdx++}`;
+                                html += `<span class="stat-set-badge" style="${set.warmup ? 'opacity:0.6;' : ''}">${sLabel}: ${wDisplay} × ${set.reps||'-'}${set.rir ? `<span style="color:var(--danger-color);font-size:0.75rem;"> RIR ${set.rir}</span>` : ''}</span>`; 
                             }); 
                             html += `</div>`; 
                         } 
                     }
-                    if(s.tonnage) html += `<div class="summary-tonnage">Tonelaje Kg: ${s.tonnage.toLocaleString()}</div>`;
+                    if(s.tonnage) html += `<div class="summary-tonnage">Tonelaje Efectivo Kg: ${s.tonnage.toLocaleString()}</div>`;
                     html += `<button class="btn-edit" onclick="editPastWorkout('${s.id}')" data-html2canvas-ignore="true">✏️ Editar Sesión</button></div>`; container.innerHTML += html;
                 }
             });
