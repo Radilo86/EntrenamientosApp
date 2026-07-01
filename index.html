@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Tracker Premium V16</title>
+    <title>Tracker Premium V17</title>
     
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -160,11 +160,11 @@
         #toast { visibility: hidden; min-width: 250px; background: rgba(20, 184, 166, 0.9); backdrop-filter: blur(8px); color: #fff; text-align: center; border-radius: 100px; padding: 14px 20px; position: fixed; z-index: 1000; left: 50%; bottom: calc(100px + var(--safe-bottom)); transform: translateX(-50%) translateY(20px); font-size: 0.95rem; font-weight: bold; opacity: 0; transition: all 0.3s ease;}
         #toast.show { visibility: visible; opacity: 1; transform: translateX(-50%) translateY(0); }
         
-        #rest-timer { position: fixed; bottom: calc(80px + var(--safe-bottom)); right: 15px; background: rgba(39, 39, 42, 0.95); backdrop-filter: blur(10px); border: 1px solid var(--primary-color); border-radius: 50px; padding: 8px 15px; display: flex; align-items: center; gap: 10px; z-index: 150; box-shadow: 0 5px 20px rgba(0,0,0,0.5); transform: translateX(150%); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        #rest-timer { position: fixed; bottom: calc(80px + var(--safe-bottom)); right: 15px; background: rgba(39, 39, 42, 0.95); backdrop-filter: blur(10px); border: 1px solid var(--primary-color); border-radius: 50px; padding: 8px 15px; display: flex; align-items: center; gap: 8px; z-index: 150; box-shadow: 0 5px 20px rgba(0,0,0,0.5); transform: translateX(150%); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         #rest-timer.active { transform: translateX(0); }
-        #timer-display { font-size: 1.2rem; font-weight: bold; color: var(--text-color); font-variant-numeric: tabular-nums;}
-        .timer-btn { background: var(--surface-color); border: none; color: var(--text-color); width: 35px; height: 35px; border-radius: 50%; font-size: 0.9rem; cursor: pointer; display:flex; justify-content:center; align-items:center;}
-        .timer-btn.close { color: var(--danger-color); background: rgba(239, 68, 68, 0.1); }
+        #timer-display { font-size: 1.2rem; font-weight: bold; color: var(--text-color); font-variant-numeric: tabular-nums; width: 55px; text-align:center;}
+        .timer-btn { background: var(--surface-color); border: 1px solid rgba(255,255,255,0.1); color: var(--text-color); min-width: 35px; height: 35px; border-radius: 18px; font-size: 0.85rem; font-weight:600; cursor: pointer; display:flex; justify-content:center; align-items:center; padding: 0 10px;}
+        .timer-btn.close { color: var(--danger-color); background: rgba(239, 68, 68, 0.1); border: none; padding: 0; width: 35px; min-width: 35px; border-radius: 50%;}
         @keyframes timerDonePulse { 0% { background-color: var(--bg-color); } 50% { background-color: rgba(239, 68, 68, 0.4); } 100% { background-color: var(--bg-color); } }
         body.timer-flash { animation: timerDonePulse 0.5s ease 3; }
         #fab-timer { position: fixed; bottom: calc(80px + var(--safe-bottom)); left: 15px; background: var(--primary-color); color: #fff; width: 50px; height: 50px; border-radius: 25px; border: none; font-size: 1.5rem; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4); z-index: 140; cursor: pointer;}
@@ -293,7 +293,7 @@
 
             <div id="stat-view-records" class="stat-view card">
                 <h3 style="margin-bottom: 15px;">Muro de Récords (PRs)</h3>
-                <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 20px;">Tu peso máximo o banda más dura utilizada.</p>
+                <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 20px;">Tu peso máximo, banda más dura o tiempo isométrico.</p>
                 <div id="records-container"></div>
             </div>
 
@@ -326,6 +326,7 @@
 
     <div id="rest-timer">
         <span id="timer-display">01:30</span>
+        <button class="timer-btn" onclick="addTimerTime(15)">+15</button>
         <button class="timer-btn" onclick="addTimerTime(30)">+30</button>
         <button class="timer-btn close" onclick="hideTimer()">✕</button>
     </div>
@@ -390,6 +391,13 @@
                 { id: "d4_abd", name: "Abducción cadera (Banda)", sets: 3, target: "15 reps / pierna", muscle: M_GLUTES, exType: "reps" },
                 { id: "d4_pal", name: "Press Pallof", sets: 3, target: "12 reps / lado", muscle: M_CORE, exType: "reps" },
                 { id: "d4_bird", name: "Bird-Dog", sets: 3, target: "10 reps / lado", muscle: M_CORE, exType: "reps" }
+            ]},
+            dia5: { title: "DÍA 5: Cardio en Casa (Circuito)", rule: "Circuito Metabólico. 45s trabajo / 15s descanso. 4-6 vueltas.", exercises: [
+                { id: "d5_jj", name: "Jumping Jacks", sets: 4, target: "45 seg", muscle: M_OTHER, exType: "iso" },
+                { id: "d5_esc", name: "Escaladores", sets: 4, target: "45 seg", muscle: M_CORE, exType: "iso" },
+                { id: "d5_box", name: "Shadow Boxing", sets: 4, target: "45 seg", muscle: M_SHOULDER, exType: "iso" },
+                { id: "d5_skate", name: "Skater Jumps", sets: 4, target: "45 seg", muscle: M_QUADS, exType: "iso" },
+                { id: "d5_squat", name: "Sentadillas Rápidas", sets: 4, target: "45 seg", muscle: M_QUADS, exType: "iso" }
             ]}
         };
 
@@ -483,14 +491,12 @@
             return false;
         }
 
-        // --- SISTEMA DE VÍDEOS ---
         function confirmVideo(url) {
             if (confirm("¿Quieres abrir el vídeo explicativo de este ejercicio?")) {
                 window.open(url, '_blank');
             }
         }
 
-        // --- SISTEMA WARMUP Y TIPOS DE EJERCICIO ---
         function toggleWarmup(btn) {
             btn.classList.toggle('is-warmup');
             const card = btn.closest('.workout-card');
@@ -1137,7 +1143,6 @@
                 if (s.isDeload) {
                     badgeHtml = `<div class="result-badge" style="background:rgba(249,115,22,0.15); color:var(--cardio-color);">💤 Descarga</div>`;
                 } else if (idx > 0) {
-                    // Buscar la anterior que NO sea descarga para la comparativa
                     let prevS = null;
                     for (let i = idx - 1; i >= 0; i--) { if (!sessions[i].isDeload) { prevS = sessions[i]; break; } }
                     
@@ -1206,7 +1211,7 @@
             
             let chartLabels = [], chartDataScore = [];
             exStats.forEach(stat => { 
-                if (stat.isDeload) return; // NO incluir descargas en la estimación de 1RM/Mejora
+                if (stat.isDeload) return; 
 
                 let maxVal = 0; 
                 stat.sets.forEach(set => { 
