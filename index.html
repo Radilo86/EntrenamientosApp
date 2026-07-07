@@ -5,180 +5,255 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Tracker Premium V18</title>
+    <title>Tracker Premium V19</title>
     
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
     <style>
+        /* PALETA PREMIUM NATIVA */
         :root {
-            --bg-color: #09090b; --surface-color: #18181b; --surface-elevated: #27272a;
-            --primary-color: #8b5cf6; --primary-gradient: linear-gradient(135deg, #8b5cf6, #6d28d9);
-            --secondary-color: #14b8a6; --cardio-color: #f97316; --cardio-gradient: linear-gradient(135deg, #f97316, #ea580c);
-            --danger-color: #ef4444; --text-color: #f4f4f5; --text-muted: #a1a1aa;
+            --bg-color: #000000; 
+            --surface-color: #151517; 
+            --surface-elevated: #222225;
+            --primary-color: #bf5af2; 
+            --primary-gradient: linear-gradient(135deg, #bf5af2, #9430c7);
+            --secondary-color: #64d2ff; 
+            --cardio-color: #ff9f0a; 
+            --cardio-gradient: linear-gradient(135deg, #ff9f0a, #d17d00);
+            --danger-color: #ff453a; 
+            --success-color: #32d74b;
+            --text-color: #ffffff; 
+            --text-muted: #8e8e93;
             --border-color: rgba(255, 255, 255, 0.08);
-            --radius-lg: 16px; --radius-md: 12px;
-            --safe-bottom: env(safe-area-inset-bottom, 20px); --safe-top: env(safe-area-inset-top, 40px);
+            --radius-lg: 20px; 
+            --radius-md: 14px;
+            --safe-bottom: env(safe-area-inset-bottom, 20px); 
+            --safe-top: env(safe-area-inset-top, 45px);
         }
 
-        body.amoled-theme {
-            --bg-color: #000000; --surface-color: #000000; --surface-elevated: #0a0a0a; --border-color: rgba(255, 255, 255, 0.15);
+        body.amoled-theme { /* Ahora el modo normal ya es amoled, este toggle lo mantenemos por compatibilidad */
+            --bg-color: #000000;
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif; background-color: var(--bg-color); color: var(--text-color); margin: 0; padding: 0; line-height: 1.5; overflow-x: hidden; transition: background-color 0.3s;}
+        
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+            background-color: var(--bg-color); 
+            color: var(--text-color); 
+            margin: 0; padding: 0; 
+            line-height: 1.4; 
+            overflow-x: hidden; 
+            -webkit-font-smoothing: antialiased;
+        }
 
-        header { padding: calc(15px + var(--safe-top)) 20px 15px; text-align: center; background: rgba(var(--bg-color), 0.8); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border-color); position: sticky; top: 0; z-index: 100;}
-        h1 { margin: 0; font-size: 1.25rem; font-weight: 700; background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        /* HEADER GLASSMORPHISM */
+        header { 
+            padding: calc(10px + var(--safe-top)) 20px 15px; 
+            text-align: center; 
+            background: rgba(0, 0, 0, 0.65); 
+            backdrop-filter: blur(20px); 
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 0.5px solid var(--border-color); 
+            position: sticky; top: 0; z-index: 100;
+        }
+        h1 { margin: 0; font-size: 1.35rem; font-weight: 800; letter-spacing: -0.5px; color: var(--text-color); }
 
-        .container { padding: 20px 15px calc(90px + var(--safe-bottom)) 15px; }
-        .section { display: none; animation: fadeIn 0.3s ease; }
+        .container { padding: 20px 15px calc(100px + var(--safe-bottom)) 15px; }
+        .section { display: none; animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
         .section.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        select, input, textarea { width: 100%; padding: 14px; margin-bottom: 12px; background-color: var(--surface-color); color: var(--text-color); border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 1rem; font-family: inherit; transition: border-color 0.2s; outline: none;}
-        select:focus, input:focus, textarea:focus { border-color: var(--primary-color); }
-        textarea { resize: vertical; min-height: 80px; }
+        /* INPUTS MODERNOS SIN BORDES DUROS */
+        select, input, textarea { 
+            width: 100%; padding: 16px; margin-bottom: 15px; 
+            background-color: var(--surface-elevated); 
+            color: var(--text-color); 
+            border: none; 
+            border-radius: var(--radius-md); 
+            font-size: 1.05rem; font-family: inherit; 
+            outline: none; transition: background-color 0.2s;
+        }
+        select:focus, input:focus, textarea:focus { background-color: #2c2c30; }
+        textarea { resize: vertical; min-height: 100px; }
 
-        .card { background-color: var(--surface-color); border-radius: var(--radius-lg); padding: 18px; margin-bottom: 18px; border: 1px solid var(--border-color); box-shadow: 0 4px 20px rgba(0,0,0,0.2); transition: all 0.3s ease; }
-        .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;}
-        .card h3 { margin: 0; font-size: 1.1rem; font-weight: 600; color: var(--text-color); }
-        .target-box { display: inline-block; background: rgba(255,255,255,0.05); padding: 4px 8px; border-radius: 6px; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 15px;}
-        .muscle-tag { background-color: rgba(20, 184, 166, 0.15); color: var(--secondary-color); padding: 4px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: 600; }
-
-        .sets-header { display: flex; gap: 6px; font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; margin-bottom: 8px; padding: 0 5px;}
-        .col-serie { width: 32px; text-align:center;} .col-input { flex: 1; text-align: center; }
+        /* CARDS ESTILO WIDGET */
+        .card { 
+            background-color: var(--surface-color); 
+            border-radius: var(--radius-lg); 
+            padding: 20px; margin-bottom: 20px; 
+            border: 0.5px solid var(--border-color); 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3); 
+            transition: all 0.3s ease; 
+        }
+        .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;}
+        .card h3 { margin: 0; font-size: 1.2rem; font-weight: 700; letter-spacing: -0.3px; color: var(--text-color); line-height: 1.2;}
         
-        .set-row { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; background: rgba(0,0,0,0.2); padding: 8px; border-radius: 8px;}
-        .set-row input { margin-bottom: 0; text-align: center; padding: 10px 5px; border: none; background: var(--surface-elevated); font-size: 1.05rem; width: 33%;}
-        
-        .btn-warmup { background: var(--surface-elevated); border: 1px solid var(--border-color); color: var(--text-muted); border-radius: 6px; width: 32px; height: 32px; display:flex; justify-content:center; align-items:center; font-weight: bold; font-size: 0.9rem; cursor: pointer; transition: 0.2s; padding:0; flex-shrink: 0;}
-        .btn-warmup.is-warmup { background: rgba(249, 115, 22, 0.15); color: var(--cardio-color); border-color: var(--cardio-color); }
+        .target-box { display: inline-block; background: transparent; border: 1px solid var(--border-color); padding: 5px 10px; border-radius: 8px; font-size: 0.8rem; font-weight: 500; color: var(--text-muted); margin-bottom: 18px;}
+        .muscle-tag { background-color: rgba(100, 210, 255, 0.15); color: var(--secondary-color); padding: 4px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;}
 
-        .equip-toggle, .mode-toggle { background-color: rgba(255,255,255,0.05); color: var(--text-color); border: 1px solid var(--border-color); border-radius: 8px; padding: 6px; font-size: 0.8rem; outline: none; cursor: pointer; font-weight: 600; width: auto; margin-bottom: 0;}
-        select.band-input { margin-bottom: 0; text-align: center; padding: 10px 5px; border: none; background: var(--surface-elevated); font-size: 0.9rem; font-weight: 600; width: 33%; color: var(--secondary-color); appearance: none; border-radius: 6px;}
+        /* TABLA DE SERIES LIMPIA */
+        .sets-header { display: flex; gap: 8px; font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px; margin-bottom: 10px; padding: 0 5px;}
+        .col-serie { width: 36px; text-align:center;} .col-input { flex: 1; text-align: center; }
+        
+        .set-row { display: flex; align-items: center; gap: 8px; margin-bottom: 10px;}
+        .set-row input, select.band-input { margin-bottom: 0; text-align: center; padding: 12px 5px; border: none; background: var(--surface-elevated); font-size: 1.1rem; font-weight: 600; width: 33%; border-radius: 10px;}
+        select.band-input { color: var(--secondary-color); appearance: none; }
+        
+        /* BOTONES DE ESTADO (WARMUP, ETC) */
+        .btn-warmup { background: var(--surface-elevated); border: none; color: var(--text-muted); border-radius: 10px; width: 36px; height: 44px; display:flex; justify-content:center; align-items:center; font-weight: 700; font-size: 0.95rem; cursor: pointer; transition: 0.2s; padding:0; flex-shrink: 0;}
+        .btn-warmup.is-warmup { background: rgba(255, 159, 10, 0.2); color: var(--cardio-color); }
 
-        .btn-omit { background: transparent; border: 1px solid var(--border-color); color: var(--text-muted); border-radius: 8px; padding: 6px 10px; cursor: pointer; transition: 0.2s; font-size: 0.8rem; font-weight: 600;}
-        .btn-omit.active { background: rgba(239, 68, 68, 0.15); color: var(--danger-color); border-color: rgba(239, 68, 68, 0.3); }
+        .equip-toggle, .mode-toggle { background-color: var(--surface-elevated); color: var(--text-color); border: none; border-radius: 8px; padding: 8px 12px; font-size: 0.8rem; outline: none; cursor: pointer; font-weight: 600; width: auto; margin-bottom: 0;}
         
-        .btn-pr { background: rgba(234, 179, 8, 0.15); border: 1px solid rgba(234, 179, 8, 0.3); color: #eab308; border-radius: 8px; padding: 6px 10px; cursor: pointer; transition: 0.2s; font-size: 0.8rem; font-weight: 600; margin-right: 5px;}
+        .btn-omit { background: transparent; border: 1px solid var(--border-color); color: var(--text-muted); border-radius: 8px; padding: 8px 12px; cursor: pointer; transition: 0.2s; font-size: 0.8rem; font-weight: 600;}
+        .btn-omit.active { background: rgba(255, 69, 58, 0.15); color: var(--danger-color); border-color: rgba(255, 69, 58, 0.3); }
         
-        .workout-card.skipped { opacity: 0.45; border-style: dashed; filter: grayscale(80%); }
+        .btn-pr { background: rgba(255, 214, 10, 0.15); border: none; color: #ffd60a; border-radius: 8px; padding: 8px 12px; cursor: pointer; transition: 0.2s; font-size: 0.8rem; font-weight: 700; margin-right: 5px;}
+        
+        .workout-card.skipped { opacity: 0.4; filter: grayscale(100%); }
         .workout-card.skipped .sets-container, .workout-card.skipped .btn-add-set, .workout-card.skipped .overload-check, .workout-card.skipped .sets-header, .workout-card.skipped .target-box { display: none; }
 
-        .btn-add-set { background-color: transparent; border: 1px dashed var(--border-color); color: var(--text-muted); font-size: 0.85rem; padding: 10px; border-radius: 8px; width: 100%; margin-top: 5px; cursor: pointer; transition: 0.2s;}
-        .btn-secondary { background-color: rgba(139, 92, 246, 0.1); border: 1px dashed var(--primary-color); color: var(--primary-color); width: 100%; padding: 14px; border-radius: var(--radius-md); font-weight: 600; margin-bottom: 15px; cursor: pointer;}
-        .btn-edit { background-color: rgba(20, 184, 166, 0.1); border: 1px solid var(--secondary-color); color: var(--secondary-color); width: 100%; padding: 12px; border-radius: var(--radius-md); font-weight: 600; margin-top: 15px; cursor: pointer;}
-        .btn-save { background: var(--primary-gradient); color: #fff; width: 100%; padding: 16px; font-size: 1.1rem; font-weight: bold; border: none; margin-top: 10px; margin-bottom: 10px; border-radius: var(--radius-md); box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3); cursor: pointer;}
-        .btn-save-cardio { background: var(--cardio-gradient); box-shadow: 0 4px 15px rgba(249, 115, 22, 0.3); }
-        .btn-share { background-color: transparent; border: 1px solid var(--primary-color); color: var(--primary-color); padding: 12px; width: 100%; border-radius: var(--radius-md); font-weight: bold; margin-top: 10px; cursor: pointer;}
-        .btn-delete { background-color: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); color: var(--danger-color); font-size: 1.2rem; cursor: pointer; padding: 0 16px; border-radius: var(--radius-md);}
+        /* BOTONES PRINCIPALES */
+        .btn-add-set { background-color: transparent; border: 1px dashed var(--border-color); color: var(--text-muted); font-size: 0.9rem; font-weight: 600; padding: 12px; border-radius: var(--radius-md); width: 100%; margin-top: 5px; cursor: pointer; transition: 0.2s;}
+        .btn-secondary { background-color: rgba(191, 90, 242, 0.15); border: none; color: var(--primary-color); width: 100%; padding: 16px; border-radius: var(--radius-md); font-weight: 700; margin-bottom: 20px; cursor: pointer; font-size: 1rem;}
+        .btn-edit { background-color: rgba(100, 210, 255, 0.15); border: none; color: var(--secondary-color); width: 100%; padding: 14px; border-radius: var(--radius-md); font-weight: 700; margin-top: 15px; cursor: pointer; font-size: 0.95rem;}
+        .btn-save { background: var(--primary-gradient); color: #fff; width: 100%; padding: 18px; font-size: 1.15rem; font-weight: 800; letter-spacing: 0.5px; border: none; margin-top: 10px; margin-bottom: 10px; border-radius: var(--radius-md); box-shadow: 0 8px 25px rgba(191, 90, 242, 0.3); cursor: pointer; transition: transform 0.1s;}
+        .btn-save:active { transform: scale(0.98); }
+        .btn-save-cardio { background: var(--cardio-gradient); box-shadow: 0 8px 25px rgba(255, 159, 10, 0.3); }
+        .btn-share { background-color: var(--surface-elevated); border: none; color: var(--primary-color); padding: 16px; width: 100%; border-radius: var(--radius-md); font-weight: 700; font-size: 1rem; margin-top: 10px; cursor: pointer;}
+        .btn-delete { background-color: rgba(255, 69, 58, 0.15); border: none; color: var(--danger-color); font-size: 1.5rem; cursor: pointer; padding: 0 16px; border-radius: var(--radius-md);}
 
-        .rule-box { background-color: rgba(139, 92, 246, 0.1); border-left: 4px solid var(--primary-color); padding: 12px 16px; margin-bottom: 20px; border-radius: 0 var(--radius-md) var(--radius-md) 0; font-size: 0.9rem; }
-        .meta-box { background: var(--surface-elevated); padding: 12px; border-radius: var(--radius-md); margin-bottom: 15px; border: 1px solid var(--border-color); display: flex; flex-wrap: wrap; gap: 8px;}
-        .meta-box div { flex: 1; min-width: 20%;}
-        .meta-box label { font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 4px; text-transform: uppercase; font-weight: 600;}
-        .meta-box input { padding: 10px; font-size: 0.9rem; margin-bottom: 0; background: var(--surface-color);}
+        /* META E INFO */
+        .rule-box { background-color: transparent; border: 1px solid var(--border-color); padding: 15px; margin-bottom: 25px; border-radius: var(--radius-md); font-size: 0.9rem; color: var(--text-muted); display:flex; align-items:center; gap: 10px;}
+        .rule-box::before { content: "ℹ️"; font-size: 1.2rem; }
+        
+        .meta-box { background: transparent; padding: 0; margin-bottom: 25px; display: flex; flex-wrap: wrap; gap: 10px;}
+        .meta-box div { flex: 1; min-width: 20%; background: var(--surface-color); padding: 12px; border-radius: var(--radius-md); border: 0.5px solid var(--border-color);}
+        .meta-box label { font-size: 0.7rem; color: var(--text-muted); display: block; margin-bottom: 6px; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px;}
+        .meta-box input { padding: 0; font-size: 1.1rem; margin-bottom: 0; background: transparent; font-weight: 600;}
 
-        .builder-row { display: flex; flex-direction:column; gap: 10px; margin-bottom: 12px; align-items: stretch; background: var(--surface-elevated); padding: 12px; border-radius: var(--radius-md); border: 1px solid var(--border-color);}
-        .builder-row input, .builder-row select { margin-bottom: 0; background: var(--surface-color); border-color: transparent;}
-        .builder-flex { display: flex; gap: 8px; }
+        .builder-row { display: flex; flex-direction:column; gap: 12px; margin-bottom: 15px; background: var(--surface-color); padding: 16px; border-radius: var(--radius-lg); border: 0.5px solid var(--border-color);}
+        .builder-row input, .builder-row select { margin-bottom: 0; background: var(--surface-elevated); border: none;}
+        .builder-flex { display: flex; gap: 10px; }
 
-        .stats-nav { display: flex; flex-wrap: wrap; background: var(--surface-color); padding: 4px; border-radius: 12px; margin-bottom: 20px; border: 1px solid var(--border-color); gap: 4px;}
-        .stats-nav button { flex: 1 1 30%; background: transparent; border: none; color: var(--text-muted); font-size: 0.75rem; font-weight: 600; padding: 10px 4px; border-radius: 8px; transition: 0.3s; }
-        .stats-nav button.active { background: var(--surface-elevated); color: var(--text-color); box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+        /* NAVEGACIÓN DE STATS */
+        .stats-nav { display: flex; flex-wrap: wrap; background: var(--surface-color); padding: 6px; border-radius: var(--radius-md); margin-bottom: 25px; border: 0.5px solid var(--border-color); gap: 4px;}
+        .stats-nav button { flex: 1 1 30%; background: transparent; border: none; color: var(--text-muted); font-size: 0.8rem; font-weight: 700; padding: 12px 4px; border-radius: 10px; transition: 0.3s; }
+        .stats-nav button.active { background: var(--surface-elevated); color: var(--text-color); box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
         .stat-view { display: none; }
-        .stat-view.active { display: block; animation: fadeIn 0.3s ease; }
+        .stat-view.active { display: block; animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
         
-        .stat-row { padding: 15px 0; border-bottom: 1px solid var(--border-color); }
+        .stat-row { padding: 18px 0; border-bottom: 0.5px solid var(--border-color); }
         .stat-row:last-child { border-bottom: none; }
-        .stat-header { display: flex; justify-content: space-between; margin-bottom: 8px; font-weight: bold; color: var(--primary-color); font-size: 0.9rem;}
+        .stat-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px; font-weight: 700; color: var(--primary-color); font-size: 1rem;}
         .stat-sets { display: flex; flex-wrap: wrap; gap: 8px; }
-        .stat-set-badge { background-color: var(--surface-elevated); border: 1px solid var(--border-color); padding: 6px 10px; border-radius: 8px; font-size: 0.85rem; color: var(--text-color); }
+        .stat-set-badge { background-color: var(--surface-elevated); padding: 8px 12px; border-radius: 10px; font-size: 0.9rem; font-weight: 500; color: var(--text-color); }
         
-        .chart-container { position: relative; height: 250px; width: 100%; margin-bottom: 20px; }
-        .chart-radar-container { position: relative; height: 300px; width: 100%; margin-bottom: 20px; display: flex; justify-content: center;}
+        .chart-container { position: relative; height: 260px; width: 100%; margin-bottom: 25px; }
+        .chart-radar-container { position: relative; height: 320px; width: 100%; margin-bottom: 25px; display: flex; justify-content: center;}
         
-        .habit-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px;}
-        .habit-block { text-align: center; padding: 15px; background: var(--surface-elevated); border-radius: var(--radius-md); border: 1px solid var(--border-color); }
-        .habit-block h4 { margin: 0 0 5px 0; color: var(--text-muted); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px;}
-        .habit-block .number { font-size: 1.6rem; font-weight: 800; background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin: 0; line-height: 1.2;}
+        /* BLOQUES DE INFOGRAFÍA (HÁBITOS) */
+        .habit-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px;}
+        .habit-block { text-align: left; padding: 20px; background: var(--surface-elevated); border-radius: var(--radius-lg); border: none; display: flex; flex-direction: column; justify-content: center;}
+        .habit-block h4 { margin: 0 0 8px 0; color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 700;}
+        .habit-block .number { font-size: 1.8rem; font-weight: 800; letter-spacing: -1px; background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin: 0; line-height: 1.1;}
         .habit-block.cardio .number { background: var(--cardio-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         
-        .day-bar-container { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; font-size: 0.85rem; font-weight: 500;}
-        .day-bar-label { width: 90px; text-align: right; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
-        .day-bar-track { flex-grow: 1; background: var(--surface-elevated); height: 8px; border-radius: 4px; overflow: hidden; }
-        .day-bar-fill { height: 100%; background: var(--primary-gradient); width: 0%; transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1); }
-        .day-bar-count { width: 50px; font-weight: bold; text-align: right; font-size:0.75rem;}
+        .day-bar-container { display: flex; align-items: center; gap: 15px; margin-bottom: 16px; font-size: 0.9rem; font-weight: 600;}
+        .day-bar-label { width: 95px; text-align: left; color: var(--text-color); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
+        .day-bar-track { flex-grow: 1; background: var(--surface-elevated); height: 10px; border-radius: 5px; overflow: hidden; }
+        .day-bar-fill { height: 100%; background: var(--primary-gradient); width: 0%; transition: width 1s cubic-bezier(0.16, 1, 0.3, 1); }
+        .day-bar-count { width: 55px; font-weight: 700; text-align: right; font-size:0.85rem;}
 
-        .pr-card { background: var(--surface-elevated); padding: 12px 16px; border-radius: var(--radius-md); border: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;}
-        .pr-name { font-weight: 600; font-size: 0.9rem; color: var(--text-color); flex: 1;}
-        .pr-value { background: rgba(139, 92, 246, 0.15); color: var(--primary-color); padding: 6px 12px; border-radius: 8px; font-weight: bold; font-size: 1rem;}
+        /* RECORDS WALL */
+        .pr-card { background: transparent; padding: 16px 0; border-bottom: 0.5px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;}
+        .pr-card:last-child { border-bottom: none; }
+        .pr-name { font-weight: 700; font-size: 1rem; color: var(--text-color); flex: 1;}
+        .pr-value { background: var(--surface-elevated); color: var(--text-color); padding: 8px 14px; border-radius: 12px; font-weight: 800; font-size: 1.1rem;}
 
-        .cal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .cal-btn { width: 40px; height: 40px; border-radius: 20px; background: var(--surface-elevated); border: none; color: var(--text-color); display: flex; justify-content: center; align-items: center; cursor: pointer; }
-        .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; text-align: center; }
-        .cal-day-name { font-size: 0.75rem; color: var(--text-muted); font-weight: 700; margin-bottom: 10px; text-transform: uppercase;}
-        .cal-cell { aspect-ratio: 1; display: flex; justify-content: center; align-items: center; border-radius: 50%; font-size: 0.95rem; font-weight: 500; cursor: pointer; position: relative; transition: 0.2s;}
-        .cal-cell.today { background: rgba(255,255,255,0.1); color: #fff;}
+        /* CALENDARIO */
+        .cal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+        .cal-btn { width: 44px; height: 44px; border-radius: 22px; background: var(--surface-elevated); border: none; color: var(--text-color); display: flex; justify-content: center; align-items: center; cursor: pointer; font-size: 1.2rem;}
+        .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; text-align: center; }
+        .cal-day-name { font-size: 0.75rem; color: var(--text-muted); font-weight: 800; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px;}
+        .cal-cell { aspect-ratio: 1; display: flex; justify-content: center; align-items: center; border-radius: 50%; font-size: 1.05rem; font-weight: 600; cursor: pointer; position: relative; transition: background-color 0.2s;}
+        .cal-cell.today { background: rgba(255,255,255,0.15); color: #fff;}
         .cal-cell.empty { background: transparent; cursor: default; }
-        .cal-indicators { position: absolute; bottom: 4px; display: flex; gap: 3px; }
-        .dot { width: 4px; height: 4px; border-radius: 50%; }
-        .dot.strength { background-color: var(--primary-color); box-shadow: 0 0 4px var(--primary-color);}
-        .dot.cardio { background-color: var(--cardio-color); box-shadow: 0 0 4px var(--cardio-color);}
+        .cal-indicators { position: absolute; bottom: 5px; display: flex; gap: 4px; }
+        .dot { width: 5px; height: 5px; border-radius: 50%; }
+        .dot.strength { background-color: var(--primary-color); box-shadow: 0 0 6px var(--primary-color);}
+        .dot.cardio { background-color: var(--cardio-color); box-shadow: 0 0 6px var(--cardio-color);}
 
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); z-index: 200; align-items: flex-end; }
-        .modal-overlay.active { display: flex; animation: fadeInModal 0.3s ease; }
-        .modal-content { background: var(--bg-color); width: 100%; max-height: 85vh; border-radius: 24px 24px 0 0; padding: 24px 20px calc(20px + var(--safe-bottom)); overflow-y: auto; box-shadow: 0 -10px 40px rgba(0,0,0,0.5); transform: translateY(100%); transition: transform 0.3s;}
+        /* MODALES ESTILO iOS BOTTOM SHEET */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); z-index: 200; align-items: flex-end; }
+        .modal-overlay.active { display: flex; animation: fadeInModal 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+        @keyframes fadeInModal { from { opacity: 0; } to { opacity: 1; } }
+        .modal-content { background: var(--surface-color); width: 100%; max-height: 90vh; border-radius: 30px 30px 0 0; padding: 24px 20px calc(30px + var(--safe-bottom)); overflow-y: auto; box-shadow: 0 -10px 40px rgba(0,0,0,0.5); transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);}
         .modal-overlay.active .modal-content { transform: translateY(0); }
-        .modal-handle { width: 40px; height: 5px; background: var(--surface-elevated); border-radius: 3px; margin: 0 auto 20px; }
-        .modal-title { font-size: 1.3rem; font-weight: 700; color: var(--text-color); margin-bottom: 20px; text-align: center;}
+        .modal-handle { width: 45px; height: 5px; background: #444; border-radius: 3px; margin: 0 auto 25px; }
+        .modal-title { font-size: 1.5rem; font-weight: 800; letter-spacing: -0.5px; color: var(--text-color); margin-bottom: 25px; text-align: center;}
         
-        .summary-card { background: var(--surface-elevated); padding: 16px; border-radius: var(--radius-md); margin-bottom: 12px; border: 1px solid var(--border-color); transition: opacity 0.3s ease;}
-        .summary-card.exclude-share { opacity: 0.4; border-style: dashed;}
-        .summary-card h4 { margin: 0 0 8px 0; color: var(--primary-color); font-size: 1.05rem;}
+        .summary-card { background: var(--surface-elevated); padding: 20px; border-radius: var(--radius-lg); margin-bottom: 15px; border: none; transition: opacity 0.3s ease;}
+        .summary-card.exclude-share { opacity: 0.3; filter: grayscale(100%);}
+        .summary-card h4 { margin: 0 0 10px 0; color: var(--primary-color); font-size: 1.15rem; font-weight: 800;}
         .summary-card.cardio-theme h4 { color: var(--cardio-color); }
-        .summary-detail { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 4px;}
-        .summary-tonnage { display: inline-block; background: rgba(139, 92, 246, 0.15); color: var(--primary-color); padding: 4px 8px; border-radius: 6px; font-size: 0.8rem; font-weight: bold; margin-top: 10px;}
-        #capture-container { background: var(--bg-color); color: var(--text-color); border-radius: var(--radius-md); padding: 15px; margin: -15px;} 
+        .summary-detail { font-size: 0.95rem; color: var(--text-muted); margin-bottom: 6px; font-weight: 500;}
+        .summary-tonnage { display: inline-block; background: transparent; border: 1px solid var(--primary-color); color: var(--primary-color); padding: 6px 12px; border-radius: 8px; font-size: 0.85rem; font-weight: 700; margin-top: 15px;}
+        #capture-container { background: var(--bg-color); color: var(--text-color); border-radius: var(--radius-lg); padding: 15px; margin: -15px;} 
 
-        .result-item { background: var(--surface-elevated); padding: 12px; border-radius: var(--radius-md); margin-bottom: 8px; border: 1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center; }
-        .result-ex-name { font-size: 0.9rem; font-weight: 600; width: 65%; color: var(--text-color); }
-        .result-badge { font-size: 0.8rem; padding: 6px 10px; border-radius: 6px; text-align: center; font-weight: bold;}
-        .badge-up { background: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3); }
-        .badge-same { background: rgba(255, 255, 255, 0.05); color: var(--text-muted); }
-        .badge-down { background: rgba(239, 68, 68, 0.15); color: var(--danger-color); border: 1px solid rgba(239, 68, 68, 0.3);}
+        .result-item { background: var(--surface-elevated); padding: 16px; border-radius: var(--radius-md); margin-bottom: 10px; display:flex; justify-content:space-between; align-items:center; }
+        .result-ex-name { font-size: 0.95rem; font-weight: 600; width: 60%; color: var(--text-color); }
+        .result-badge { font-size: 0.85rem; padding: 6px 12px; border-radius: 8px; text-align: center; font-weight: 700;}
+        .badge-up { background: rgba(50, 215, 75, 0.15); color: var(--success-color); }
+        .badge-same { background: rgba(255, 255, 255, 0.08); color: var(--text-muted); }
+        .badge-down { background: rgba(255, 69, 58, 0.15); color: var(--danger-color); }
 
-        .bottom-nav { display: flex; position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(var(--bg-color), 0.85); backdrop-filter: blur(15px); border-top: 1px solid var(--border-color); padding: 10px 10px calc(10px + var(--safe-bottom)); z-index: 100; justify-content: space-around; }
-        .nav-item { background: transparent; border: none; color: var(--text-muted); display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 600; gap: 4px; width: 33%;}
-        .nav-icon { font-size: 1.4rem; filter: grayscale(1) opacity(0.7); transition: 0.2s;}
+        /* NAVEGACIÓN INFERIOR ESTILO ISLA/GLASS */
+        .bottom-nav { 
+            display: flex; position: fixed; bottom: 0; left: 0; width: 100%; 
+            background: rgba(21, 21, 23, 0.8); 
+            backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+            border-top: 0.5px solid rgba(255,255,255,0.1); 
+            padding: 12px 10px calc(12px + var(--safe-bottom)); 
+            z-index: 100; justify-content: space-around; 
+        }
+        .nav-item { background: transparent; border: none; color: var(--text-muted); display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700; gap: 6px; width: 33%;}
+        .nav-icon { font-size: 1.5rem; opacity: 0.5; transition: 0.3s cubic-bezier(0.16, 1, 0.3, 1);}
         .nav-item.active { color: var(--primary-color); }
-        .nav-item.active .nav-icon { filter: none; transform: scale(1.1); }
-        .backup-btn { background-color: var(--surface-elevated); border: 1px solid var(--border-color); color: var(--text-color); font-size: 0.9rem; font-weight: 600; padding: 12px; flex: 1; text-align: center; border-radius: var(--radius-md); cursor: pointer;}
-        #toast { visibility: hidden; min-width: 250px; background: rgba(20, 184, 166, 0.9); backdrop-filter: blur(8px); color: #fff; text-align: center; border-radius: 100px; padding: 14px 20px; position: fixed; z-index: 1000; left: 50%; bottom: calc(100px + var(--safe-bottom)); transform: translateX(-50%) translateY(20px); font-size: 0.95rem; font-weight: bold; opacity: 0; transition: all 0.3s ease;}
+        .nav-item.active .nav-icon { opacity: 1; transform: scale(1.15) translateY(-2px); }
+        
+        .backup-btn { background-color: var(--surface-elevated); border: none; color: var(--text-color); font-size: 0.95rem; font-weight: 700; padding: 16px; flex: 1; text-align: center; border-radius: var(--radius-md); cursor: pointer;}
+        
+        /* TOAST NOTIFICATIONS */
+        #toast { visibility: hidden; min-width: 250px; background: var(--text-color); color: var(--bg-color); text-align: center; border-radius: 100px; padding: 16px 24px; position: fixed; z-index: 1000; left: 50%; bottom: calc(100px + var(--safe-bottom)); transform: translateX(-50%) translateY(20px); font-size: 1rem; font-weight: 700; opacity: 0; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: 0 10px 30px rgba(0,0,0,0.5);}
         #toast.show { visibility: visible; opacity: 1; transform: translateX(-50%) translateY(0); }
         
-        #rest-timer { position: fixed; bottom: calc(80px + var(--safe-bottom)); right: 15px; background: rgba(39, 39, 42, 0.95); backdrop-filter: blur(10px); border: 1px solid var(--primary-color); border-radius: 50px; padding: 8px 15px; display: flex; align-items: center; gap: 8px; z-index: 150; box-shadow: 0 5px 20px rgba(0,0,0,0.5); transform: translateX(150%); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        /* REST TIMER */
+        #rest-timer { position: fixed; bottom: calc(90px + var(--safe-bottom)); right: 20px; background: rgba(30, 30, 30, 0.9); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border: 0.5px solid rgba(255,255,255,0.15); border-radius: 50px; padding: 8px 16px; display: flex; align-items: center; gap: 10px; z-index: 150; box-shadow: 0 10px 30px rgba(0,0,0,0.5); transform: translateX(150%); transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
         #rest-timer.active { transform: translateX(0); }
-        #timer-display { font-size: 1.2rem; font-weight: bold; color: var(--text-color); font-variant-numeric: tabular-nums; width: 55px; text-align:center;}
-        .timer-btn { background: var(--surface-color); border: 1px solid rgba(255,255,255,0.1); color: var(--text-color); min-width: 35px; height: 35px; border-radius: 18px; font-size: 0.85rem; font-weight:600; cursor: pointer; display:flex; justify-content:center; align-items:center; padding: 0 10px;}
-        .timer-btn.close { color: var(--danger-color); background: rgba(239, 68, 68, 0.1); border: none; padding: 0; width: 35px; min-width: 35px; border-radius: 50%;}
-        @keyframes timerDonePulse { 0% { background-color: var(--bg-color); } 50% { background-color: rgba(239, 68, 68, 0.4); } 100% { background-color: var(--bg-color); } }
+        #timer-display { font-size: 1.3rem; font-weight: 800; color: #fff; font-variant-numeric: tabular-nums; width: 60px; text-align:center; letter-spacing: 1px;}
+        .timer-btn { background: rgba(255,255,255,0.1); border: none; color: #fff; min-width: 40px; height: 40px; border-radius: 20px; font-size: 0.9rem; font-weight:700; cursor: pointer; display:flex; justify-content:center; align-items:center; padding: 0 10px;}
+        .timer-btn.close { color: var(--bg-color); background: #fff; width: 40px; min-width: 40px; border-radius: 50%;}
+        @keyframes timerDonePulse { 0% { background-color: var(--bg-color); } 50% { background-color: rgba(255, 69, 58, 0.3); } 100% { background-color: var(--bg-color); } }
         body.timer-flash { animation: timerDonePulse 0.5s ease 3; }
-        #fab-timer { position: fixed; bottom: calc(80px + var(--safe-bottom)); left: 15px; background: var(--primary-color); color: #fff; width: 50px; height: 50px; border-radius: 25px; border: none; font-size: 1.5rem; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4); z-index: 140; cursor: pointer;}
+        
+        #fab-timer { position: fixed; bottom: calc(90px + var(--safe-bottom)); left: 20px; background: var(--surface-elevated); color: var(--text-color); width: 56px; height: 56px; border-radius: 28px; border: 0.5px solid rgba(255,255,255,0.1); font-size: 1.5rem; display: flex; justify-content: center; align-items: center; box-shadow: 0 10px 25px rgba(0,0,0,0.5); z-index: 140; cursor: pointer; transition: transform 0.2s;}
+        #fab-timer:active { transform: scale(0.9); }
         #fab-timer.hidden { display: none; }
 
-        .setting-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border-color); }
-        .switch { position: relative; display: inline-block; width: 50px; height: 28px; }
+        .setting-row { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 0.5px solid var(--border-color); }
+        .switch { position: relative; display: inline-block; width: 50px; height: 30px; }
         .switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--surface-elevated); transition: .4s; border-radius: 34px; border: 1px solid var(--border-color);}
-        .slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 3px; bottom: 3px; background-color: var(--text-muted); transition: .4s; border-radius: 50%; }
-        input:checked + .slider { background-color: var(--primary-color); border-color: var(--primary-color);}
-        input:checked + .slider:before { transform: translateX(22px); background-color: #fff; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #39393d; transition: .4s; border-radius: 34px; }
+        .slider:before { position: absolute; content: ""; height: 26px; width: 26px; left: 2px; bottom: 2px; background-color: #fff; transition: .4s; border-radius: 50%; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        input:checked + .slider { background-color: var(--success-color); }
+        input:checked + .slider:before { transform: translateX(20px); }
 
-        .overload-check { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; color: var(--text-muted); margin-top: 12px; padding-top: 12px; border-top: 1px dashed rgba(255,255,255,0.1); }
-        .overload-check input { width: 18px; height: 18px; margin: 0; accent-color: var(--primary-color); cursor: pointer; }
-        .reminder-tag { background-color: rgba(249, 115, 22, 0.15); color: var(--cardio-color); padding: 4px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: bold; margin-left: auto; display: inline-flex; align-items: center; gap: 4px; border: 1px solid rgba(249, 115, 22, 0.3);}
+        .overload-check { display: flex; align-items: center; gap: 10px; font-size: 0.9rem; font-weight: 500; color: var(--text-muted); margin-top: 15px; padding-top: 15px; border-top: 0.5px solid var(--border-color); }
+        .overload-check input { width: 20px; height: 20px; margin: 0; accent-color: var(--primary-color); cursor: pointer; }
+        .reminder-tag { background-color: rgba(255, 159, 10, 0.15); color: var(--cardio-color); padding: 4px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: 800; margin-left: auto; display: inline-flex; align-items: center; gap: 4px; text-transform: uppercase; letter-spacing: 0.5px;}
     </style>
 </head>
 <body>
@@ -190,17 +265,17 @@
     <div class="container">
         <div id="section-train" class="section active">
             <select id="day-selector" onchange="loadDay()">
-                <option value="">-- Selecciona el Entrenamiento --</option>
+                <option value="">Selecciona el Entrenamiento</option>
                 <option value="CARDIO">🏃 Registrar Cardio</option>
             </select>
             
-            <div id="workout-meta" class="meta-box" style="display:none; flex-wrap:wrap; justify-content: center;">
-                <div style="min-width: 30%;"><label>Fecha</label><input type="date" id="w-date"></div>
-                <div style="min-width: 25%;"><label>Inicio</label><input type="time" id="w-start"></div>
-                <div style="min-width: 25%;"><label>Fin</label><input type="time" id="w-end"></div>
-                <div style="min-width: 15%; display:flex; flex-direction:column; align-items:center;">
+            <div id="workout-meta" class="meta-box" style="display:none;">
+                <div><label>Fecha</label><input type="date" id="w-date"></div>
+                <div><label>Inicio</label><input type="time" id="w-start"></div>
+                <div><label>Fin</label><input type="time" id="w-end"></div>
+                <div style="display:flex; flex-direction:column; align-items:center; justify-content: center; min-width: 15%;">
                     <label>Descarga</label>
-                    <label class="switch" style="margin-top:2px; transform: scale(0.7);">
+                    <label class="switch" style="transform: scale(0.85);">
                         <input type="checkbox" id="w-deload" onchange="autoSaveDraft()">
                         <span class="slider"></span>
                     </label>
@@ -211,18 +286,18 @@
         </div>
 
         <div id="section-build" class="section">
-            <div class="card" style="padding: 12px;">
-                <select id="routine-edit-select" onchange="loadRoutineForEdit()" style="margin: 0; border: none; background: transparent; font-weight: 600;">
+            <div class="card" style="padding: 12px 20px;">
+                <select id="routine-edit-select" onchange="loadRoutineForEdit()" style="margin: 0; padding: 0; border: none; background: transparent; font-weight: 700; font-size: 1.1rem; color: var(--primary-color);">
                     <option value="NEW">+ Crear Nueva Rutina</option>
                 </select>
             </div>
             <div class="card">
-                <input type="text" id="new-routine-name" placeholder="Nombre (ej. Torso C)">
+                <input type="text" id="new-routine-name" placeholder="Nombre (ej. Torso C)" style="font-weight: 700; font-size: 1.15rem;">
                 <input type="text" id="new-routine-rule" placeholder="Regla/Nota (ej. Descanso 2 min)">
                 <div id="builder-exercises"></div>
                 <button class="btn-secondary" onclick="addBuilderExerciseRow()">+ Añadir Ejercicio</button>
-                <div style="display:flex; gap:10px; margin-top: 10px;">
-                    <button id="btn-delete-routine" class="btn-delete" onclick="deleteCurrentRoutine()" style="display:none;">🗑️ Eliminar</button>
+                <div style="display:flex; gap:10px; margin-top: 20px;">
+                    <button id="btn-delete-routine" class="btn-delete" onclick="deleteCurrentRoutine()" style="display:none; width: 60px;">🗑️</button>
                     <button class="btn-save" onclick="saveCustomRoutine()" style="margin:0;">Guardar Rutina</button>
                 </div>
             </div>
@@ -241,71 +316,67 @@
             <div id="stat-view-calendar" class="stat-view active card">
                 <div class="cal-header">
                     <button class="cal-btn" onclick="changeMonth(-1)">&#10094;</button>
-                    <h3 id="cal-month-year" style="margin:0; font-size:1.1rem;">Mes Año</h3>
+                    <h3 id="cal-month-year" style="margin:0; font-size:1.2rem;">Mes Año</h3>
                     <button class="cal-btn" onclick="changeMonth(1)">&#10095;</button>
                 </div>
                 <div class="cal-grid">
                     <div class="cal-day-name">L</div><div class="cal-day-name">M</div><div class="cal-day-name">X</div>
                     <div class="cal-day-name">J</div><div class="cal-day-name">V</div><div class="cal-day-name">S</div><div class="cal-day-name">D</div>
                 </div>
-                <div id="cal-body" class="cal-grid" style="margin-top: 5px;"></div>
+                <div id="cal-body" class="cal-grid" style="margin-top: 10px;"></div>
             </div>
 
-            <div id="stat-view-habits" class="stat-view card">
-                <h3 style="margin-bottom: 15px;">Rendimiento (Últimos 30 días)</h3>
+            <div id="stat-view-habits" class="stat-view">
+                <h3 style="margin-bottom: 20px; padding-left: 5px;">Rendimiento (30 días)</h3>
                 <div id="habits-container"></div>
             </div>
 
             <div id="stat-view-muscles" class="stat-view card">
                 <h3 style="margin-bottom: 5px;">Simetría Muscular</h3>
-                <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Distribución de volumen (30 días)</div>
+                <div style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 20px; font-weight: 500;">Distribución de volumen (30 días)</div>
                 <div class="chart-radar-container" id="radar-wrapper"><canvas id="chartRadar"></canvas></div>
-                <h3 style="margin-top: 20px; margin-bottom: 15px;">Calidad de Esfuerzo (RIR)</h3>
+                <h3 style="margin-top: 30px; margin-bottom: 20px;">Calidad de Esfuerzo (RIR)</h3>
                 <div id="muscles-container"></div>
             </div>
 
             <div id="stat-view-sessions" class="stat-view card">
                 <h3 style="margin-bottom: 5px;">Evolución por Rutina</h3>
-                <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px;">Tonelaje total movido (Solo ejercicios con peso).</div>
-                <select id="stat-session-selector" onchange="loadSessionStats()">
-                    <option value="">-- Selecciona una Rutina --</option>
-                </select>
-                <div class="chart-container" style="display:none;" id="chart-session-wrapper"><canvas id="chartSessions"></canvas></div>
+                <div style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 20px; font-weight: 500;">Tonelaje total movido (Ejercicios con peso)</div>
+                <select id="stat-session-selector" onchange="loadSessionStats()" style="background: var(--surface-elevated);"></select>
+                <div class="chart-container" style="display:none; margin-top:20px;" id="chart-session-wrapper"><canvas id="chartSessions"></canvas></div>
                 <div id="session-stats-list" style="margin-top: 20px;"></div>
             </div>
 
             <div id="stat-view-exercises" class="stat-view card">
                 <h3 style="margin-bottom: 5px;">Sobrecarga Semanal</h3>
-                <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Tonelaje Total (Últimas 4 Semanas)</div>
+                <div style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 20px; font-weight: 500;">Tonelaje Total (Últimas 4 Semanas)</div>
                 <div class="chart-container" id="bar-wrapper"><canvas id="chartWeekly"></canvas></div>
 
-                <hr style="border: 0; height: 1px; background: var(--border-color); margin: 25px 0;">
+                <hr style="border: 0; height: 1px; background: var(--border-color); margin: 30px 0;">
                 
-                <h3 style="margin-bottom: 15px;">Evolución por Ejercicio</h3>
-                <select id="stat-exercise-selector" onchange="loadExerciseStats()">
-                    <option value="">-- Selecciona un Ejercicio --</option>
-                </select>
-                <div class="chart-container" style="display:none;" id="chart-wrapper"><canvas id="chart1RM"></canvas></div>
+                <h3 style="margin-bottom: 20px;">Evolución por Ejercicio</h3>
+                <select id="stat-exercise-selector" onchange="loadExerciseStats()" style="background: var(--surface-elevated);"></select>
+                <div class="chart-container" style="display:none; margin-top:20px;" id="chart-wrapper"><canvas id="chart1RM"></canvas></div>
                 <div id="stats-list"></div>
             </div>
 
             <div id="stat-view-records" class="stat-view card">
-                <h3 style="margin-bottom: 15px;">Muro de Récords (PRs)</h3>
-                <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 20px;">Tu peso máximo, banda más dura o tiempo isométrico.</p>
+                <h3 style="margin-bottom: 5px;">Muro de Récords (PRs)</h3>
+                <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 25px; font-weight: 500;">Tu peso máximo, banda más dura o tiempo isométrico.</p>
                 <div id="records-container"></div>
             </div>
 
             <div class="card">
-                <h3 style="margin-bottom: 15px;">⚙️ Configuración</h3>
-                <div class="setting-row">
-                    <span style="font-weight: 500;">Modo AMOLED (Pure Black)</span>
+                <h3 style="margin-bottom: 20px;">⚙️ Configuración</h3>
+                <div class="setting-row" style="display:none;"> <!-- Oculto por defecto ya que forzamos modo oscuro -->
+                    <span style="font-weight: 600;">Modo AMOLED (Pure Black)</span>
                     <label class="switch">
-                        <input type="checkbox" id="amoled-toggle" onchange="toggleAmoled()">
+                        <input type="checkbox" id="amoled-toggle" onchange="toggleAmoled()" checked>
                         <span class="slider"></span>
                     </label>
                 </div>
-                <h3 style="margin-bottom: 15px; margin-top:30px;">💾 Copia de Seguridad</h3>
-                <div style="display: flex; gap: 10px;">
+                <h3 style="margin-bottom: 20px; font-size: 1rem; color: var(--text-muted);">Copia de Seguridad</h3>
+                <div style="display: flex; gap: 15px;">
                     <button class="backup-btn" onclick="exportBackup()">⬇️ Exportar</button>
                     <button class="backup-btn" onclick="document.getElementById('import-file').click()">⬆️ Importar</button>
                     <input type="file" id="import-file" style="display: none;" accept=".json" onchange="importBackup(event)">
@@ -336,8 +407,8 @@
                 <h3 class="modal-title" id="modal-date-title">Fecha</h3>
                 <div id="modal-summaries"></div>
             </div>
-            <div style="display:flex; gap:10px; margin-top:15px;">
-                <button class="btn-share" onclick="shareWorkoutImage()">📸 Compartir Imagen</button>
+            <div style="display:flex; gap:10px; margin-top:20px;">
+                <button class="btn-share" onclick="shareWorkoutImage()">Compartir Imagen</button>
             </div>
         </div>
     </div>
@@ -345,19 +416,20 @@
     <div class="modal-overlay" id="post-workout-modal">
         <div class="modal-content" style="max-height: 90vh;">
             <div class="modal-handle"></div>
-            <h3 class="modal-title" id="pwm-title" style="margin-bottom: 5px;">¡Sesión Completada! 🏆</h3>
-            <p id="pwm-desc" style="text-align:center; font-size:0.85rem; color:var(--text-muted); margin-bottom: 20px;">Comparativa de series efectivas con tu última sesión de esta rutina.</p>
-            <div id="pwm-content" style="margin-bottom: 20px;"></div>
+            <h3 class="modal-title" id="pwm-title" style="margin-bottom: 10px;">¡Sesión Completada! 🏆</h3>
+            <p id="pwm-desc" style="text-align:center; font-size:0.95rem; color:var(--text-muted); margin-bottom: 25px; font-weight: 500;">Comparativa de series efectivas con tu última sesión de esta rutina.</p>
+            <div id="pwm-content" style="margin-bottom: 25px;"></div>
             <button class="btn-save" onclick="closePostWorkoutModal()">Ir a Estadísticas</button>
         </div>
     </div>
 
+    <!-- Modal Añadir Ejercicio Extra -->
     <div class="modal-overlay" id="modal-add-extra" onclick="closeModal('modal-add-extra')">
         <div class="modal-content" onclick="event.stopPropagation()">
             <div class="modal-handle"></div>
-            <h3 class="modal-title" style="margin-bottom:15px;">Añadir Ejercicio</h3>
+            <h3 class="modal-title" style="margin-bottom:25px;">Añadir Ejercicio</h3>
             <select id="extra-ex-select" onchange="handleExtraExChange()"></select>
-            <input type="text" id="extra-ex-name" placeholder="Nombre del Ejercicio" style="display:none;">
+            <input type="text" id="extra-ex-name" placeholder="Nombre del Ejercicio" style="display:none; font-weight: 600;">
             
             <div class="builder-flex">
                 <select id="extra-ex-muscle" style="flex:2;"></select>
@@ -374,13 +446,14 @@
                 <input type="number" id="extra-ex-sets" placeholder="Series" style="flex:1;" value="3">
                 <input type="text" id="extra-ex-target" placeholder="Objetivo (ej. 8-12 reps)" style="flex:2;">
             </div>
-            <button class="btn-save" onclick="confirmAddExtra()">Añadir a la sesión</button>
+            <button class="btn-save" style="margin-top: 15px;" onclick="confirmAddExtra()">Añadir a la sesión</button>
         </div>
     </div>
 
-    <div id="toast">✅ Acción completada</div>
+    <div id="toast">Acción completada</div>
 
     <script>
+        // MANTENEMOS EXACTAMENTE LA MISMA LÓGICA JAVASCRIPT DE LA V18
         const M_CHEST = "Pecho", M_BACK = "Espalda", M_SHOULDER = "Hombros", M_QUADS = "Cuádriceps", M_HAMS = "Isquios", M_GLUTES = "Glúteos", M_BICEPS = "Bíceps", M_TRICEPS = "Tríceps", M_CALVES = "Gemelos", M_CORE = "Core", M_OTHER = "Otro";
         const muscleOptions = [M_CHEST, M_BACK, M_SHOULDER, M_QUADS, M_HAMS, M_GLUTES, M_BICEPS, M_TRICEPS, M_CALVES, M_CORE, M_OTHER];
 
@@ -431,15 +504,15 @@
         let currentEditWorkoutId = null; 
         let chartInstance1RM = null, chartInstanceRadar = null, chartInstanceWeekly = null, chartInstanceSessions = null; 
 
+        // Forzar tema AMOLED para el diseño profesional
         window.onload = function() {
-            if(localStorage.getItem('amoled_mode') === 'true') { document.body.classList.add('amoled-theme'); document.getElementById('amoled-toggle').checked = true; }
+            document.body.classList.add('amoled-theme'); 
             populateDaySelector(); populateBuilderDropdown(); loadRoutineForEdit(); initCalendar();
             window.scrollTo(0,0);
         };
 
         function toggleAmoled() {
-            if(document.getElementById('amoled-toggle').checked) { document.body.classList.add('amoled-theme'); localStorage.setItem('amoled_mode', 'true'); } 
-            else { document.body.classList.remove('amoled-theme'); localStorage.setItem('amoled_mode', 'false'); }
+            // Mantenido por si se necesita habilitar fondos claros en el futuro, pero deshabilitado visualmente
         }
 
         let timerInterval; let timerSeconds = 0;
@@ -458,7 +531,6 @@
             return merged;
         }
 
-        // Recupera todo el listado de ejercicios conocidos
         function getUniqueExercises() {
             const exMap = {};
             const routines = getMergedRoutines();
@@ -583,7 +655,7 @@
 
         function populateDaySelector() {
             const selector = document.getElementById('day-selector'); const currentVal = selector.value;
-            selector.innerHTML = '<option value="">-- Selecciona el Entrenamiento --</option><option value="CARDIO">🏃 Registrar Cardio</option>';
+            selector.innerHTML = '<option value="">Selecciona el Entrenamiento</option><option value="CARDIO">🏃 Registrar Cardio</option>';
             const routines = getMergedRoutines();
             for (const key in routines) { const opt = document.createElement('option'); opt.value = key; opt.textContent = routines[key].title; selector.appendChild(opt); }
             if (currentVal === 'CARDIO' || routines[currentVal]) selector.value = currentVal; 
@@ -615,7 +687,7 @@
                 const workout = history.find(w => w.id === currentEditWorkoutId);
                 if (workout) {
                     if (workout.isDeload) document.getElementById('w-deload').checked = true;
-                    html += `<div style="text-align:center; font-size:0.8rem; color:var(--secondary-color); margin-bottom:10px;">Modo Edición Activado</div><div id="exercise-list">`;
+                    html += `<div style="text-align:center; font-size:0.85rem; font-weight:700; color:var(--secondary-color); margin-bottom:15px; letter-spacing:1px; text-transform:uppercase;">Modo Edición Activado</div><div id="exercise-list">`;
                     let index = 1;
                     for (const exId in workout.exercises) {
                         const meta = workout.exerciseMetadata[exId] || {name: "Ejercicio", muscle: M_OTHER, equip: 'kg', exType: 'reps', skipped: false, videoUrl: ""};
@@ -629,10 +701,10 @@
                 const lastWorkout = history.filter(w => w.dayId === dayKey && w.type !== 'cardio').pop();
 
                 if (draft && draft.exercises && draft.exercises.length > 0) {
-                    html += `<div style="text-align:center; font-size:0.8rem; color:var(--secondary-color); margin-bottom:10px;">Borrador recuperado</div>`;
+                    html += `<div style="text-align:center; font-size:0.85rem; font-weight:700; color:var(--cardio-color); margin-bottom:15px; letter-spacing:1px; text-transform:uppercase;">Borrador recuperado</div>`;
                     if(draft.isDeload) document.getElementById('w-deload').checked = true;
                 }
-                if (dayData.rule) html += `<div class="rule-box"><strong>Nota:</strong> ${dayData.rule}</div>`;
+                if (dayData.rule) html += `<div class="rule-box">${dayData.rule}</div>`;
                 html += `<div id="exercise-list">`;
 
                 if (draft && draft.exercises && draft.exercises.length > 0) {
@@ -664,8 +736,8 @@
                 }
                 html += `</div>`;
             }
-            html += `<button class="btn-secondary" onclick="openAddExtraModal()">+ Ejercicio Extra (Puntual)</button>
-                     <button class="btn-save" onclick="saveWorkout('${dayKey}')">${currentEditWorkoutId ? 'Actualizar Sesión' : 'Guardar Sesión'}</button>`;
+            html += `<button class="btn-secondary" onclick="openAddExtraModal()">+ Añadir Ejercicio Extra</button>
+                     <button class="btn-save" onclick="saveWorkout('${dayKey}')">${currentEditWorkoutId ? 'Actualizar Sesión' : 'Finalizar Sesión'}</button>`;
             container.innerHTML = html;
         }
 
@@ -676,17 +748,23 @@
 
             let html = `
             <div class="card workout-card ${isSkipped ? 'skipped' : ''}" id="ex-${id}" data-name="${name}" data-target="${target}" data-muscle="${safeMuscle}" data-video="${videoUrl}">
-                <div class="card-header" style="display:flex; justify-content:space-between; align-items:flex-start;">
-                    <div style="display:flex; flex-direction:column; gap:6px;">
+                <div class="card-header">
+                    <div style="display:flex; flex-direction:column; gap:8px;">
                         <h3 style="margin:0;">${nameHtml}</h3>
                         <div style="display:flex; align-items:center; flex-wrap:wrap; gap:8px;">
                             <span class="muscle-tag" style="margin:0;">${safeMuscle}</span>
                             ${reminderActive ? '<span class="reminder-tag" style="margin:0;">📈 ¡Toca subir!</span>' : ''}
                         </div>
                     </div>
-                    <div style="display:flex; gap:5px; align-items:center; flex-wrap:wrap; justify-content:flex-end;">
-                        <button class="btn-pr" onclick="showPR('${id}', '${name}')" title="Ver Récords">🏆 PR</button>
+                    <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; justify-content:flex-end;">
+                        <button class="btn-pr" onclick="showPR('${id}', '${name}')" title="Ver Récords">🏆</button>
                         <button class="btn-omit ${isSkipped ? 'active' : ''}" onclick="toggleSkip('${id}')">${isSkipped ? '❌' : '🚫'}</button>
+                    </div>
+                </div>
+                
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 15px;">
+                    <div class="target-box" style="margin:0;">🎯 ${target}</div>
+                    <div style="display:flex; gap:6px;">
                         <select class="mode-toggle type-toggle" onchange="toggleType(this, '${id}')">
                             <option value="reps" ${!isIso?'selected':''}>🔄 Reps</option>
                             <option value="iso" ${isIso?'selected':''}>⏱️ Segs</option>
@@ -697,7 +775,7 @@
                         </select>
                     </div>
                 </div>
-                <div class="target-box">🎯 ${target}</div>
+
                 <div class="sets-header">
                     <div class="col-serie">S#</div>
                     <div class="col-input col-kg-header" style="${isIso?'display:none;':''}">${equip==='band'?'Banda':'Kg'}</div>
@@ -721,10 +799,10 @@
                 </div>`;
             });
             html += `</div>
-                <button class="btn-add-set" onclick="addDynamicSet('${id}')">+ 1 Serie</button>
+                <button class="btn-add-set" onclick="addDynamicSet('${id}')">+ Añadir Serie</button>
                 <div class="overload-check">
                     <input type="checkbox" class="overload-input" id="check-${id}" ${isChecked ? 'checked' : ''} onchange="autoSaveDraft()">
-                    <label for="check-${id}">Recordar subir peso/reps la próxima vez</label>
+                    <label for="check-${id}">Recordar subir peso/reps la próxima sesión</label>
                 </div>
             </div>`;
             return html;
@@ -959,7 +1037,7 @@
                 if (statusHtml !== "") html += `<div class="result-item"><div class="result-ex-name">${exName}</div>${statusHtml}</div>`;
             }
 
-            if(html === "") html = "<p style='text-align:center; color:var(--text-muted);'>No hay datos comparables.</p>";
+            if(html === "") html = "<p style='text-align:center; color:var(--text-muted); font-size:0.9rem;'>No hay datos comparables.</p>";
             if(upgrades > 0) document.getElementById('pwm-title').textContent = `¡Superaste ${upgrades} récord${upgrades>1?'s':''}! 🚀`;
             document.getElementById('pwm-content').innerHTML = html;
             document.getElementById('post-workout-modal').classList.add('active');
@@ -1012,13 +1090,13 @@
                 if(w) { mod = w.modality || mod; dur = w.duration || dur; dist = w.distance || dist; cal = w.cal || cal; fcm = w.fcMed || fcm; fcmx = w.fcMax || fcmx; notes = w.notes || notes; }
             }
             container.innerHTML = `
-            <div class="card" style="border: 1px solid rgba(249, 115, 22, 0.3);">
+            <div class="card" style="border: 0.5px solid rgba(255, 159, 10, 0.4);">
                 <h3 style="color: var(--cardio-color); margin-bottom: 20px;">Registro de Cardio</h3>
-                <label style="font-size:0.85rem; color:var(--text-muted); display:block;">Modalidad</label>
+                <label style="font-size:0.8rem; color:var(--text-muted); font-weight:700; display:block; margin-bottom:5px;">Modalidad</label>
                 <select id="c-modality"><option value="Cinta de correr" ${mod==="Cinta de correr"?'selected':''}>Cinta de correr</option><option value="Bicicleta estática" ${mod==="Bicicleta estática"?'selected':''}>Bicicleta estática / Ciclo</option><option value="Elíptica" ${mod==="Elíptica"?'selected':''}>Elíptica</option><option value="Tenis / Pista" ${mod==="Tenis / Pista"?'selected':''}>Tenis / Pista</option><option value="Correr (Exterior)" ${mod==="Correr (Exterior)"?'selected':''}>Correr (Exterior)</option><option value="Otro" ${mod==="Otro"?'selected':''}>Otro</option></select>
-                <div class="builder-flex"><div style="flex:1;"><label style="font-size:0.85rem; color:var(--text-muted); display:block;">Tiempo (min)</label><input type="number" inputmode="decimal" id="c-duration" placeholder="Ej. 30" value="${dur}"></div><div style="flex:1;"><label style="font-size:0.85rem; color:var(--text-muted); display:block;">Distancia (Km)</label><input type="number" inputmode="decimal" id="c-distance" placeholder="Opcional" value="${dist}"></div></div>
-                <div class="builder-flex"><div style="flex:1;"><label style="font-size:0.85rem; color:var(--text-muted); display:block;">Kcal</label><input type="number" inputmode="decimal" id="c-cal" placeholder="Opc." value="${cal}"></div><div style="flex:1;"><label style="font-size:0.85rem; color:var(--text-muted); display:block;">FC Media</label><input type="number" inputmode="decimal" id="c-fcmed" placeholder="Lpm" value="${fcm}"></div><div style="flex:1;"><label style="font-size:0.85rem; color:var(--text-muted); display:block;">FC Max</label><input type="number" inputmode="decimal" id="c-fcmax" placeholder="Lpm" value="${fcmx}"></div></div>
-                <label style="font-size:0.85rem; color:var(--text-muted); display:block;">Notas</label><textarea id="c-notes" placeholder="Ej. Sensaciones...">${notes}</textarea>
+                <div class="builder-flex"><div style="flex:1;"><label style="font-size:0.8rem; color:var(--text-muted); font-weight:700; display:block; margin-bottom:5px;">Tiempo (min)</label><input type="number" inputmode="decimal" id="c-duration" placeholder="Ej. 30" value="${dur}"></div><div style="flex:1;"><label style="font-size:0.8rem; color:var(--text-muted); font-weight:700; display:block; margin-bottom:5px;">Distancia (Km)</label><input type="number" inputmode="decimal" id="c-distance" placeholder="Opcional" value="${dist}"></div></div>
+                <div class="builder-flex"><div style="flex:1;"><label style="font-size:0.8rem; color:var(--text-muted); font-weight:700; display:block; margin-bottom:5px;">Kcal</label><input type="number" inputmode="decimal" id="c-cal" placeholder="Opc." value="${cal}"></div><div style="flex:1;"><label style="font-size:0.8rem; color:var(--text-muted); font-weight:700; display:block; margin-bottom:5px;">FC Media</label><input type="number" inputmode="decimal" id="c-fcmed" placeholder="Lpm" value="${fcm}"></div><div style="flex:1;"><label style="font-size:0.8rem; color:var(--text-muted); font-weight:700; display:block; margin-bottom:5px;">FC Max</label><input type="number" inputmode="decimal" id="c-fcmax" placeholder="Lpm" value="${fcmx}"></div></div>
+                <label style="font-size:0.8rem; color:var(--text-muted); font-weight:700; display:block; margin-bottom:5px;">Notas</label><textarea id="c-notes" placeholder="Ej. Sensaciones...">${notes}</textarea>
                 <button class="btn-save btn-save-cardio" onclick="saveCardio()">${currentEditWorkoutId ? 'Actualizar Cardio' : 'Guardar Sesión'}</button>
             </div>`;
         }
@@ -1036,7 +1114,7 @@
 
         function editPastWorkout(id) {
             closeModal('day-modal'); const workout = JSON.parse(localStorage.getItem('workout_history') || '[]').find(w => w.id === id); if (!workout) return;
-            currentEditWorkoutId = id; document.getElementById('main-title').textContent = "Modo Edición ✏️"; switchTab('train');
+            currentEditWorkoutId = id; document.getElementById('main-title').textContent = "Modo Edición"; switchTab('train');
             const dateObj = new Date(workout.date);
             document.getElementById('w-date').value = `${dateObj.getFullYear()}-${String(dateObj.getMonth()+1).padStart(2,'0')}-${String(dateObj.getDate()).padStart(2,'0')}`;
             document.getElementById('w-start').value = workout.startTime || ""; document.getElementById('w-end').value = workout.endTime || "";
@@ -1054,7 +1132,7 @@
                 else if(w.type === 'cardio') { cardioTime += parseFloat(w.duration) || 0; cardioDist += parseFloat(w.distance) || 0; }
             });
             const adherencia = Math.min(100, Math.round((uniqueStrengthDays.size / 16) * 100));
-            container.innerHTML = `<div class="habit-grid"><div class="habit-block" style="border-color: ${adherencia >= 90 ? 'var(--secondary-color)' : 'var(--border-color)'}"><h4>Constancia (Objetivo: 16d)</h4><div class="number">${adherencia}%</div></div><div class="habit-block"><h4>Tonelaje Total</h4><div class="number" style="font-size:1.4rem;">${totalTonnage.toLocaleString()} Kg</div></div><div class="habit-block cardio"><h4>Cardio: Tiempo</h4><div class="number">${cardioTime} min</div></div><div class="habit-block cardio"><h4>Cardio: Distancia</h4><div class="number">${cardioDist.toFixed(1)} km</div></div></div>`;
+            container.innerHTML = `<div class="habit-grid"><div class="habit-block" style="border: 1px solid ${adherencia >= 90 ? 'var(--secondary-color)' : 'var(--border-color)'}"><h4>Constancia (Obj: 16d)</h4><div class="number">${adherencia}%</div></div><div class="habit-block"><h4>Tonelaje Total</h4><div class="number" style="font-size:1.6rem;">${totalTonnage.toLocaleString()} <span style="font-size:1rem;">Kg</span></div></div><div class="habit-block cardio"><h4>Cardio: Tiempo</h4><div class="number">${cardioTime} <span style="font-size:1rem;">min</span></div></div><div class="habit-block cardio"><h4>Cardio: Dist</h4><div class="number">${cardioDist.toFixed(1)} <span style="font-size:1rem;">km</span></div></div></div>`;
         }
 
         function renderMuscleStats() {
@@ -1072,17 +1150,22 @@
             const labels = Object.keys(muscleTally);
             if (labels.length === 0) { container.innerHTML = "<p style='text-align:center; color:var(--text-muted);'>Sin datos.</p>"; document.getElementById('radar-wrapper').style.display='none'; return; }
             document.getElementById('radar-wrapper').style.display='flex'; const dataSets = labels.map(l => muscleTally[l]);
+            
+            Chart.defaults.color = '#8e8e93';
+            Chart.defaults.font.family = '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif';
+            
             if (chartInstanceRadar) chartInstanceRadar.destroy();
-            chartInstanceRadar = new Chart(document.getElementById('chartRadar').getContext('2d'), { type: 'radar', data: { labels: labels, datasets: [{ label: 'Series Efectivas', data: dataSets, backgroundColor: 'rgba(139, 92, 246, 0.4)', borderColor: '#8b5cf6', pointBackgroundColor: '#14b8a6', pointBorderColor: '#fff', pointHoverBackgroundColor: '#fff', pointHoverBorderColor: '#14b8a6' }] }, options: { responsive: true, maintainAspectRatio: false, scales: { r: { angleLines: { color: 'rgba(255, 255, 255, 0.1)' }, grid: { color: 'rgba(255, 255, 255, 0.1)' }, pointLabels: { color: '#a1a1aa', font: {size: 10} }, ticks: { display: false } } }, plugins: { legend: { display: false } } } });
+            chartInstanceRadar = new Chart(document.getElementById('chartRadar').getContext('2d'), { type: 'radar', data: { labels: labels, datasets: [{ label: 'Series Efectivas', data: dataSets, backgroundColor: 'rgba(191, 90, 242, 0.3)', borderColor: '#bf5af2', borderWidth: 2, pointBackgroundColor: '#64d2ff', pointBorderColor: '#fff', pointHoverBackgroundColor: '#fff', pointHoverBorderColor: '#64d2ff' }] }, options: { responsive: true, maintainAspectRatio: false, scales: { r: { angleLines: { color: 'rgba(255, 255, 255, 0.05)' }, grid: { color: 'rgba(255, 255, 255, 0.05)' }, pointLabels: { color: '#8e8e93', font: {size: 11, weight: '600'} }, ticks: { display: false } } }, plugins: { legend: { display: false } } } });
+            
             let html = ""; const maxSets = Math.max(...dataSets);
-            labels.sort((a,b) => muscleTally[b] - muscleTally[a]).forEach(m => { let avgRirText = rirCount[m] ? `(RIR Prom: ${(rirSum[m]/rirCount[m]).toFixed(1)})` : ''; html += `<div class="day-bar-container"><div class="day-bar-label" style="text-align:left;">${m}</div><div class="day-bar-track"><div class="day-bar-fill" style="width: ${(muscleTally[m] / maxSets) * 100}%;"></div></div><div class="day-bar-count" style="width:100px; text-align:right;">${muscleTally[m]}s <span style="color:var(--danger-color); font-size:0.7rem;">${avgRirText}</span></div></div>`; }); container.innerHTML = html;
+            labels.sort((a,b) => muscleTally[b] - muscleTally[a]).forEach(m => { let avgRirText = rirCount[m] ? `(RIR: ${(rirSum[m]/rirCount[m]).toFixed(1)})` : ''; html += `<div class="day-bar-container"><div class="day-bar-label">${m}</div><div class="day-bar-track"><div class="day-bar-fill" style="width: ${(muscleTally[m] / maxSets) * 100}%;"></div></div><div class="day-bar-count">${muscleTally[m]}s <span style="color:var(--text-muted); font-size:0.7rem;">${avgRirText}</span></div></div>`; }); container.innerHTML = html;
         }
 
         function renderWeeklyOverload() {
             const history = JSON.parse(localStorage.getItem('workout_history') || '[]'); const weeklyTonnage = [0, 0, 0, 0]; const now = new Date();
             history.filter(w => w.type === 'strength').forEach(w => { const diffDays = Math.floor(Math.abs(now - new Date(w.date)) / (1000 * 60 * 60 * 24)); if (diffDays <= 7) weeklyTonnage[3] += (w.tonnage || 0); else if (diffDays <= 14) weeklyTonnage[2] += (w.tonnage || 0); else if (diffDays <= 21) weeklyTonnage[1] += (w.tonnage || 0); else if (diffDays <= 28) weeklyTonnage[0] += (w.tonnage || 0); });
             if (chartInstanceWeekly) chartInstanceWeekly.destroy();
-            chartInstanceWeekly = new Chart(document.getElementById('chartWeekly').getContext('2d'), { type: 'bar', data: { labels: ['Hace 3 sem', 'Hace 2 sem', 'Sem Pasada', 'Esta Sem'], datasets: [{ label: 'Tonelaje (Kg)', data: weeklyTonnage, backgroundColor: 'rgba(20, 184, 166, 0.8)', borderRadius: 6 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#a1a1aa' } }, x: { grid: { display: false }, ticks: { color: '#a1a1aa' } } } } });
+            chartInstanceWeekly = new Chart(document.getElementById('chartWeekly').getContext('2d'), { type: 'bar', data: { labels: ['Hace 3 sem', 'Hace 2 sem', 'Semana Pasada', 'Esta Semana'], datasets: [{ label: 'Tonelaje (Kg)', data: weeklyTonnage, backgroundColor: '#64d2ff', borderRadius: 8 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { grid: { color: 'rgba(255,255,255,0.05)' }, border: {display: false} }, x: { grid: { display: false }, border: {display: false} } } } });
         }
 
         function renderPRWall() {
@@ -1118,15 +1201,15 @@
             if(prArray.length === 0) { container.innerHTML = "<p style='text-align:center; color:var(--text-muted);'>No hay récords registrados.</p>"; return; }
             let html = ""; 
             prArray.forEach(pr => { 
-                if (pr.kg.weight > 0) { const d = new Date(pr.kg.date).toLocaleDateString('es-ES', {month:'short', day:'numeric'}); html += `<div class="pr-card"><div class="pr-name">${pr.name} (Kg)<br><span style="font-size:0.75rem; color:var(--text-muted); font-weight:normal;">Logrado el ${d}</span></div><div class="pr-value">${pr.kg.weight} kg <span style="font-size:0.8rem; color:var(--text-color);">x ${pr.kg.reps}</span></div></div>`; }
-                if (pr.band.score > 0) { const d = new Date(pr.band.date).toLocaleDateString('es-ES', {month:'short', day:'numeric'}); html += `<div class="pr-card"><div class="pr-name">${pr.name} (Banda)<br><span style="font-size:0.75rem; color:var(--text-muted); font-weight:normal;">Logrado el ${d}</span></div><div class="pr-value" style="background:rgba(20,184,166,0.15); color:var(--secondary-color);">Banda ${pr.band.name} <span style="font-size:0.8rem; color:var(--text-color);">x ${pr.band.reps}</span></div></div>`; }
-                if (pr.iso.secs > 0) { const d = new Date(pr.iso.date).toLocaleDateString('es-ES', {month:'short', day:'numeric'}); html += `<div class="pr-card"><div class="pr-name">${pr.name} (Isométrico)<br><span style="font-size:0.75rem; color:var(--text-muted); font-weight:normal;">Logrado el ${d}</span></div><div class="pr-value" style="background:rgba(249,115,22,0.15); color:var(--cardio-color); border: 1px solid rgba(249,115,22,0.3);">${pr.iso.secs} segs ${pr.iso.weight > 0 ? `<span style="font-size:0.8rem; color:var(--text-color);">(${pr.iso.weight}kg)</span>` : ''}</div></div>`; }
+                if (pr.kg.weight > 0) { const d = new Date(pr.kg.date).toLocaleDateString('es-ES', {month:'short', day:'numeric'}); html += `<div class="pr-card"><div class="pr-name">${pr.name} <span style="font-size:0.75rem; color:var(--text-muted); font-weight:normal; margin-left:5px;">${d}</span></div><div class="pr-value" style="color:var(--primary-color);">${pr.kg.weight} kg <span style="font-size:0.8rem; color:var(--text-muted);">x ${pr.kg.reps}</span></div></div>`; }
+                if (pr.band.score > 0) { const d = new Date(pr.band.date).toLocaleDateString('es-ES', {month:'short', day:'numeric'}); html += `<div class="pr-card"><div class="pr-name">${pr.name} <span style="font-size:0.75rem; color:var(--text-muted); font-weight:normal; margin-left:5px;">${d}</span></div><div class="pr-value" style="color:var(--secondary-color);">Banda ${pr.band.name} <span style="font-size:0.8rem; color:var(--text-muted);">x ${pr.band.reps}</span></div></div>`; }
+                if (pr.iso.secs > 0) { const d = new Date(pr.iso.date).toLocaleDateString('es-ES', {month:'short', day:'numeric'}); html += `<div class="pr-card"><div class="pr-name">${pr.name} <span style="font-size:0.75rem; color:var(--text-muted); font-weight:normal; margin-left:5px;">${d}</span></div><div class="pr-value" style="color:var(--cardio-color);">${pr.iso.secs} segs ${pr.iso.weight > 0 ? `<span style="font-size:0.8rem; color:var(--text-muted);">(${pr.iso.weight}kg)</span>` : ''}</div></div>`; }
             }); 
             container.innerHTML = html;
         }
 
         function populateSessionStatsDropdown() {
-            const select = document.getElementById('stat-session-selector'); select.innerHTML = '<option value="">-- Selecciona una Rutina --</option>';
+            const select = document.getElementById('stat-session-selector'); select.innerHTML = '<option value="">Selecciona una Rutina</option>';
             const routines = getMergedRoutines(); const history = JSON.parse(localStorage.getItem('workout_history') || '[]');
             const usedRoutineIds = [...new Set(history.filter(w => w.type === 'strength' && w.dayId).map(w => w.dayId))];
             usedRoutineIds.forEach(id => { const title = routines[id] ? routines[id].title : `Rutina Personalizada (${id})`; const opt = document.createElement('option'); opt.value = id; opt.textContent = title; select.appendChild(opt); });
@@ -1145,27 +1228,27 @@
 
             sessions.forEach((s, idx) => {
                 const d = new Date(s.date).toLocaleDateString('es-ES', {day:'2-digit', month:'2-digit'});
-                chartLabels.push(d); chartDataTonnage.push(s.tonnage || 0); chartPointColors.push(s.isDeload ? '#f97316' : '#8b5cf6');
+                chartLabels.push(d); chartDataTonnage.push(s.tonnage || 0); chartPointColors.push(s.isDeload ? '#ff9f0a' : '#bf5af2');
 
                 let badgeHtml = "";
-                if (s.isDeload) { badgeHtml = `<div class="result-badge" style="background:rgba(249,115,22,0.15); color:var(--cardio-color);">💤 Descarga</div>`; } 
+                if (s.isDeload) { badgeHtml = `<div class="result-badge" style="background:rgba(255,159,10,0.15); color:var(--cardio-color);">💤 Descarga</div>`; } 
                 else if (idx > 0) {
                     let prevS = null; for (let i = idx - 1; i >= 0; i--) { if (!sessions[i].isDeload) { prevS = sessions[i]; break; } }
                     if (prevS) { const diff = (s.tonnage || 0) - (prevS.tonnage || 0); const diffStr = diff > 0 ? `+${diff.toLocaleString()}` : diff.toLocaleString(); const colorClass = diff > 0 ? 'badge-up' : (diff < 0 ? 'badge-down' : 'badge-same'); badgeHtml = `<div class="result-badge ${colorClass}">${diffStr} kg</div>`; } 
                     else { badgeHtml = `<div class="result-badge badge-same">Base</div>`; }
                 } else { badgeHtml = `<div class="result-badge badge-same">Base</div>`; }
 
-                htmlList = `<div class="stat-row" style="display:flex; justify-content:space-between; align-items:center; ${s.isDeload ? 'opacity:0.8;' : ''}"><div><div style="font-weight:bold; color:var(--text-color);">${new Date(s.date).toLocaleDateString('es-ES')}</div><div style="font-size:0.8rem; color:var(--text-muted);">Tonelaje: ${(s.tonnage||0).toLocaleString()} kg</div></div>${badgeHtml}</div>` + htmlList;
+                htmlList = `<div class="stat-row" style="display:flex; justify-content:space-between; align-items:center; ${s.isDeload ? 'opacity:0.7;' : ''}"><div><div style="font-weight:700; font-size: 1.05rem; color:var(--text-color);">${new Date(s.date).toLocaleDateString('es-ES')}</div><div style="font-size:0.85rem; color:var(--text-muted); font-weight: 500;">Tonelaje: ${(s.tonnage||0).toLocaleString()} kg</div></div>${badgeHtml}</div>` + htmlList;
             });
 
             chartWrapper.style.display = 'block'; 
             if(chartInstanceSessions) chartInstanceSessions.destroy();
-            chartInstanceSessions = new Chart(document.getElementById('chartSessions').getContext('2d'), { type: 'line', data: { labels: chartLabels, datasets: [{ label: 'Tonelaje Total (Kg)', data: chartDataTonnage, borderColor: '#14b8a6', backgroundColor: 'rgba(20, 184, 166, 0.2)', tension: 0.3, fill: true, pointRadius: 5, pointBackgroundColor: chartPointColors }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#a1a1aa' } }, x: { grid: { display:false }, ticks: { color: '#a1a1aa' } } } } });
+            chartInstanceSessions = new Chart(document.getElementById('chartSessions').getContext('2d'), { type: 'line', data: { labels: chartLabels, datasets: [{ label: 'Tonelaje Total (Kg)', data: chartDataTonnage, borderColor: '#bf5af2', backgroundColor: 'rgba(191, 90, 242, 0.1)', tension: 0.4, fill: true, pointRadius: 5, borderWidth: 3, pointBackgroundColor: chartPointColors }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { grid: { color: 'rgba(255,255,255,0.05)' }, border: {display: false} }, x: { grid: { display:false }, border: {display: false} } } } });
             list.innerHTML = htmlList;
         }
 
         function populateStatsDropdown() {
-            const select = document.getElementById('stat-exercise-selector'); select.innerHTML = '<option value="">-- Selecciona un Ejercicio --</option>';
+            const select = document.getElementById('stat-exercise-selector'); select.innerHTML = '<option value="">Selecciona un Ejercicio</option>';
             const known = getUniqueExercises();
             known.forEach(ex => { const opt = document.createElement('option'); opt.value = ex.id; opt.textContent = ex.name; select.appendChild(opt); });
         }
@@ -1202,7 +1285,7 @@
             if (chartDataScore.length > 1) {
                 chartWrapper.style.display = 'block'; if(chartInstance1RM) chartInstance1RM.destroy();
                 let yLabel = isIsoTrack ? 'Max Segs' : (usesBands ? 'Índice (1RM / Banda)' : '1RM Estimado (Kg)');
-                chartInstance1RM = new Chart(document.getElementById('chart1RM').getContext('2d'), { type: 'line', data: { labels: chartLabels, datasets: [{ label: yLabel, data: chartDataScore, borderColor: '#8b5cf6', backgroundColor: 'rgba(139, 92, 246, 0.2)', tension: 0.3, fill: true, pointRadius: 4, pointBackgroundColor: '#14b8a6' }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#a1a1aa' } }, x: { grid: { display:false }, ticks: { color: '#a1a1aa' } } } } });
+                chartInstance1RM = new Chart(document.getElementById('chart1RM').getContext('2d'), { type: 'line', data: { labels: chartLabels, datasets: [{ label: yLabel, data: chartDataScore, borderColor: '#64d2ff', backgroundColor: 'rgba(100, 210, 255, 0.1)', tension: 0.4, fill: true, pointRadius: 5, borderWidth: 3, pointBackgroundColor: '#bf5af2' }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { grid: { color: 'rgba(255,255,255,0.05)' }, border: {display: false} }, x: { grid: { display:false }, border: {display: false} } } } });
             } else { chartWrapper.style.display = 'none'; }
             
             list.innerHTML = "";
@@ -1213,11 +1296,11 @@
                         let wDisplay = stat.equip === 'band' ? (set.weight || '-') : (set.weight||'-') + 'kg';
                         if (stat.exType === 'iso' && !set.weight) wDisplay = 'BW';
                         let sLabel = set.warmup ? 'W' : `S${workingIdx++}`; let typeLabel = stat.exType === 'iso' ? 's' : '';
-                        setsHtml += `<div class="stat-set-badge" style="${set.warmup ? 'opacity:0.6;' : ''}">${sLabel}: ${wDisplay} × ${set.reps||'-'}${typeLabel}${set.rir ? ` <span style="color:var(--danger-color);font-size:0.75rem;">(RIR ${set.rir})</span>` : ''}</div>`; 
+                        setsHtml += `<div class="stat-set-badge" style="${set.warmup ? 'opacity:0.6;' : ''}">${sLabel}: ${wDisplay} × ${set.reps||'-'}${typeLabel}${set.rir ? ` <span style="color:var(--text-muted);font-size:0.8rem;">(RIR ${set.rir})</span>` : ''}</div>`; 
                     }
                 }); 
-                let headerBadge = stat.isDeload ? `<span style="background:rgba(249,115,22,0.15); color:var(--cardio-color); padding:2px 6px; border-radius:4px; font-size:0.65rem;">💤 DESCARGA</span> ` : '';
-                list.innerHTML += `<div class="stat-row"><div class="stat-header"><span>${stat.dateFull}</span> <span>${headerBadge}<span style="color:var(--text-muted); font-size:0.7rem; font-weight:normal;">${stat.exType==='iso'?'ISOMÉTRICO':(stat.equip==='band'?'BANDA':'KILOS')}</span></span></div><div class="stat-sets">${setsHtml}</div></div>`; 
+                let headerBadge = stat.isDeload ? `<span style="background:rgba(255,159,10,0.15); color:var(--cardio-color); padding:4px 8px; border-radius:6px; font-size:0.7rem; font-weight: 700;">💤 DESCARGA</span> ` : '';
+                list.innerHTML += `<div class="stat-row"><div class="stat-header"><span>${stat.dateFull}</span> <span>${headerBadge}<span style="color:var(--text-muted); font-size:0.75rem; font-weight:700;">${stat.exType==='iso'?'ISOMÉTRICO':(stat.equip==='band'?'BANDA':'KILOS')}</span></span></div><div class="stat-sets">${setsHtml}</div></div>`; 
             });
         }
 
@@ -1245,37 +1328,37 @@
             const sessions = history.filter(w => { const wd = new Date(w.date); return wd.getFullYear() == y && wd.getMonth() == m-1 && wd.getDate() == d; });
             document.getElementById('modal-date-title').textContent = targetDate.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' });
             const container = document.getElementById('modal-summaries'); container.innerHTML = '';
-            if (sessions.length === 0) { container.innerHTML = '<p style="color:var(--text-muted); text-align:center; margin-top:30px;">Día de descanso.</p>'; document.getElementById('day-modal').classList.add('active'); return; }
+            if (sessions.length === 0) { container.innerHTML = '<p style="color:var(--text-muted); text-align:center; margin-top:30px; font-weight: 500;">Día de descanso.</p>'; document.getElementById('day-modal').classList.add('active'); return; }
             const routines = getMergedRoutines();
             sessions.forEach(s => {
                 const timeStr = s.startTime ? `${s.startTime} ${s.endTime ? '- ' + s.endTime : ''}` : new Date(s.date).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
                 let durationStr = ""; if(s.startTime && s.endTime) { const [sh, sm] = s.startTime.split(':'); const [eh, em] = s.endTime.split(':'); const diffMins = (parseInt(eh)*60 + parseInt(em)) - (parseInt(sh)*60 + parseInt(sm)); if(diffMins > 0) durationStr = ` (${diffMins} min)`; }
-                let shareToggleHTML = ""; if (sessions.length > 1) { shareToggleHTML = `<div class="setting-row" style="padding:0; border:none; margin-bottom:10px;" data-html2canvas-ignore="true"><span style="font-size:0.75rem; color:var(--text-muted); font-weight:bold; text-transform:uppercase;">Incluir</span><label class="switch" style="transform: scale(0.8); transform-origin: right;"><input type="checkbox" checked data-target="card-${s.id}" onchange="toggleCardShare(this)"><span class="slider"></span></label></div>`; }
+                let shareToggleHTML = ""; if (sessions.length > 1) { shareToggleHTML = `<div class="setting-row" style="padding:0; border:none; margin-bottom:15px;" data-html2canvas-ignore="true"><span style="font-size:0.8rem; color:var(--text-muted); font-weight:700; text-transform:uppercase;">Incluir en imagen</span><label class="switch" style="transform: scale(0.8); transform-origin: right;"><input type="checkbox" checked data-target="card-${s.id}" onchange="toggleCardShare(this)"><span class="slider"></span></label></div>`; }
                 if (s.type === 'cardio') {
-                    container.innerHTML += `<div class="summary-card cardio-theme" id="card-${s.id}">${shareToggleHTML}<h4>🏃 ${s.modality} <span style="float:right; font-size:0.8rem; color:var(--text-muted); font-weight:normal;">${timeStr}${durationStr}</span></h4><div class="summary-detail">⏱️ ${s.duration} min ${s.distance ? `| 📏 ${s.distance} km` : ''} ${s.cal ? `| 🔥 ${s.cal} kcal` : ''}</div>${s.notes ? `<div class="summary-detail" style="margin-top:8px; font-style:italic; border-top:1px solid rgba(255,255,255,0.05); padding-top:8px;">"${s.notes}"</div>` : ''}<button class="btn-edit" onclick="editPastWorkout('${s.id}')" data-html2canvas-ignore="true">✏️ Editar Sesión</button></div>`;
+                    container.innerHTML += `<div class="summary-card cardio-theme" id="card-${s.id}">${shareToggleHTML}<h4>🏃 ${s.modality} <span style="float:right; font-size:0.85rem; color:var(--text-muted); font-weight:600;">${timeStr}${durationStr}</span></h4><div class="summary-detail">⏱️ ${s.duration} min ${s.distance ? `| 📏 ${s.distance} km` : ''} ${s.cal ? `| 🔥 ${s.cal} kcal` : ''}</div>${s.notes ? `<div class="summary-detail" style="margin-top:10px; font-style:italic; border-top:0.5px solid rgba(255,255,255,0.1); padding-top:10px;">"${s.notes}"</div>` : ''}<button class="btn-edit" onclick="editPastWorkout('${s.id}')" data-html2canvas-ignore="true">Editar Sesión</button></div>`;
                 } else {
                     let titleIcon = s.isDeload ? "💤" : "💪";
-                    let html = `<div class="summary-card" id="card-${s.id}">${shareToggleHTML}<h4>${titleIcon} ${s.dayId && routines[s.dayId] ? routines[s.dayId].title : "Fuerza"} <span style="float:right; font-size:0.8rem; color:var(--text-muted); font-weight:normal;">${timeStr}${durationStr}</span></h4>`;
+                    let html = `<div class="summary-card" id="card-${s.id}">${shareToggleHTML}<h4>${titleIcon} ${s.dayId && routines[s.dayId] ? routines[s.dayId].title : "Fuerza"} <span style="float:right; font-size:0.85rem; color:var(--text-muted); font-weight:600;">${timeStr}${durationStr}</span></h4>`;
                     for (const exId in s.exercises) { 
                         const exName = s.exerciseMetadata && s.exerciseMetadata[exId] ? s.exerciseMetadata[exId].name : "Ejercicio";
-                        if (s.exerciseMetadata && s.exerciseMetadata[exId] && s.exerciseMetadata[exId].skipped) { html += `<div style="margin-top:12px; font-weight:600; font-size:0.9rem; color:var(--text-muted); text-decoration: line-through;">${exName}</div><div style="font-size:0.8rem; color:var(--danger-color);">❌ Ejercicio omitido</div>`; continue; }
+                        if (s.exerciseMetadata && s.exerciseMetadata[exId] && s.exerciseMetadata[exId].skipped) { html += `<div style="margin-top:16px; font-weight:700; font-size:0.95rem; color:var(--text-muted); text-decoration: line-through;">${exName}</div><div style="font-size:0.85rem; color:var(--danger-color); font-weight:600;">❌ Ejercicio omitido</div>`; continue; }
                         const sets = s.exercises[exId].filter(set => set.weight !== "" || set.reps !== ""); 
                         const equip = s.exerciseMetadata && s.exerciseMetadata[exId] ? s.exerciseMetadata[exId].equip : 'kg';
                         const exType = s.exerciseMetadata && s.exerciseMetadata[exId] ? s.exerciseMetadata[exId].exType : 'reps';
                         if(sets.length > 0) { 
-                            html += `<div style="margin-top:12px; font-weight:600; font-size:0.9rem; color:var(--text-color);">${exName}</div><div class="stat-sets" style="margin-top:5px;">`; 
+                            html += `<div style="margin-top:16px; font-weight:700; font-size:1rem; color:var(--text-color);">${exName}</div><div class="stat-sets" style="margin-top:8px;">`; 
                             let workingIdx = 1;
                             sets.forEach((set, idx) => { 
                                 let wDisplay = equip === 'band' ? (set.weight||'-') : (set.weight||'-') + 'kg';
                                 if (exType === 'iso' && !set.weight) wDisplay = 'BW';
                                 let typeLabel = exType === 'iso' ? 's' : ''; let sLabel = set.warmup ? 'W' : `S${workingIdx++}`;
-                                html += `<span class="stat-set-badge" style="${set.warmup ? 'opacity:0.6;' : ''}">${sLabel}: ${wDisplay} × ${set.reps||'-'}${typeLabel}${set.rir ? `<span style="color:var(--danger-color);font-size:0.75rem;"> RIR ${set.rir}</span>` : ''}</span>`; 
+                                html += `<span class="stat-set-badge" style="${set.warmup ? 'opacity:0.6;' : ''}">${sLabel}: ${wDisplay} × ${set.reps||'-'}${typeLabel}${set.rir ? `<span style="color:var(--text-muted);font-size:0.8rem;margin-left:4px;">RIR ${set.rir}</span>` : ''}</span>`; 
                             }); 
                             html += `</div>`; 
                         } 
                     }
-                    if(s.tonnage) html += `<div class="summary-tonnage" style="${s.isDeload ? 'background:rgba(249,115,22,0.15); color:var(--cardio-color);' : ''}">Tonelaje Efectivo Kg: ${s.tonnage.toLocaleString()}</div>`;
-                    html += `<button class="btn-edit" onclick="editPastWorkout('${s.id}')" data-html2canvas-ignore="true">✏️ Editar Sesión</button></div>`; container.innerHTML += html;
+                    if(s.tonnage) html += `<div class="summary-tonnage" style="${s.isDeload ? 'border-color: var(--cardio-color); color: var(--cardio-color);' : ''}">Tonelaje Efectivo: ${s.tonnage.toLocaleString()} Kg</div>`;
+                    html += `<button class="btn-edit" onclick="editPastWorkout('${s.id}')" data-html2canvas-ignore="true">Editar Sesión</button></div>`; container.innerHTML += html;
                 }
             });
             document.getElementById('day-modal').classList.add('active');
@@ -1285,7 +1368,7 @@
 
         async function shareWorkoutImage() {
             showToast("Generando imagen... ⏳"); const containerToCapture = document.getElementById('capture-container');
-            const isAmoled = document.body.classList.contains('amoled-theme'); const bgColor = isAmoled ? '#000000' : '#09090b';
+            const bgColor = '#000000';
             const excludedCards = document.querySelectorAll('.exclude-share'); excludedCards.forEach(card => card.style.display = 'none');
             try {
                 const canvas = await html2canvas(containerToCapture, { backgroundColor: bgColor, scale: 2, logging: false, useCORS: true });
@@ -1328,7 +1411,7 @@
                     <div style="flex:1;">${selectExHtml}</div>
                     <button class="btn-delete" style="padding: 0 10px; background: transparent; border: none; font-size:1.5rem; margin-bottom:12px;" onclick="this.parentElement.parentElement.remove()">&times;</button>
                 </div>
-                <input type="text" class="b-name" placeholder="Nombre Ejercicio" value="${name}" style="${matchedId==='NEW'?'':'display:none;'}">
+                <input type="text" class="b-name" placeholder="Nombre Ejercicio" value="${name}" style="${matchedId==='NEW'?'':'display:none;'} font-weight:600;">
                 <div class="builder-flex">
                     <select class="b-muscle" style="flex:2;">${optionsHtml}</select>
                     <select class="b-extype" style="flex:1;">
