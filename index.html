@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Tracker Premium V19</title>
+    <title>Tracker Premium V20</title>
     
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -32,7 +32,7 @@
             --safe-top: env(safe-area-inset-top, 45px);
         }
 
-        body.amoled-theme { /* Ahora el modo normal ya es amoled, este toggle lo mantenemos por compatibilidad */
+        body.amoled-theme { 
             --bg-color: #000000;
         }
 
@@ -98,14 +98,15 @@
         .col-serie { width: 36px; text-align:center;} .col-input { flex: 1; text-align: center; }
         
         .set-row { display: flex; align-items: center; gap: 8px; margin-bottom: 10px;}
-        .set-row input, select.band-input { margin-bottom: 0; text-align: center; padding: 12px 5px; border: none; background: var(--surface-elevated); font-size: 1.1rem; font-weight: 600; width: 33%; border-radius: 10px;}
-        select.band-input { color: var(--secondary-color); appearance: none; }
-        
+        .set-row input, select.band-input, select.band-input-l, select.band-input-r { margin-bottom: 0; text-align: center; padding: 12px 5px; border: none; background: var(--surface-elevated); font-size: 1.1rem; font-weight: 600; width: 33%; border-radius: 10px;}
+        select.band-input, select.band-input-l, select.band-input-r { color: var(--secondary-color); appearance: none; }
+        .uni-inputs-flex input, .uni-inputs-flex select { width: 33% !important; }
+
         /* BOTONES DE ESTADO (WARMUP, ETC) */
         .btn-warmup { background: var(--surface-elevated); border: none; color: var(--text-muted); border-radius: 10px; width: 36px; height: 44px; display:flex; justify-content:center; align-items:center; font-weight: 700; font-size: 0.95rem; cursor: pointer; transition: 0.2s; padding:0; flex-shrink: 0;}
         .btn-warmup.is-warmup { background: rgba(255, 159, 10, 0.2); color: var(--cardio-color); }
 
-        .equip-toggle, .mode-toggle { background-color: var(--surface-elevated); color: var(--text-color); border: none; border-radius: 8px; padding: 8px 12px; font-size: 0.8rem; outline: none; cursor: pointer; font-weight: 600; width: auto; margin-bottom: 0;}
+        .equip-toggle, .mode-toggle, .type-toggle-l, .equip-toggle-l, .type-toggle-r, .equip-toggle-r { background-color: var(--surface-elevated); color: var(--text-color); border: none; border-radius: 8px; padding: 8px 12px; font-size: 0.8rem; outline: none; cursor: pointer; font-weight: 600; width: auto; margin-bottom: 0;}
         
         .btn-omit { background: transparent; border: 1px solid var(--border-color); color: var(--text-muted); border-radius: 8px; padding: 8px 12px; cursor: pointer; transition: 0.2s; font-size: 0.8rem; font-weight: 600;}
         .btn-omit.active { background: rgba(255, 69, 58, 0.15); color: var(--danger-color); border-color: rgba(255, 69, 58, 0.3); }
@@ -125,14 +126,28 @@
         .btn-share { background-color: var(--surface-elevated); border: none; color: var(--primary-color); padding: 16px; width: 100%; border-radius: var(--radius-md); font-weight: 700; font-size: 1rem; margin-top: 10px; cursor: pointer;}
         .btn-delete { background-color: rgba(255, 69, 58, 0.15); border: none; color: var(--danger-color); font-size: 1.5rem; cursor: pointer; padding: 0 16px; border-radius: var(--radius-md);}
 
-        /* META E INFO */
+        /* META E INFO - OPTIMIZADO PARA IPHONE 13 NATIVO (CSS GRID) */
         .rule-box { background-color: transparent; border: 1px solid var(--border-color); padding: 15px; margin-bottom: 25px; border-radius: var(--radius-md); font-size: 0.9rem; color: var(--text-muted); display:flex; align-items:center; gap: 10px;}
         .rule-box::before { content: "ℹ️"; font-size: 1.2rem; }
         
-        .meta-box { background: transparent; padding: 0; margin-bottom: 25px; display: flex; flex-wrap: wrap; gap: 10px;}
-        .meta-box div { flex: 1; min-width: 20%; background: var(--surface-color); padding: 12px; border-radius: var(--radius-md); border: 0.5px solid var(--border-color);}
-        .meta-box label { font-size: 0.7rem; color: var(--text-muted); display: block; margin-bottom: 6px; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px;}
-        .meta-box input { padding: 0; font-size: 1.1rem; margin-bottom: 0; background: transparent; font-weight: 600;}
+        .meta-box { 
+            background: transparent; padding: 0; margin-bottom: 25px; 
+            display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;
+        }
+        .meta-box div { 
+            background: var(--surface-color); padding: 12px 14px; 
+            border-radius: var(--radius-md); border: 0.5px solid var(--border-color);
+            display: flex; flex-direction: column; justify-content: center;
+        }
+        .meta-box div.deload-box {
+            grid-column: span 2; flex-direction: row; justify-content: space-between; align-items: center;
+        }
+        .meta-box label { font-size: 0.7rem; color: var(--text-muted); display: block; margin-bottom: 4px; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px;}
+        .meta-box input { 
+            padding: 4px 0 0 0; font-size: 1.1rem; margin-bottom: 0; background: transparent; 
+            font-weight: 600; color: var(--text-color); border: none; width: 100%;
+            -webkit-appearance: none; min-height: 24px;
+        }
 
         .builder-row { display: flex; flex-direction:column; gap: 12px; margin-bottom: 15px; background: var(--surface-color); padding: 16px; border-radius: var(--radius-lg); border: 0.5px solid var(--border-color);}
         .builder-row input, .builder-row select { margin-bottom: 0; background: var(--surface-elevated); border: none;}
@@ -273,9 +288,9 @@
                 <div><label>Fecha</label><input type="date" id="w-date"></div>
                 <div><label>Inicio</label><input type="time" id="w-start"></div>
                 <div><label>Fin</label><input type="time" id="w-end"></div>
-                <div style="display:flex; flex-direction:column; align-items:center; justify-content: center; min-width: 15%;">
-                    <label>Descarga</label>
-                    <label class="switch" style="transform: scale(0.85);">
+                <div class="deload-box">
+                    <label style="margin-bottom:0;">Descarga</label>
+                    <label class="switch" style="transform: scale(0.85); margin-bottom:0;">
                         <input type="checkbox" id="w-deload" onchange="autoSaveDraft()">
                         <span class="slider"></span>
                     </label>
@@ -368,13 +383,6 @@
 
             <div class="card">
                 <h3 style="margin-bottom: 20px;">⚙️ Configuración</h3>
-                <div class="setting-row" style="display:none;"> <!-- Oculto por defecto ya que forzamos modo oscuro -->
-                    <span style="font-weight: 600;">Modo AMOLED (Pure Black)</span>
-                    <label class="switch">
-                        <input type="checkbox" id="amoled-toggle" onchange="toggleAmoled()" checked>
-                        <span class="slider"></span>
-                    </label>
-                </div>
                 <h3 style="margin-bottom: 20px; font-size: 1rem; color: var(--text-muted);">Copia de Seguridad</h3>
                 <div style="display: flex; gap: 15px;">
                     <button class="backup-btn" onclick="exportBackup()">⬇️ Exportar</button>
@@ -433,6 +441,12 @@
             
             <div class="builder-flex">
                 <select id="extra-ex-muscle" style="flex:2;"></select>
+                <select id="extra-ex-unilateral" style="flex:1;">
+                    <option value="false">Bilateral</option>
+                    <option value="true">Unilateral</option>
+                </select>
+            </div>
+            <div class="builder-flex">
                 <select id="extra-ex-extype" style="flex:1;">
                     <option value="reps">Reps</option>
                     <option value="iso">Segs</option>
@@ -453,48 +467,55 @@
     <div id="toast">Acción completada</div>
 
     <script>
-        // MANTENEMOS EXACTAMENTE LA MISMA LÓGICA JAVASCRIPT DE LA V18
         const M_CHEST = "Pecho", M_BACK = "Espalda", M_SHOULDER = "Hombros", M_QUADS = "Cuádriceps", M_HAMS = "Isquios", M_GLUTES = "Glúteos", M_BICEPS = "Bíceps", M_TRICEPS = "Tríceps", M_CALVES = "Gemelos", M_CORE = "Core", M_OTHER = "Otro";
         const muscleOptions = [M_CHEST, M_BACK, M_SHOULDER, M_QUADS, M_HAMS, M_GLUTES, M_BICEPS, M_TRICEPS, M_CALVES, M_CORE, M_OTHER];
 
         const baseRoutine = {
             dia1: { title: "DÍA 1: Torso A", rule: "Excéntrica 3 seg. Descanso: 60-90s.", exercises: [
-                { id: "d1_jalon", name: "Jalón al pecho (Neutro/V)", sets: 4, target: "8-10 reps", muscle: M_BACK, exType: "reps", equip: "kg" },
-                { id: "d1_press", name: "Press pecho convergente", sets: 4, target: "8-10 reps", muscle: M_CHEST, exType: "reps", equip: "kg" },
-                { id: "d1_elev", name: "Elevaciones laterales", sets: 4, target: "12-15 reps", muscle: M_SHOULDER, exType: "reps", equip: "kg" },
-                { id: "d1_tri", name: "Tríceps polea alta", sets: 3, target: "10-12 reps", muscle: M_TRICEPS, exType: "reps", equip: "kg" },
-                { id: "d1_bi", name: "Curl bíceps Scott", sets: 3, target: "10-12 reps", muscle: M_BICEPS, exType: "reps", equip: "kg" },
-                { id: "d1_pl", name: "Plancha retroversión", sets: 3, target: "40 seg", muscle: M_CORE, exType: "iso", equip: "kg" }
+                { id: "d1_jalon", name: "Jalón al pecho (Neutro/V)", sets: 4, target: "8-10 reps", muscle: M_BACK, exType: "reps", equip: "kg", isUnilateral: false },
+                { id: "d1_press", name: "Press pecho convergente", sets: 4, target: "8-10 reps", muscle: M_CHEST, exType: "reps", equip: "kg", isUnilateral: false },
+                { id: "d1_elev", name: "Elevaciones laterales", sets: 4, target: "12-15 reps", muscle: M_SHOULDER, exType: "reps", equip: "kg", isUnilateral: false },
+                { id: "d1_tri", name: "Tríceps polea alta", sets: 3, target: "10-12 reps", muscle: M_TRICEPS, exType: "reps", equip: "kg", isUnilateral: false },
+                { id: "d1_bi", name: "Curl bíceps Scott", sets: 3, target: "10-12 reps", muscle: M_BICEPS, exType: "reps", equip: "kg", isUnilateral: false },
+                { id: "d1_pl", name: "Plancha retroversión", sets: 3, target: "40 seg", muscle: M_CORE, exType: "iso", equip: "kg", isUnilateral: false }
             ]},
             dia2: { title: "DÍA 2: Pierna A", rule: "Excéntrica 3 seg. Columna neutra. Descanso: 90s.", exercises: [
-                { id: "d2_hip", name: "Hip Thrust", sets: 4, target: "8-10 reps", muscle: M_GLUTES, exType: "reps", equip: "kg" },
-                { id: "d2_pren", name: "Prensa Inclinada", sets: 4, target: "10-12 reps", muscle: M_QUADS, exType: "reps", equip: "kg" },
-                { id: "d2_curl", name: "Curl Isquios sentado", sets: 4, target: "10-12 reps", muscle: M_HAMS, exType: "reps", equip: "kg" },
-                { id: "d2_ext", name: "Silla Romana (Glúteo)", sets: 3, target: "12-15 reps", muscle: M_GLUTES, exType: "reps", equip: "kg" },
-                { id: "d2_gem", name: "Gemelos de pie", sets: 3, target: "15 reps", muscle: M_CALVES, exType: "reps", equip: "kg" }
+                { id: "d2_hip", name: "Hip Thrust", sets: 4, target: "8-10 reps", muscle: M_GLUTES, exType: "reps", equip: "kg", isUnilateral: false },
+                { id: "d2_pren", name: "Prensa Inclinada", sets: 4, target: "10-12 reps", muscle: M_QUADS, exType: "reps", equip: "kg", isUnilateral: false },
+                { id: "d2_curl", name: "Curl Isquios sentado", sets: 4, target: "10-12 reps", muscle: M_HAMS, exType: "reps", equip: "kg", isUnilateral: false },
+                { id: "d2_ext", name: "Silla Romana (Glúteo)", sets: 3, target: "12-15 reps", muscle: M_GLUTES, exType: "reps", equip: "kg", isUnilateral: false },
+                { id: "d2_gem", name: "Gemelos de pie", sets: 3, target: "15 reps", muscle: M_CALVES, exType: "reps", equip: "kg", isUnilateral: false }
             ]},
             dia3: { title: "DÍA 3: Torso B", rule: "Excéntrica 3 seg. Descanso: 60-90s.", exercises: [
-                { id: "d3_rem", name: "Remo pecho apoyado", sets: 4, target: "8-10 reps", muscle: M_BACK, exType: "reps", equip: "kg" },
-                { id: "d3_pinc", name: "Press inclinado Mancuernas", sets: 3, target: "8-10 reps", muscle: M_CHEST, exType: "reps", equip: "kg" },
-                { id: "d3_land", name: "Landmine Press (1 brazo)", sets: 3, target: "8-10 reps", muscle: M_SHOULDER, exType: "reps", equip: "kg" },
-                { id: "d3_face", name: "Face Pull polea alta", sets: 4, target: "15 reps", muscle: M_BACK, exType: "reps", equip: "kg" },
-                { id: "d3_tri", name: "Extensiones tríceps cruzadas", sets: 3, target: "12 reps", muscle: M_TRICEPS, exType: "reps", equip: "kg" },
-                { id: "d3_bi", name: "Curl bíceps martillo", sets: 3, target: "12 reps", muscle: M_BICEPS, exType: "reps", equip: "kg" }
+                { id: "d3_rem", name: "Remo pecho apoyado", sets: 4, target: "8-10 reps", muscle: M_BACK, exType: "reps", equip: "kg", isUnilateral: false },
+                { id: "d3_pinc", name: "Press inclinado Mancuernas", sets: 3, target: "8-10 reps", muscle: M_CHEST, exType: "reps", equip: "kg", isUnilateral: false },
+                { id: "d3_land", name: "Landmine Press (1 brazo)", sets: 3, target: "8-10 reps", muscle: M_SHOULDER, exType: "reps", equip: "kg", isUnilateral: false },
+                { id: "d3_face", name: "Face Pull polea alta", sets: 4, target: "15 reps", muscle: M_BACK, exType: "reps", equip: "kg", isUnilateral: false },
+                { id: "d3_tri", name: "Extensiones tríceps cruzadas", sets: 3, target: "12 reps", muscle: M_TRICEPS, exType: "reps", equip: "kg", isUnilateral: false },
+                { id: "d3_bi", name: "Curl bíceps martillo", sets: 3, target: "12 reps", muscle: M_BICEPS, exType: "reps", equip: "kg", isUnilateral: false }
             ]},
             dia4: { title: "DÍA 4: Pierna B (Casa)", rule: "Densidad metabólica. Descanso: 60-90s.", exercises: [
-                { id: "d4_bul", name: "Sentadilla Búlgara", sets: 4, target: "8-10 reps / pierna", muscle: M_QUADS, exType: "reps", equip: "kg" },
-                { id: "d4_push", name: "Flexiones estrictas", sets: 3, target: "Al fallo", muscle: M_CHEST, exType: "reps", equip: "kg" },
-                { id: "d4_bst", name: "B-Stance RDL", sets: 3, target: "12 reps / pierna", muscle: M_HAMS, exType: "reps", equip: "kg" },
-                { id: "d4_abd", name: "Abducción cadera (Banda)", sets: 3, target: "15 reps / pierna", muscle: M_GLUTES, exType: "reps", equip: "band" },
-                { id: "d4_pal", name: "Press Pallof", sets: 3, target: "12 reps / lado", muscle: M_CORE, exType: "reps", equip: "kg" },
-                { id: "d4_bird", name: "Bird-Dog", sets: 3, target: "10 reps / lado", muscle: M_CORE, exType: "reps", equip: "kg" }
+                { id: "d4_bul", name: "Sentadilla Búlgara", sets: 4, target: "8-10 reps / pierna", muscle: M_QUADS, exType: "reps", equip: "kg", isUnilateral: false },
+                { id: "d4_push", name: "Flexiones estrictas", sets: 3, target: "Al fallo", muscle: M_CHEST, exType: "reps", equip: "kg", isUnilateral: false },
+                { id: "d4_bst", name: "B-Stance RDL", sets: 3, target: "12 reps / pierna", muscle: M_HAMS, exType: "reps", equip: "kg", isUnilateral: false },
+                { id: "d4_abd", name: "Abducción cadera (Banda)", sets: 3, target: "15 reps / pierna", muscle: M_GLUTES, exType: "reps", equip: "band", isUnilateral: false },
+                { id: "d4_pal", name: "Press Pallof", sets: 3, target: "12 reps / lado", muscle: M_CORE, exType: "reps", equip: "kg", isUnilateral: false },
+                { id: "d4_bird", name: "Bird-Dog", sets: 3, target: "10 reps / lado", muscle: M_CORE, exType: "reps", equip: "kg", isUnilateral: false }
             ]},
             dia5: { title: "DÍA 5: Cardio en Casa (Circuito)", rule: "Circuito Metabólico. 45s trabajo / 15s descanso. 4-6 vueltas.", exercises: [
-                { id: "d5_jj", name: "Jumping Jacks", sets: 4, target: "45 seg", muscle: M_OTHER, exType: "iso", equip: "kg" },
-                { id: "d5_esc", name: "Escaladores", sets: 4, target: "45 seg", muscle: M_CORE, exType: "iso", equip: "kg" },
-                { id: "d5_box", name: "Shadow Boxing", sets: 4, target: "45 seg", muscle: M_SHOULDER, exType: "iso", equip: "kg" },
-                { id: "d5_skate", name: "Skater Jumps", sets: 4, target: "45 seg", muscle: M_QUADS, exType: "iso", equip: "kg" },
-                { id: "d5_squat", name: "Sentadillas Rápidas", sets: 4, target: "45 seg", muscle: M_QUADS, exType: "iso", equip: "kg" }
+                { id: "d5_jj", name: "Jumping Jacks", sets: 4, target: "45 seg", muscle: M_OTHER, exType: "iso", equip: "kg", isUnilateral: false },
+                { id: "d5_esc", name: "Escaladores", sets: 4, target: "45 seg", muscle: M_CORE, exType: "iso", equip: "kg", isUnilateral: false },
+                { id: "d5_box", name: "Shadow Boxing", sets: 4, target: "45 seg", muscle: M_SHOULDER, exType: "iso", equip: "kg", isUnilateral: false },
+                { id: "d5_skate", name: "Skater Jumps", sets: 4, target: "45 seg", muscle: M_QUADS, exType: "iso", equip: "kg", isUnilateral: false },
+                { id: "d5_squat", name: "Sentadillas Rápidas", sets: 4, target: "45 seg", muscle: M_QUADS, exType: "iso", equip: "kg", isUnilateral: false }
+            ]},
+            dia6: { title: "🔄 Sesión Adaptada: Protección Escapular", rule: "Trabajo asimétrico. Enfoque en protección articular de escápula y hombro derecho.", exercises: [
+                { id: "d6_remo", name: "Remo pecho apoyado (Adaptado)", sets: 4, target: "8-10 reps (Izq) / Iso o Banda suave (Der)", muscle: M_BACK, exType: "reps", equip: "kg", isUnilateral: true, typeL: "reps", equipL: "kg", typeR: "iso", equipR: "band" },
+                { id: "d6_press", name: "Floor Press / Press Inclinado Convergente", sets: 3, target: "8-10 reps (RIR 3 conservador)", muscle: M_CHEST, exType: "reps", equip: "kg", isUnilateral: false },
+                { id: "d6_land", name: "Landmine Press a 1 brazo", sets: 3, target: "8-10 reps (Izq) / Press Isométrico Pared (Der)", muscle: M_SHOULDER, exType: "reps", equip: "kg", isUnilateral: true, typeL: "reps", equipL: "kg", typeR: "iso", equipR: "kg" },
+                { id: "d6_face", name: "Face Pull polea alta / Pull-aparts banda", sets: 4, target: "15 reps (Muy ligeras o sustituir)", muscle: M_BACK, exType: "reps", equip: "kg", isUnilateral: false },
+                { id: "d6_tri", name: "Extensiones de tríceps clásicas (Pushdown)", sets: 3, target: "12 reps (Hombros neutros)", muscle: M_TRICEPS, exType: "reps", equip: "kg", isUnilateral: false },
+                { id: "d6_bi", name: "Curl bíceps martillo", sets: 3, target: "12 reps (Postura estricta)", muscle: M_BICEPS, exType: "reps", equip: "kg", isUnilateral: false }
             ]}
         };
 
@@ -504,16 +525,11 @@
         let currentEditWorkoutId = null; 
         let chartInstance1RM = null, chartInstanceRadar = null, chartInstanceWeekly = null, chartInstanceSessions = null; 
 
-        // Forzar tema AMOLED para el diseño profesional
         window.onload = function() {
             document.body.classList.add('amoled-theme'); 
             populateDaySelector(); populateBuilderDropdown(); loadRoutineForEdit(); initCalendar();
             window.scrollTo(0,0);
         };
-
-        function toggleAmoled() {
-            // Mantenido por si se necesita habilitar fondos claros en el futuro, pero deshabilitado visualmente
-        }
 
         let timerInterval; let timerSeconds = 0;
         function showTimer() { document.getElementById('rest-timer').classList.add('active'); if(timerSeconds === 0) addTimerTime(90); }
@@ -536,7 +552,7 @@
             const routines = getMergedRoutines();
             for(let key in routines) {
                 routines[key].exercises.forEach(ex => {
-                    if(!exMap[ex.id]) exMap[ex.id] = { id: ex.id, name: ex.name, muscle: ex.muscle || M_OTHER, equip: ex.equip||'kg', exType: ex.exType||'reps', target: ex.target||'' };
+                    if(!exMap[ex.id]) exMap[ex.id] = { id: ex.id, name: ex.name, muscle: ex.muscle || M_OTHER, equip: ex.equip||'kg', exType: ex.exType||'reps', target: ex.target||'', isUnilateral: !!ex.isUnilateral, typeL: ex.typeL||'reps', equipL: ex.equipL||'kg', typeR: ex.typeR||'reps', equipR: ex.equipR||'kg' };
                 });
             }
             const history = JSON.parse(localStorage.getItem('workout_history') || '[]');
@@ -544,7 +560,7 @@
                 if(w.exerciseMetadata) {
                     Object.keys(w.exerciseMetadata).forEach(id => {
                         const m = w.exerciseMetadata[id];
-                        if(!exMap[id]) exMap[id] = { id: id, name: m.name, muscle: m.muscle || M_OTHER, equip: m.equip||'kg', exType: m.exType||'reps', target: "" };
+                        if(!exMap[id]) exMap[id] = { id: id, name: m.name, muscle: m.muscle || M_OTHER, equip: m.equip||'kg', exType: m.exType||'reps', target: "", isUnilateral: !!m.isUnilateral, typeL: m.typeL||'reps', equipL: m.equipL||'kg', typeR: m.typeR||'reps', equipR: m.equipR||'kg' };
                     });
                 }
             });
@@ -610,13 +626,61 @@
             autoSaveDraft();
         }
 
+        /* MANEJADORES DE CAMBIO DE MODO UNILATERAL INDEPENDIENTE */
+        function toggleTypeL(selectEl, exId) {
+            const card = document.getElementById('ex-' + exId); const isIso = selectEl.value === 'iso';
+            const equipSel = card.querySelector('.equip-toggle-l'); if(equipSel) equipSel.style.display = isIso ? 'none' : 'inline-block';
+            card.querySelectorAll('.uni-set-container').forEach(row => {
+                row.querySelector('.reps-input-l').placeholder = isIso ? 'Segs' : 'Reps';
+                row.querySelector('.rir-input-l').style.display = isIso ? 'none' : 'inline-block';
+                if (isIso) { row.querySelector('.weight-input-l').style.display = 'none'; row.querySelector('.band-input-l').style.display = 'none'; } 
+                else {
+                    const mode = equipSel ? equipSel.value : 'kg';
+                    if (mode === 'band') { row.querySelector('.weight-input-l').style.display = 'none'; row.querySelector('.band-input-l').style.display = 'inline-block'; } 
+                    else { row.querySelector('.weight-input-l').style.display = 'inline-block'; row.querySelector('.band-input-l').style.display = 'none'; }
+                }
+            });
+            autoSaveDraft();
+        }
+
+        function toggleEquipL(selectEl, exId) {
+            const card = document.getElementById('ex-' + exId); const mode = selectEl.value;
+            card.querySelectorAll('.uni-set-container').forEach(row => {
+                if (mode === 'band') { row.querySelector('.weight-input-l').style.display = 'none'; row.querySelector('.band-input-l').style.display = 'inline-block'; } 
+                else { row.querySelector('.weight-input-l').style.display = 'inline-block'; row.querySelector('.band-input-l').style.display = 'none'; }
+            });
+            autoSaveDraft();
+        }
+
+        function toggleTypeR(selectEl, exId) {
+            const card = document.getElementById('ex-' + exId); const isIso = selectEl.value === 'iso';
+            const equipSel = card.querySelector('.equip-toggle-r'); if(equipSel) equipSel.style.display = isIso ? 'none' : 'inline-block';
+            card.querySelectorAll('.uni-set-container').forEach(row => {
+                row.querySelector('.reps-input-r').placeholder = isIso ? 'Segs' : 'Reps';
+                row.querySelector('.rir-input-r').style.display = isIso ? 'none' : 'inline-block';
+                if (isIso) { row.querySelector('.weight-input-r').style.display = 'none'; row.querySelector('.band-input-r').style.display = 'none'; } 
+                else {
+                    const mode = equipSel ? equipSel.value : 'kg';
+                    if (mode === 'band') { row.querySelector('.weight-input-r').style.display = 'none'; row.querySelector('.band-input-r').style.display = 'inline-block'; } 
+                    else { row.querySelector('.weight-input-r').style.display = 'inline-block'; row.querySelector('.band-input-r').style.display = 'none'; }
+                }
+            });
+            autoSaveDraft();
+        }
+
+        function toggleEquipR(selectEl, exId) {
+            const card = document.getElementById('ex-' + exId); const mode = selectEl.value;
+            card.querySelectorAll('.uni-set-container').forEach(row => {
+                if (mode === 'band') { row.querySelector('.weight-input-r').style.display = 'none'; row.querySelector('.band-input-r').style.display = 'inline-block'; } 
+                else { row.querySelector('.weight-input-r').style.display = 'inline-block'; row.querySelector('.band-input-r').style.display = 'none'; }
+            });
+            autoSaveDraft();
+        }
+
+        /* CONFIGURACIONES ESTÁNDAR BILATERALES */
         function toggleEquip(selectEl, exId) {
-            const card = document.getElementById('ex-' + exId);
-            const mode = selectEl.value;
-            const header = card.querySelector('.col-kg-header');
-            if(header) header.textContent = mode === 'band' ? 'Banda' : 'Kg';
-            
-            card.querySelectorAll('.set-row').forEach(row => {
+            const card = document.getElementById('ex-' + exId); const mode = selectEl.value;
+            card.querySelectorAll('.set-row:not(.uni-set-container)').forEach(row => {
                 if (mode === 'band') { row.querySelector('.weight-input').style.display = 'none'; row.querySelector('.band-input').style.display = 'inline-block'; } 
                 else { row.querySelector('.weight-input').style.display = 'inline-block'; row.querySelector('.band-input').style.display = 'none'; }
             });
@@ -624,27 +688,15 @@
         }
 
         function toggleType(selectEl, exId) {
-            const card = document.getElementById('ex-' + exId);
-            const isIso = selectEl.value === 'iso';
-            
-            const repsHeader = card.querySelector('.col-reps-header');
-            const kgHeader = card.querySelector('.col-kg-header');
-            const rirHeader = card.querySelector('.col-rir-header');
+            const card = document.getElementById('ex-' + exId); const isIso = selectEl.value === 'iso';
             const equipSel = card.querySelector('.equip-toggle');
-            
-            if(repsHeader) repsHeader.textContent = isIso ? 'Segs' : 'Reps';
-            if(kgHeader) kgHeader.style.display = isIso ? 'none' : 'block';
-            if(rirHeader) rirHeader.style.display = isIso ? 'none' : 'block';
             if(equipSel) equipSel.style.display = isIso ? 'none' : 'inline-block';
 
-            card.querySelectorAll('.set-row').forEach(row => {
+            card.querySelectorAll('.set-row:not(.uni-set-container)').forEach(row => {
                 row.querySelector('.reps-input').placeholder = isIso ? 'Segs' : 'Reps';
                 row.querySelector('.rir-input').style.display = isIso ? 'none' : 'inline-block';
-                
-                if (isIso) {
-                    row.querySelector('.weight-input').style.display = 'none';
-                    row.querySelector('.band-input').style.display = 'none';
-                } else {
+                if (isIso) { row.querySelector('.weight-input').style.display = 'none'; row.querySelector('.band-input').style.display = 'none'; } 
+                else {
                     const mode = equipSel.value;
                     if (mode === 'band') { row.querySelector('.weight-input').style.display = 'none'; row.querySelector('.band-input').style.display = 'inline-block'; } 
                     else { row.querySelector('.weight-input').style.display = 'inline-block'; row.querySelector('.band-input').style.display = 'none'; }
@@ -668,7 +720,7 @@
             
             if (!dayKey) { metaBox.style.display = 'none'; return; }
 
-            metaBox.style.display = 'flex';
+            metaBox.style.display = 'grid';
             if(!currentEditWorkoutId) {
                 document.getElementById('w-date').value = getTodayStr(); document.getElementById('w-start').value = getTimeStr(); document.getElementById('w-end').value = ""; document.getElementById('w-deload').checked = false;
             }
@@ -690,9 +742,8 @@
                     html += `<div style="text-align:center; font-size:0.85rem; font-weight:700; color:var(--secondary-color); margin-bottom:15px; letter-spacing:1px; text-transform:uppercase;">Modo Edición Activado</div><div id="exercise-list">`;
                     let index = 1;
                     for (const exId in workout.exercises) {
-                        const meta = workout.exerciseMetadata[exId] || {name: "Ejercicio", muscle: M_OTHER, equip: 'kg', exType: 'reps', skipped: false, videoUrl: ""};
-                        const reminderActive = checkPreviousOverload(exId, sortedHistory);
-                        html += buildCardHTML(exId, meta.name, "Editando", meta.muscle, workout.exercises[exId], index++, reminderActive, meta.overloadNext === true, meta.equip || 'kg', meta.exType || 'reps', meta.skipped || false, meta.videoUrl || "");
+                        const meta = workout.exerciseMetadata[exId] || {};
+                        html += buildCardHTML(exId, meta.name, "Editando", meta.muscle, workout.exercises[exId], index++, reminderActive, meta.overloadNext === true, meta.equip || 'kg', meta.exType || 'reps', meta.skipped || false, meta.videoUrl || "", !!meta.isUnilateral, meta.typeL || "reps", meta.equipL || "kg", meta.typeR || "reps", meta.equipR || "kg");
                     }
                     html += `</div>`;
                 }
@@ -710,28 +761,27 @@
                 if (draft && draft.exercises && draft.exercises.length > 0) {
                     draft.exercises.forEach((ex, index) => {
                         const reminderActive = checkPreviousOverload(ex.id, sortedHistory);
-                        html += buildCardHTML(ex.id, ex.name, ex.target, ex.muscle, ex.sets, index + 1, reminderActive, ex.overloadNext, ex.equip || 'kg', ex.exType || 'reps', ex.skipped || false, ex.videoUrl || "");
+                        html += buildCardHTML(ex.id, ex.name, ex.target, ex.muscle, ex.sets, index + 1, reminderActive, ex.overloadNext, ex.equip || 'kg', ex.exType || 'reps', ex.skipped || false, ex.videoUrl || "", !!ex.isUnilateral, ex.typeL||"reps", ex.equipL||"kg", ex.typeR||"reps", ex.equipR||"kg");
                     });
                 } else {
                     dayData.exercises.forEach((ex, index) => {
                         let prefilledSets = []; let equip = ex.equip || "kg"; let exType = ex.exType || "reps"; let numSetsToRender = ex.sets;
                         
                         if (lastWorkout && lastWorkout.exercises && lastWorkout.exercises[ex.id]) {
-                            if (lastWorkout.exerciseMetadata && lastWorkout.exerciseMetadata[ex.id]) {
-                                equip = lastWorkout.exerciseMetadata[ex.id].equip || "kg"; exType = lastWorkout.exerciseMetadata[ex.id].exType || "reps";
-                            }
                             numSetsToRender = Math.max(ex.sets, lastWorkout.exercises[ex.id].length);
                         }
                         
                         for (let i = 0; i < numSetsToRender; i++) {
-                            let w = "", r = "", rir = "", isW = false;
+                            let w = "", r = "", rir = "", isW = false, wR = "", rR = "", rirR = "";
                             if (lastWorkout && lastWorkout.exercises && lastWorkout.exercises[ex.id] && lastWorkout.exercises[ex.id][i]) {
-                                w = lastWorkout.exercises[ex.id][i].weight; r = lastWorkout.exercises[ex.id][i].reps; isW = lastWorkout.exercises[ex.id][i].warmup || false;
+                                const sObj = lastWorkout.exercises[ex.id][i];
+                                w = sObj.weight; r = sObj.reps; isW = sObj.warmup || false; rir = sObj.rir || "";
+                                wR = sObj.weightR || ""; rR = sObj.repsR || ""; rirR = sObj.rirR || "";
                             }
-                            prefilledSets.push({ weight: w, reps: r, rir: rir, warmup: isW });
+                            prefilledSets.push({ weight: w, reps: r, rir: rir, weightR: wR, repsR: rR, rirR: rirR, warmup: isW });
                         }
                         const reminderActive = checkPreviousOverload(ex.id, sortedHistory);
-                        html += buildCardHTML(ex.id, ex.name, ex.target, ex.muscle, prefilledSets, index + 1, reminderActive, false, equip, exType, false, ex.videoUrl || "");
+                        html += buildCardHTML(ex.id, ex.name, ex.target, ex.muscle, prefilledSets, index + 1, reminderActive, false, equip, exType, false, ex.videoUrl || "", !!ex.isUnilateral, ex.typeL || exType, ex.equipL || equip, ex.typeR || exType, ex.equipR || equip);
                     });
                 }
                 html += `</div>`;
@@ -741,15 +791,68 @@
             container.innerHTML = html;
         }
 
-        function buildCardHTML(id, name, target, muscle, setsData, index = "*", reminderActive = false, isChecked = false, equip = "kg", exType = "reps", isSkipped = false, videoUrl = "") {
+        function buildCardHTML(id, name, target, muscle, setsData, index = "*", reminderActive = false, isChecked = false, equip = "kg", exType = "reps", isSkipped = false, videoUrl = "", isUnilateral = false, typeL = "reps", equipL = "kg", typeR = "reps", equipR = "kg") {
             const safeMuscle = muscle || M_OTHER;
-            const isIso = exType === 'iso';
             let nameHtml = videoUrl ? `<span onclick="confirmVideo('${videoUrl}')" style="cursor:pointer; text-decoration: underline dashed rgba(255,255,255,0.3); text-underline-offset: 4px;">${index}. ${name}</span>` : `${index}. ${name}`;
+            const safeName = name.replace(/'/g, "\\'");
+
+            let configHtml = "";
+            if (isUnilateral) {
+                configHtml = `
+                <div style="display:flex; flex-direction:column; gap:8px; width:100%;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; background: rgba(255,255,255,0.02); padding: 8px 12px; border-radius: 10px;">
+                        <span style="font-size:0.75rem; font-weight:800; color:var(--secondary-color);">IZQUIERDO (SANO):</span>
+                        <div style="display:flex; gap:6px;">
+                            <select class="type-toggle-l" onchange="toggleTypeL(this, '${id}')">
+                                <option value="reps" ${typeL==='reps'?'selected':''}>🔄 Reps</option>
+                                <option value="iso" ${typeL==='iso'?'selected':''}>⏱️ Segs</option>
+                            </select>
+                            <select class="equip-toggle-l" onchange="toggleEquipL(this, '${id}')" style="${typeL==='iso'?'display:none;':''}">
+                                <option value="kg" ${equipL==='kg'?'selected':''}>🏋️ Kg</option>
+                                <option value="band" ${equipL==='band'?'selected':''}>〰️ Banda</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; align-items:center; background: rgba(255,255,255,0.02); padding: 8px 12px; border-radius: 10px;">
+                        <span style="font-size:0.75rem; font-weight:800; color:var(--cardio-color);">DERECHO (ADAPTADO):</span>
+                        <div style="display:flex; gap:6px;">
+                            <select class="type-toggle-r" onchange="toggleTypeR(this, '${id}')">
+                                <option value="reps" ${typeR==='reps'?'selected':''}>🔄 Reps</option>
+                                <option value="iso" ${typeR==='iso'?'selected':''}>⏱️ Segs</option>
+                            </select>
+                            <select class="equip-toggle-r" onchange="toggleEquipR(this, '${id}')" style="${typeR==='iso'?'display:none;':''}">
+                                <option value="kg" ${equipR==='kg'?'selected':''}>🏋️ Kg</option>
+                                <option value="band" ${equipR==='band'?'selected':''}>〰️ Banda</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>`;
+            } else {
+                configHtml = `
+                <div style="display:flex; gap:6px;">
+                    <select class="mode-toggle type-toggle" onchange="toggleType(this, '${id}')">
+                        <option value="reps" ${exType!=='iso'?'selected':''}>🔄 Reps</option>
+                        <option value="iso" ${exType==='iso'?'selected':''}>⏱️ Segs</option>
+                    </select>
+                    <select class="equip-toggle" onchange="toggleEquip(this, '${id}')" style="${exType==='iso'?'display:none;':''}">
+                        <option value="kg" ${equip==='kg'?'selected':''}>🏋️ Kg</option>
+                        <option value="band" ${equip==='band'?'selected':''}>〰️ Banda</option>
+                    </select>
+                </div>`;
+            }
+
+            let headerLabels = isUnilateral ? "" : `
+                <div class="sets-header">
+                    <div class="col-serie">S#</div>
+                    <div class="col-input col-kg-header" style="${exType==='iso'?'display:none;':''}">${equip==='band'?'Banda':'Kg'}</div>
+                    <div class="col-input col-reps-header">${exType==='iso'?'Segs':'Reps'}</div>
+                    <div class="col-input col-rir-header" style="${exType==='iso'?'display:none;':''}">RIR</div>
+                </div>`;
 
             let html = `
             <div class="card workout-card ${isSkipped ? 'skipped' : ''}" id="ex-${id}" data-name="${name}" data-target="${target}" data-muscle="${safeMuscle}" data-video="${videoUrl}">
                 <div class="card-header">
-                    <div style="display:flex; flex-direction:column; gap:8px;">
+                    <div style="display:flex; flex-direction:column; gap:8px; width: 65%;">
                         <h3 style="margin:0;">${nameHtml}</h3>
                         <div style="display:flex; align-items:center; flex-wrap:wrap; gap:8px;">
                             <span class="muscle-tag" style="margin:0;">${safeMuscle}</span>
@@ -757,46 +860,62 @@
                         </div>
                     </div>
                     <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; justify-content:flex-end;">
-                        <button class="btn-pr" onclick="showPR('${id}', '${name}')" title="Ver Récords">🏆</button>
+                        <button class="btn-pr" onclick="showPR('${id}', '${safeName}')" title="Ver Récords">🏆</button>
                         <button class="btn-omit ${isSkipped ? 'active' : ''}" onclick="toggleSkip('${id}')">${isSkipped ? '❌' : '🚫'}</button>
                     </div>
                 </div>
                 
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 15px;">
-                    <div class="target-box" style="margin:0;">🎯 ${target}</div>
-                    <div style="display:flex; gap:6px;">
-                        <select class="mode-toggle type-toggle" onchange="toggleType(this, '${id}')">
-                            <option value="reps" ${!isIso?'selected':''}>🔄 Reps</option>
-                            <option value="iso" ${isIso?'selected':''}>⏱️ Segs</option>
-                        </select>
-                        <select class="equip-toggle" onchange="toggleEquip(this, '${id}')" style="${isIso?'display:none;':''}">
-                            <option value="kg" ${equip==='kg'?'selected':''}>🏋️ Kg</option>
-                            <option value="band" ${equip==='band'?'selected':''}>〰️ Banda</option>
-                        </select>
-                    </div>
+                <div style="display:flex; flex-direction:column; gap:12px; margin-bottom: 18px;">
+                    <div class="target-box" style="margin:0; align-self: flex-start;">🎯 ${target}</div>
+                    ${configHtml}
                 </div>
 
-                <div class="sets-header">
-                    <div class="col-serie">S#</div>
-                    <div class="col-input col-kg-header" style="${isIso?'display:none;':''}">${equip==='band'?'Banda':'Kg'}</div>
-                    <div class="col-input col-reps-header">${isIso?'Segs':'Reps'}</div>
-                    <div class="col-input col-rir-header" style="${isIso?'display:none;':''}">RIR</div>
-                </div>
+                ${headerLabels}
                 <div class="sets-container">`;
             
             let workingIdx = 1;
             setsData.forEach((set, i) => {
                 const isW = set.warmup === true; const sLabel = isW ? 'W' : workingIdx++;
-                html += `
-                <div class="set-row">
-                    <button type="button" class="btn-warmup ${isW ? 'is-warmup' : ''}" onclick="toggleWarmup(this)">${sLabel}</button>
-                    <input type="number" inputmode="decimal" class="weight-input" placeholder="Kg" value="${set.weight||''}" oninput="autoSaveDraft()" style="${(isIso || equip==='band')?'display:none;':''}">
-                    <select class="band-input" onchange="autoSaveDraft()" style="${(isIso || equip==='kg')?'display:none;':''}">
-                        <option value="">--</option><option value="Baja" ${set.weight==='Baja'?'selected':''}>Baja</option><option value="Media" ${set.weight==='Media'?'selected':''}>Media</option><option value="Alta" ${set.weight==='Alta'?'selected':''}>Alta</option>
-                    </select>
-                    <input type="number" inputmode="decimal" class="reps-input" placeholder="${isIso?'Segs':'Reps'}" value="${set.reps||''}" oninput="autoSaveDraft()">
-                    <input type="number" inputmode="decimal" class="rir-input" placeholder="RIR" value="${set.rir!==undefined?set.rir:''}" oninput="autoSaveDraft()" style="${isIso?'display:none;':''}">
-                </div>`;
+                
+                if (isUnilateral) {
+                    html += `
+                    <div class="set-row uni-set-container" style="flex-direction: column; align-items: stretch; background: rgba(255,255,255,0.02); padding: 12px; border-radius: var(--radius-md); margin-bottom: 12px; border: 0.5px solid rgba(255,255,255,0.04);">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+                            <button type="button" class="btn-warmup ${isW ? 'is-warmup' : ''}" onclick="toggleWarmup(this)">${sLabel}</button>
+                            <span style="font-size: 0.75rem; font-weight: 800; color: var(--secondary-color); letter-spacing: 0.5px;">LADO IZQUIERDO</span>
+                        </div>
+                        <div class="uni-inputs-flex" style="display:flex; gap:8px; margin-bottom: 10px;">
+                            <input type="number" inputmode="decimal" class="weight-input-l" placeholder="Kg" value="${set.weight||''}" oninput="autoSaveDraft()" style="${(typeL==='iso' || equipL==='band')?'display:none;':''}">
+                            <select class="band-input-l" onchange="autoSaveDraft()" style="${(typeL==='iso' || equipL==='kg')?'display:none;':''}">
+                                <option value="">--</option><option value="Baja" ${set.weight==='Baja'?'selected':''}>Baja</option><option value="Media" ${set.weight==='Media'?'selected':''}>Media</option><option value="Alta" ${set.weight==='Alta'?'selected':''}>Alta</option>
+                            </select>
+                            <input type="number" inputmode="decimal" class="reps-input-l" placeholder="${typeL==='iso'?'Segs':'Reps'}" value="${set.reps||''}" oninput="autoSaveDraft()">
+                            <input type="number" inputmode="decimal" class="rir-input-l" placeholder="RIR" value="${set.rir!==undefined?set.rir:''}" oninput="autoSaveDraft()" style="${typeL==='iso'?'display:none;':''}">
+                        </div>
+                        <div style="display: flex; align-items: center; justify-content: flex-end; margin-bottom: 8px; border-top: 0.5px solid rgba(255,255,255,0.05); padding-top: 8px;">
+                            <span style="font-size: 0.75rem; font-weight: 800; color: var(--cardio-color); letter-spacing: 0.5px;">LADO DERECHO</span>
+                        </div>
+                        <div class="uni-inputs-flex" style="display:flex; gap:8px;">
+                            <input type="number" inputmode="decimal" class="weight-input-r" placeholder="Kg" value="${set.weightR||''}" oninput="autoSaveDraft()" style="${(typeR==='iso' || equipR==='band')?'display:none;':''}">
+                            <select class="band-input-r" onchange="autoSaveDraft()" style="${(typeR==='iso' || equipR==='kg')?'display:none;':''}">
+                                <option value="">--</option><option value="Baja" ${set.weightR==='Baja'?'selected':''}>Baja</option><option value="Media" ${set.weightR==='Media'?'selected':''}>Media</option><option value="Alta" ${set.weightR==='Alta'?'selected':''}>Alta</option>
+                            </select>
+                            <input type="number" inputmode="decimal" class="reps-input-r" placeholder="${typeR==='iso'?'Segs':'Reps'}" value="${set.repsR||''}" oninput="autoSaveDraft()">
+                            <input type="number" inputmode="decimal" class="rir-input-r" placeholder="RIR" value="${set.rirR!==undefined?set.rirR:''}" oninput="autoSaveDraft()" style="${typeR==='iso'?'display:none;':''}">
+                        </div>
+                    </div>`;
+                } else {
+                    html += `
+                    <div class="set-row">
+                        <button type="button" class="btn-warmup ${isW ? 'is-warmup' : ''}" onclick="toggleWarmup(this)">${sLabel}</button>
+                        <input type="number" inputmode="decimal" class="weight-input" placeholder="Kg" value="${set.weight||''}" oninput="autoSaveDraft()" style="${(exType==='iso' || equip==='band')?'display:none;':''}">
+                        <select class="band-input" onchange="autoSaveDraft()" style="${(exType==='iso' || equip==='kg')?'display:none;':''}">
+                            <option value="">--</option><option value="Baja" ${set.weight==='Baja'?'selected':''}>Baja</option><option value="Media" ${set.weight==='Media'?'selected':''}>Media</option><option value="Alta" ${set.weight==='Alta'?'selected':''}>Alta</option>
+                        </select>
+                        <input type="number" inputmode="decimal" class="reps-input" placeholder="${exType==='iso'?'Segs':'Reps'}" value="${set.reps||''}" oninput="autoSaveDraft()">
+                        <input type="number" inputmode="decimal" class="rir-input" placeholder="RIR" value="${set.rir!==undefined?set.rir:''}" oninput="autoSaveDraft()" style="${exType==='iso'?'display:none;':''}">
+                    </div>`;
+                }
             });
             html += `</div>
                 <button class="btn-add-set" onclick="addDynamicSet('${id}')">+ Añadir Serie</button>
@@ -810,20 +929,57 @@
 
         function addDynamicSet(exId) {
             const card = document.getElementById('ex-' + exId); const setsContainer = card.querySelector('.sets-container');
-            const equip = card.querySelector('.equip-toggle').value; const exType = card.querySelector('.type-toggle').value;
-            const isIso = exType === 'iso';
+            const isUni = card.querySelector('.type-toggle-l') !== null;
             
-            const newSetHtml = `
-            <div class="set-row" style="animation: fadeIn 0.3s ease;">
-                <button type="button" class="btn-warmup" onclick="toggleWarmup(this)">1</button>
-                <input type="number" inputmode="decimal" class="weight-input" placeholder="Kg" value="" oninput="autoSaveDraft()" style="${(isIso || equip==='band')?'display:none;':''}">
-                <select class="band-input" onchange="autoSaveDraft()" style="${(isIso || equip==='kg')?'display:none;':''}">
-                    <option value="">--</option><option value="Baja">Baja</option><option value="Media">Media</option><option value="Alta">Alta</option>
-                </select>
-                <input type="number" inputmode="decimal" class="reps-input" placeholder="${isIso?'Segs':'Reps'}" value="" oninput="autoSaveDraft()">
-                <input type="number" inputmode="decimal" class="rir-input" placeholder="RIR" value="" oninput="autoSaveDraft()" style="${isIso?'display:none;':''}">
-            </div>`;
-            setsContainer.insertAdjacentHTML('beforeend', newSetHtml); updateSetNumbers(card); autoSaveDraft(); showTimer();
+            if (isUni) {
+                const typeL = card.querySelector('.type-toggle-l').value;
+                const equipL = card.querySelector('.equip-toggle-l') ? card.querySelector('.equip-toggle-l').value : 'kg';
+                const typeR = card.querySelector('.type-toggle-r').value;
+                const equipR = card.querySelector('.equip-toggle-r') ? card.querySelector('.equip-toggle-r').value : 'kg';
+                
+                const newSetHtml = `
+                <div class="set-row uni-set-container" style="flex-direction: column; align-items: stretch; background: rgba(255,255,255,0.02); padding: 12px; border-radius: var(--radius-md); margin-bottom: 12px; border: 0.5px solid rgba(255,255,255,0.04); animation: fadeIn 0.3s ease;">
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+                        <button type="button" class="btn-warmup" onclick="toggleWarmup(this)">1</button>
+                        <span style="font-size: 0.75rem; font-weight: 800; color: var(--secondary-color); letter-spacing: 0.5px;">LADO IZQUIERDO</span>
+                    </div>
+                    <div class="uni-inputs-flex" style="display:flex; gap:8px; margin-bottom: 10px;">
+                        <input type="number" inputmode="decimal" class="weight-input-l" placeholder="Kg" value="" oninput="autoSaveDraft()" style="${(typeL==='iso' || equipL==='band')?'display:none;':''}">
+                        <select class="band-input-l" onchange="autoSaveDraft()" style="${(typeL==='iso' || equipL==='kg')?'display:none;':''}">
+                            <option value="">--</option><option value="Baja">Baja</option><option value="Media">Media</option><option value="Alta">Alta</option>
+                        </select>
+                        <input type="number" inputmode="decimal" class="reps-input-l" placeholder="${typeL==='iso'?'Segs':'Reps'}" value="" oninput="autoSaveDraft()">
+                        <input type="number" inputmode="decimal" class="rir-input-l" placeholder="RIR" value="" oninput="autoSaveDraft()" style="${typeL==='iso'?'display:none;':''}">
+                    </div>
+                    <div style="display: flex; align-items: center; justify-content: flex-end; margin-bottom: 8px; border-top: 0.5px solid rgba(255,255,255,0.05); padding-top: 8px;">
+                        <span style="font-size: 0.75rem; font-weight: 800; color: var(--cardio-color); letter-spacing: 0.5px;">LADO DERECHO</span>
+                    </div>
+                    <div class="uni-inputs-flex" style="display:flex; gap:8px;">
+                        <input type="number" inputmode="decimal" class="weight-input-r" placeholder="Kg" value="" oninput="autoSaveDraft()" style="${(typeR==='iso' || equipR==='band')?'display:none;':''}">
+                        <select class="band-input-r" onchange="autoSaveDraft()" style="${(typeR==='iso' || equipR==='kg')?'display:none;':''}">
+                            <option value="">--</option><option value="Baja">Baja</option><option value="Media">Media</option><option value="Alta">Alta</option>
+                        </select>
+                        <input type="number" inputmode="decimal" class="reps-input-r" placeholder="${typeR==='iso'?'Segs':'Reps'}" value="" oninput="autoSaveDraft()">
+                        <input type="number" inputmode="decimal" class="rir-input-r" placeholder="RIR" value="" oninput="autoSaveDraft()" style="${typeR==='iso'?'display:none;':''}">
+                    </div>
+                </div>`;
+                setsContainer.insertAdjacentHTML('beforeend', newSetHtml);
+            } else {
+                const equip = card.querySelector('.equip-toggle').value; const exType = card.querySelector('.type-toggle').value;
+                const isIso = exType === 'iso';
+                const newSetHtml = `
+                <div class="set-row" style="animation: fadeIn 0.3s ease;">
+                    <button type="button" class="btn-warmup" onclick="toggleWarmup(this)">1</button>
+                    <input type="number" inputmode="decimal" class="weight-input" placeholder="Kg" value="" oninput="autoSaveDraft()" style="${(isIso || equip==='band')?'display:none;':''}">
+                    <select class="band-input" onchange="autoSaveDraft()" style="${(isIso || equip==='kg')?'display:none;':''}">
+                        <option value="">--</option><option value="Baja">Baja</option><option value="Media">Media</option><option value="Alta">Alta</option>
+                    </select>
+                    <input type="number" inputmode="decimal" class="reps-input" placeholder="${isIso?'Segs':'Reps'}" value="" oninput="autoSaveDraft()">
+                    <input type="number" inputmode="decimal" class="rir-input" placeholder="RIR" value="" oninput="autoSaveDraft()" style="${isIso?'display:none;':''}">
+                </div>`;
+                setsContainer.insertAdjacentHTML('beforeend', newSetHtml);
+            }
+            updateSetNumbers(card); autoSaveDraft(); showTimer();
         }
 
         function showPR(exId, exName) {
@@ -858,7 +1014,6 @@
             alert(msg);
         }
 
-        // --- SISTEMA DE AÑADIR EJERCICIO EXTRA ---
         function openAddExtraModal() {
             const known = getUniqueExercises();
             const select = document.getElementById('extra-ex-select');
@@ -871,6 +1026,7 @@
             
             document.getElementById('extra-ex-name').value = ''; document.getElementById('extra-ex-name').style.display = 'block';
             document.getElementById('extra-ex-target').value = '8-12 reps'; document.getElementById('extra-ex-sets').value = '3';
+            document.getElementById('extra-ex-unilateral').value = 'false';
             
             document.getElementById('modal-add-extra').classList.add('active');
         }
@@ -883,6 +1039,7 @@
                 document.getElementById('extra-ex-muscle').value = '';
                 document.getElementById('extra-ex-extype').value = 'reps';
                 document.getElementById('extra-ex-equip').value = 'kg';
+                document.getElementById('extra-ex-unilateral').value = 'false';
             } else {
                 nameInput.style.display = 'none';
                 const ex = getUniqueExercises().find(e => e.id === val);
@@ -890,6 +1047,7 @@
                     document.getElementById('extra-ex-muscle').value = ex.muscle || M_OTHER;
                     document.getElementById('extra-ex-extype').value = ex.exType || 'reps';
                     document.getElementById('extra-ex-equip').value = ex.equip || 'kg';
+                    document.getElementById('extra-ex-unilateral').value = ex.isUnilateral ? 'true' : 'false';
                     if(ex.target) document.getElementById('extra-ex-target').value = ex.target;
                 }
             }
@@ -911,11 +1069,12 @@
             const muscleChoice = document.getElementById('extra-ex-muscle').value || M_OTHER;
             const exType = document.getElementById('extra-ex-extype').value;
             const equip = document.getElementById('extra-ex-equip').value;
+            const isUni = document.getElementById('extra-ex-unilateral').value === 'true';
             
-            let emptySets = Array(numSets).fill(null).map(() => ({ weight: "", reps: "", rir: "", warmup: false }));
+            let emptySets = Array(numSets).fill(null).map(() => ({ weight: "", reps: "", rir: "", weightR: "", repsR: "", rirR: "", warmup: false }));
             const list = document.getElementById('exercise-list'); const currentIndex = list.querySelectorAll('.workout-card').length + 1;
             
-            list.insertAdjacentHTML('beforeend', buildCardHTML(exId, name, target, muscleChoice, emptySets, currentIndex, false, false, equip, exType, false, "")); 
+            list.insertAdjacentHTML('beforeend', buildCardHTML(exId, name, target, muscleChoice, emptySets, currentIndex, false, false, equip, exType, false, "", isUni, exType, equip, exType, equip)); 
             autoSaveDraft();
             closeModal('modal-add-extra');
         }
@@ -932,19 +1091,44 @@
                 const draftData = { exercises: [], isDeload: document.getElementById('w-deload').checked };
                 cards.forEach(card => {
                     const exId = card.id.replace('ex-', ''); const sets = [];
-                    const equip = card.querySelector('.equip-toggle').value;
-                    const exType = card.querySelector('.type-toggle').value;
+                    const isUni = card.querySelector('.type-toggle-l') !== null;
+                    let equip = 'kg', exType = 'reps', typeL = 'reps', equipL = 'kg', typeR = 'reps', equipR = 'kg';
+                    
+                    if (isUni) {
+                        typeL = card.querySelector('.type-toggle-l').value;
+                        equipL = card.querySelector('.equip-toggle-l') ? card.querySelector('.equip-toggle-l').value : 'kg';
+                        typeR = card.querySelector('.type-toggle-r').value;
+                        equipR = card.querySelector('.equip-toggle-r') ? card.querySelector('.equip-toggle-r').value : 'kg';
+                        
+                        card.querySelectorAll('.uni-set-container').forEach(row => {
+                            let valL = equipL === 'band' ? row.querySelector('.band-input-l').value : row.querySelector('.weight-input-l').value;
+                            let valR = equipR === 'band' ? row.querySelector('.band-input-r').value : row.querySelector('.weight-input-r').value;
+                            let isW = row.querySelector('.btn-warmup').classList.contains('is-warmup');
+                            sets.push({ 
+                                weight: valL || "", reps: row.querySelector('.reps-input-l').value || "", rir: row.querySelector('.rir-input-l').value || "", 
+                                weightR: valR || "", repsR: row.querySelector('.reps-input-r').value || "", rirR: row.querySelector('.rir-input-r').value || "", 
+                                warmup: isW 
+                            });
+                        });
+                    } else {
+                        equip = card.querySelector('.equip-toggle').value;
+                        exType = card.querySelector('.type-toggle').value;
+                        card.querySelectorAll('.set-row:not(.uni-set-container)').forEach(row => {
+                            let val = equip === 'band' ? row.querySelector('.band-input').value : row.querySelector('.weight-input').value;
+                            let isW = row.querySelector('.btn-warmup').classList.contains('is-warmup');
+                            sets.push({ weight: val || "", reps: row.querySelector('.reps-input').value || "", rir: row.querySelector('.rir-input').value || "", warmup: isW });
+                        });
+                    }
+                    
+                    const overloadChecked = card.querySelector('.overload-input').checked;
                     const isSkipped = card.classList.contains('skipped');
                     const videoUrl = card.getAttribute('data-video') || "";
                     
-                    card.querySelectorAll('.set-row').forEach(row => {
-                        let val = equip === 'band' ? row.querySelector('.band-input').value : row.querySelector('.weight-input').value;
-                        let isW = row.querySelector('.btn-warmup').classList.contains('is-warmup');
-                        sets.push({ weight: val, reps: row.querySelector('.reps-input').value, rir: row.querySelector('.rir-input').value, warmup: isW });
+                    draftData.exercises.push({ 
+                        id: exId, name: card.getAttribute('data-name'), target: card.getAttribute('data-target'), muscle: card.getAttribute('data-muscle'), 
+                        sets: sets, overloadNext: overloadChecked, equip: equip, exType: exType, skipped: isSkipped, videoUrl: videoUrl,
+                        isUnilateral: isUni, typeL: typeL, equipL: equipL, typeR: typeR, equipR: equipR
                     });
-                    
-                    const overloadChecked = card.querySelector('.overload-input').checked;
-                    draftData.exercises.push({ id: exId, name: card.getAttribute('data-name'), target: card.getAttribute('data-target'), muscle: card.getAttribute('data-muscle'), sets: sets, overloadNext: overloadChecked, equip: equip, exType: exType, skipped: isSkipped, videoUrl: videoUrl });
                 });
                 localStorage.setItem('draft_' + dayKey, JSON.stringify(draftData));
             }, 500);
@@ -954,14 +1138,25 @@
             let ton = 0;
             for(let ex in exercisesObj) { 
                 if (metaObj && metaObj[ex] && metaObj[ex].skipped) continue; 
-                const equip = metaObj && metaObj[ex] && metaObj[ex].equip ? metaObj[ex].equip : 'kg';
-                const exType = metaObj && metaObj[ex] && metaObj[ex].exType ? metaObj[ex].exType : 'reps';
-                if (equip === 'band' || exType === 'iso') continue; 
-                exercisesObj[ex].forEach(s => { 
-                    if(s.warmup) return; 
-                    let w = parseFloat(s.weight); let r = parseInt(s.reps); 
-                    if(!isNaN(w) && !isNaN(r)) ton += (w * r); 
-                }); 
+                const isUni = metaObj && metaObj[ex] && metaObj[ex].isUnilateral;
+                if (isUni) {
+                    const eqL = metaObj[ex].equipL || 'kg'; const tyL = metaObj[ex].typeL || 'reps';
+                    const eqR = metaObj[ex].equipR || 'kg'; const tyR = metaObj[ex].typeR || 'reps';
+                    exercisesObj[ex].forEach(s => {
+                        if(s.warmup) return;
+                        if (eqL === 'kg' && tyL === 'reps') { let w = parseFloat(s.weight); let r = parseInt(s.reps); if(!isNaN(w) && !isNaN(r)) ton += (w * r); }
+                        if (eqR === 'kg' && tyR === 'reps') { let w = parseFloat(s.weightR); let r = parseInt(s.repsR); if(!isNaN(w) && !isNaN(r)) ton += (w * r); }
+                    });
+                } else {
+                    const equip = metaObj && metaObj[ex] && metaObj[ex].equip ? metaObj[ex].equip : 'kg';
+                    const exType = metaObj && metaObj[ex] && metaObj[ex].exType ? metaObj[ex].exType : 'reps';
+                    if (equip === 'band' || exType === 'iso') continue; 
+                    exercisesObj[ex].forEach(s => { 
+                        if(s.warmup) return; 
+                        let w = parseFloat(s.weight); let r = parseInt(s.reps); 
+                        if(!isNaN(w) && !isNaN(r)) ton += (w * r); 
+                    });
+                }
             }
             return ton;
         }
@@ -994,6 +1189,7 @@
             let html = ""; let upgrades = 0;
             for(const exId in curr.exercises) {
                 if (curr.exerciseMetadata[exId] && curr.exerciseMetadata[exId].skipped) continue;
+                if (curr.exerciseMetadata[exId]?.isUnilateral) continue; // Saltar comparador automático simple en asimétricos
 
                 const cSets = curr.exercises[exId].filter(s => (s.weight !== "" || s.reps !== "") && !s.warmup);
                 const pSets = (prev.exercises[exId] || []).filter(s => (s.weight !== "" || s.reps !== "") && !s.warmup);
@@ -1037,7 +1233,7 @@
                 if (statusHtml !== "") html += `<div class="result-item"><div class="result-ex-name">${exName}</div>${statusHtml}</div>`;
             }
 
-            if(html === "") html = "<p style='text-align:center; color:var(--text-muted); font-size:0.9rem;'>No hay datos comparables.</p>";
+            if(html === "") html = "<p style='text-align:center; color:var(--text-muted); font-size:0.9rem;'>No hay datos comparables o sesión unilateral registrada.</p>";
             if(upgrades > 0) document.getElementById('pwm-title').textContent = `¡Superaste ${upgrades} récord${upgrades>1?'s':''}! 🚀`;
             document.getElementById('pwm-content').innerHTML = html;
             document.getElementById('post-workout-modal').classList.add('active');
@@ -1057,18 +1253,42 @@
 
             cards.forEach(card => {
                 const exId = card.id.replace('ex-', ''); let setsData = [];
-                const equip = card.querySelector('.equip-toggle').value; const exType = card.querySelector('.type-toggle').value;
+                const isUni = card.querySelector('.type-toggle-l') !== null;
+                let equip = 'kg', exType = 'reps', typeL = 'reps', equipL = 'kg', typeR = 'reps', equipR = 'kg';
                 const isSkipped = card.classList.contains('skipped'); const videoUrl = card.getAttribute('data-video') || "";
-                
-                card.querySelectorAll('.set-row').forEach(row => {
-                    let val = equip === 'band' ? row.querySelector('.band-input').value : row.querySelector('.weight-input').value;
-                    let isW = row.querySelector('.btn-warmup').classList.contains('is-warmup');
-                    setsData.push({ weight: val || "", reps: row.querySelector('.reps-input').value || "", rir: row.querySelector('.rir-input').value || "", warmup: isW });
-                });
+
+                if (isUni) {
+                    typeL = card.querySelector('.type-toggle-l').value;
+                    equipL = card.querySelector('.equip-toggle-l') ? card.querySelector('.equip-toggle-l').value : 'kg';
+                    typeR = card.querySelector('.type-toggle-r').value;
+                    equipR = card.querySelector('.equip-toggle-r') ? card.querySelector('.equip-toggle-r').value : 'kg';
+                    
+                    card.querySelectorAll('.uni-set-container').forEach(row => {
+                        let valL = equipL === 'band' ? row.querySelector('.band-input-l').value : row.querySelector('.weight-input-l').value;
+                        let valR = equipR === 'band' ? row.querySelector('.band-input-r').value : row.querySelector('.weight-input-r').value;
+                        let isW = row.querySelector('.btn-warmup').classList.contains('is-warmup');
+                        setsData.push({ 
+                            weight: valL || "", reps: row.querySelector('.reps-input-l').value || "", rir: row.querySelector('.rir-input-l').value || "", 
+                            weightR: valR || "", repsR: row.querySelector('.reps-input-r').value || "", rirR: row.querySelector('.rir-input-r').value || "", 
+                            warmup: isW 
+                        });
+                    });
+                } else {
+                    equip = card.querySelector('.equip-toggle').value; exType = card.querySelector('.type-toggle').value;
+                    card.querySelectorAll('.set-row:not(.uni-set-container)').forEach(row => {
+                        let val = equip === 'band' ? row.querySelector('.band-input').value : row.querySelector('.weight-input').value;
+                        let isW = row.querySelector('.btn-warmup').classList.contains('is-warmup');
+                        setsData.push({ weight: val || "", reps: row.querySelector('.reps-input').value || "", rir: row.querySelector('.rir-input').value || "", warmup: isW });
+                    });
+                }
                 
                 const overloadChecked = card.querySelector('.overload-input').checked;
                 workoutRecord.exercises[exId] = setsData;
-                workoutRecord.exerciseMetadata[exId] = { name: card.getAttribute('data-name'), muscle: card.getAttribute('data-muscle'), overloadNext: overloadChecked, equip: equip, exType: exType, skipped: isSkipped, videoUrl: videoUrl };
+                workoutRecord.exerciseMetadata[exId] = { 
+                    name: card.getAttribute('data-name'), muscle: card.getAttribute('data-muscle'), overloadNext: overloadChecked, 
+                    equip: equip, exType: exType, skipped: isSkipped, videoUrl: videoUrl,
+                    isUnilateral: isUni, typeL: typeL, equipL: equipL, typeR: typeR, equipR: equipR
+                };
             });
             workoutRecord.tonnage = getTonnage(workoutRecord.exercises, workoutRecord.exerciseMetadata);
 
@@ -1259,11 +1479,12 @@
             const exStats = []; let usesBands = false; let isIsoTrack = false;
 
             JSON.parse(localStorage.getItem('workout_history') || '[]').sort((a,b) => new Date(a.date) - new Date(b.date)).forEach(w => { 
-                if (w.type !== 'cardio' && w.exercises[exId] && w.exercises[exId].some(set => set.weight !== "" || set.reps !== "")) { 
+                if (w.type !== 'cardio' && w.exercises[exId] && w.exercises[exId].some(set => set.weight !== "" || set.reps !== "" || set.weightR !== "" || set.repsR !== "")) { 
                     const meta = w.exerciseMetadata && w.exerciseMetadata[exId] ? w.exerciseMetadata[exId] : {}; if (meta.skipped) return; 
                     const d = new Date(w.date); const equip = meta.equip || 'kg'; const exType = meta.exType || 'reps';
-                    if (equip === 'band') usesBands = true; if (exType === 'iso') isIsoTrack = true;
-                    exStats.push({ dateStr: d.toLocaleDateString('es-ES', {day:'2-digit', month:'2-digit'}), dateFull: d.toLocaleDateString() + ' ' + (w.startTime||''), sets: w.exercises[exId], equip: equip, exType: exType, isDeload: w.isDeload }); 
+                    if (equip === 'band' || meta.equipL === 'band' || meta.equipR === 'band') usesBands = true; 
+                    if (exType === 'iso' || meta.typeL === 'iso' || meta.typeR === 'iso') isIsoTrack = true;
+                    exStats.push({ dateStr: d.toLocaleDateString('es-ES', {day:'2-digit', month:'2-digit'}), dateFull: d.toLocaleDateString() + ' ' + (w.startTime||''), sets: w.exercises[exId], equip: equip, exType: exType, isDeload: w.isDeload, isUnilateral: !!meta.isUnilateral, typeL: meta.typeL, equipL: meta.equipL, typeR: meta.typeR, equipR: meta.equipR }); 
                 } 
             });
             if (exStats.length === 0) { list.innerHTML = '<p style="text-align: center; color:var(--text-muted); margin-top:20px;">No hay datos aún.</p>'; chartWrapper.style.display = 'none'; return; }
@@ -1275,16 +1496,23 @@
                 stat.sets.forEach(set => { 
                     if(set.warmup) return; 
                     let r = parseInt(set.reps) || 0; 
-                    if (stat.exType === 'iso') { if (r > maxVal) maxVal = r; } 
-                    else if (stat.equip === 'band') { const bandScores = { "Baja": 10, "Media": 20, "Alta": 30 }; let bVal = bandScores[set.weight]; if (bVal && r > 0) { let score = bVal + r; if (score > maxVal) maxVal = score; } } 
-                    else { let w = parseFloat(set.weight); if(!isNaN(w) && r > 0) { let est1RM = w * (1 + (r / 30)); if(est1RM > maxVal) maxVal = est1RM; } }
+                    if (stat.isUnilateral) {
+                        // Usar lado izquierdo como tracking simplificado para gráficos generales
+                        if (stat.typeL === 'iso') { if (r > maxVal) maxVal = r; }
+                        else if (stat.equipL === 'band') { const bVal = {"Baja":10,"Media":20,"Alta":30}[set.weight] || 0; if (bVal && r > 0 && bVal+r > maxVal) maxVal = bVal+r; }
+                        else { let w = parseFloat(set.weight); if(!isNaN(w) && r > 0) { let est = w * (1 + (r / 30)); if(est > maxVal) maxVal = est; } }
+                    } else {
+                        if (stat.exType === 'iso') { if (r > maxVal) maxVal = r; } 
+                        else if (stat.equip === 'band') { const bandScores = { "Baja": 10, "Media": 20, "Alta": 30 }; let bVal = bandScores[set.weight]; if (bVal && r > 0) { let score = bVal + r; if (score > maxVal) maxVal = score; } } 
+                        else { let w = parseFloat(set.weight); if(!isNaN(w) && r > 0) { let est1RM = w * (1 + (r / 30)); if(est1RM > maxVal) maxVal = est1RM; } }
+                    }
                 }); 
                 if(maxVal > 0) { chartLabels.push(stat.dateStr); chartDataScore.push(Math.round(maxVal)); } 
             });
 
-            if (chartDataScore.length > 1) {
+            if (chartDataScore.length > 1 && !isIsoTrack) {
                 chartWrapper.style.display = 'block'; if(chartInstance1RM) chartInstance1RM.destroy();
-                let yLabel = isIsoTrack ? 'Max Segs' : (usesBands ? 'Índice (1RM / Banda)' : '1RM Estimado (Kg)');
+                let yLabel = usesBands ? 'Índice Estimado' : '1RM Estimado (Kg)';
                 chartInstance1RM = new Chart(document.getElementById('chart1RM').getContext('2d'), { type: 'line', data: { labels: chartLabels, datasets: [{ label: yLabel, data: chartDataScore, borderColor: '#64d2ff', backgroundColor: 'rgba(100, 210, 255, 0.1)', tension: 0.4, fill: true, pointRadius: 5, borderWidth: 3, pointBackgroundColor: '#bf5af2' }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { grid: { color: 'rgba(255,255,255,0.05)' }, border: {display: false} }, x: { grid: { display:false }, border: {display: false} } } } });
             } else { chartWrapper.style.display = 'none'; }
             
@@ -1292,15 +1520,25 @@
             [...exStats].reverse().forEach(stat => { 
                 let setsHtml = ''; let workingIdx = 1;
                 stat.sets.forEach((set, idx) => { 
-                    if (set.weight !== "" || set.reps !== "") {
-                        let wDisplay = stat.equip === 'band' ? (set.weight || '-') : (set.weight||'-') + 'kg';
-                        if (stat.exType === 'iso' && !set.weight) wDisplay = 'BW';
-                        let sLabel = set.warmup ? 'W' : `S${workingIdx++}`; let typeLabel = stat.exType === 'iso' ? 's' : '';
-                        setsHtml += `<div class="stat-set-badge" style="${set.warmup ? 'opacity:0.6;' : ''}">${sLabel}: ${wDisplay} × ${set.reps||'-'}${typeLabel}${set.rir ? ` <span style="color:var(--text-muted);font-size:0.8rem;">(RIR ${set.rir})</span>` : ''}</div>`; 
+                    if (set.weight !== "" || set.reps !== "" || set.weightR !== "" || set.repsR !== "") {
+                        let sLabel = set.warmup ? 'W' : `S${workingIdx++}`; 
+                        if (stat.isUnilateral) {
+                            let wL = stat.equipL === 'band' ? (set.weight || '-') : (set.weight||'-') + 'kg';
+                            let wR = stat.equipR === 'band' ? (set.weightR || '-') : (set.weightR||'-') + 'kg';
+                            if (stat.typeL === 'iso' && !set.weight) wL = 'BW';
+                            if (stat.typeR === 'iso' && !set.weightR) wR = 'BW';
+                            setsHtml += `<div class="stat-set-badge" style="width:100%; text-align:left; ${set.warmup ? 'opacity:0.6;' : ''}">${sLabel}: [I] ${wL} × ${set.reps||'-'}${stat.typeL==='iso'?'s':''} | [D] ${wR} × ${set.repsR||'-'}${stat.typeR==='iso'?'s':''}</div>`;
+                        } else {
+                            let wDisplay = stat.equip === 'band' ? (set.weight || '-') : (set.weight||'-') + 'kg';
+                            if (stat.exType === 'iso' && !set.weight) wDisplay = 'BW';
+                            let typeLabel = stat.exType === 'iso' ? 's' : '';
+                            setsHtml += `<div class="stat-set-badge" style="${set.warmup ? 'opacity:0.6;' : ''}">${sLabel}: ${wDisplay} × ${set.reps||'-'}${typeLabel}${set.rir ? ` <span style="color:var(--text-muted);font-size:0.8rem;">(RIR ${set.rir})</span>` : ''}</div>`; 
+                        }
                     }
                 }); 
                 let headerBadge = stat.isDeload ? `<span style="background:rgba(255,159,10,0.15); color:var(--cardio-color); padding:4px 8px; border-radius:6px; font-size:0.7rem; font-weight: 700;">💤 DESCARGA</span> ` : '';
-                list.innerHTML += `<div class="stat-row"><div class="stat-header"><span>${stat.dateFull}</span> <span>${headerBadge}<span style="color:var(--text-muted); font-size:0.75rem; font-weight:700;">${stat.exType==='iso'?'ISOMÉTRICO':(stat.equip==='band'?'BANDA':'KILOS')}</span></span></div><div class="stat-sets">${setsHtml}</div></div>`; 
+                let typeLabelDesc = stat.isUnilateral ? 'ASIMÉTRICO UNILATERAL' : (stat.exType==='iso'?'ISOMÉTRICO':(stat.equip==='band'?'BANDA':'KILOS'));
+                list.innerHTML += `<div class="stat-row"><div class="stat-header"><span>${stat.dateFull}</span> <span>${headerBadge}<span style="color:var(--text-muted); font-size:0.75rem; font-weight:700;">${typeLabelDesc}</span></span></div><div class="stat-sets">${setsHtml}</div></div>`; 
             });
         }
 
@@ -1340,19 +1578,29 @@
                     let titleIcon = s.isDeload ? "💤" : "💪";
                     let html = `<div class="summary-card" id="card-${s.id}">${shareToggleHTML}<h4>${titleIcon} ${s.dayId && routines[s.dayId] ? routines[s.dayId].title : "Fuerza"} <span style="float:right; font-size:0.85rem; color:var(--text-muted); font-weight:600;">${timeStr}${durationStr}</span></h4>`;
                     for (const exId in s.exercises) { 
-                        const exName = s.exerciseMetadata && s.exerciseMetadata[exId] ? s.exerciseMetadata[exId].name : "Ejercicio";
-                        if (s.exerciseMetadata && s.exerciseMetadata[exId] && s.exerciseMetadata[exId].skipped) { html += `<div style="margin-top:16px; font-weight:700; font-size:0.95rem; color:var(--text-muted); text-decoration: line-through;">${exName}</div><div style="font-size:0.85rem; color:var(--danger-color); font-weight:600;">❌ Ejercicio omitido</div>`; continue; }
-                        const sets = s.exercises[exId].filter(set => set.weight !== "" || set.reps !== ""); 
-                        const equip = s.exerciseMetadata && s.exerciseMetadata[exId] ? s.exerciseMetadata[exId].equip : 'kg';
-                        const exType = s.exerciseMetadata && s.exerciseMetadata[exId] ? s.exerciseMetadata[exId].exType : 'reps';
+                        const exMeta = s.exerciseMetadata && s.exerciseMetadata[exId] ? s.exerciseMetadata[exId] : {};
+                        const exName = exMeta.name || "Ejercicio";
+                        if (exMeta.skipped) { html += `<div style="margin-top:16px; font-weight:700; font-size:0.95rem; color:var(--text-muted); text-decoration: line-through;">${exName}</div><div style="font-size:0.85rem; color:var(--danger-color); font-weight:600;">❌ Ejercicio omitido</div>`; continue; }
+                        const sets = s.exercises[exId].filter(set => set.weight !== "" || set.reps !== "" || set.weightR !== "" || set.repsR !== ""); 
+                        const isUni = !!exMeta.isUnilateral;
+                        
                         if(sets.length > 0) { 
-                            html += `<div style="margin-top:16px; font-weight:700; font-size:1rem; color:var(--text-color);">${exName}</div><div class="stat-sets" style="margin-top:8px;">`; 
+                            html += `<div style="margin-top:16px; font-weight:700; font-size:1rem; color:var(--text-color);">${exName}</div><div class="stat-sets" style="margin-top:8px; flex-direction:column; align-items:stretch; gap:6px;">`; 
                             let workingIdx = 1;
-                            sets.forEach((set, idx) => { 
-                                let wDisplay = equip === 'band' ? (set.weight||'-') : (set.weight||'-') + 'kg';
-                                if (exType === 'iso' && !set.weight) wDisplay = 'BW';
-                                let typeLabel = exType === 'iso' ? 's' : ''; let sLabel = set.warmup ? 'W' : `S${workingIdx++}`;
-                                html += `<span class="stat-set-badge" style="${set.warmup ? 'opacity:0.6;' : ''}">${sLabel}: ${wDisplay} × ${set.reps||'-'}${typeLabel}${set.rir ? `<span style="color:var(--text-muted);font-size:0.8rem;margin-left:4px;">RIR ${set.rir}</span>` : ''}</span>`; 
+                            sets.forEach((set) => { 
+                                let sLabel = set.warmup ? 'W' : `S${workingIdx++}`;
+                                if (isUni) {
+                                    let wL = exMeta.equipL === 'band' ? (set.weight || '-') : (set.weight||'-') + 'kg';
+                                    let wR = exMeta.equipR === 'band' ? (set.weightR || '-') : (set.weightR||'-') + 'kg';
+                                    if (exMeta.typeL === 'iso' && !set.weight) wL = 'BW';
+                                    if (exMeta.typeR === 'iso' && !set.weightR) wR = 'BW';
+                                    html += `<span class="stat-set-badge" style="display:block; width:100%; font-size:0.85rem; ${set.warmup ? 'opacity:0.6;' : ''}">${sLabel} ➜ <b>I:</b> ${wL}×${set.reps||'-'}${exMeta.typeL==='iso'?'s':''} | <b>D:</b> ${wR}×${set.repsR||'-'}${exMeta.typeR==='iso'?'s':''}</span>`;
+                                } else {
+                                    let wDisplay = exMeta.equip === 'band' ? (set.weight||'-') : (set.weight||'-') + 'kg';
+                                    if (exMeta.exType === 'iso' && !set.weight) wDisplay = 'BW';
+                                    let typeLabel = exMeta.exType === 'iso' ? 's' : '';
+                                    html += `<span class="stat-set-badge" style="${set.warmup ? 'opacity:0.6;' : ''}">${sLabel}: ${wDisplay} × ${set.reps||'-'}${typeLabel}${set.rir ? `<span style="color:var(--text-muted);font-size:0.8rem;margin-left:4px;">RIR ${set.rir}</span>` : ''}</span>`; 
+                                }
                             }); 
                             html += `</div>`; 
                         } 
@@ -1393,7 +1641,8 @@
         function addBuilderExerciseRow(ex = null) { 
             const exId = ex ? ex.id : `cust_${Date.now()}_${Math.floor(Math.random()*1000)}`; 
             const name = ex ? ex.name : ''; const sets = ex ? ex.sets : '3'; const target = ex ? ex.target : ''; const muscle = ex ? ex.muscle : ''; const videoUrl = ex && ex.videoUrl ? ex.videoUrl : ''; const exType = ex && ex.exType ? ex.exType : 'reps';
-            
+            const isUni = ex ? !!ex.isUnilateral : false;
+
             const known = getUniqueExercises();
             let selectExHtml = `<select class="b-select-ex" onchange="handleBuilderExChange(this)"><option value="NEW">➕ Nuevo Ejercicio</option>`;
             let matchedId = "NEW";
@@ -1414,15 +1663,19 @@
                 <input type="text" class="b-name" placeholder="Nombre Ejercicio" value="${name}" style="${matchedId==='NEW'?'':'display:none;'} font-weight:600;">
                 <div class="builder-flex">
                     <select class="b-muscle" style="flex:2;">${optionsHtml}</select>
+                    <select class="b-unilateral" style="flex:1;">
+                        <option value="false" ${!isUni?'selected':''}>Bilateral</option>
+                        <option value="true" ${isUni?'selected':''}>Unilateral</option>
+                    </select>
+                </div>
+                <div class="builder-flex">
                     <select class="b-extype" style="flex:1;">
                         <option value="reps" ${exType!=='iso'?'selected':''}>Reps</option>
                         <option value="iso" ${exType==='iso'?'selected':''}>Segs</option>
                     </select>
-                </div>
-                <div class="builder-flex">
                     <input type="number" inputmode="numeric" class="b-sets" placeholder="Series" style="flex:1;" value="${sets}">
-                    <input type="text" class="b-target" placeholder="Objetivo (ej. 8-12)" style="flex:2;" value="${target}">
                 </div>
+                <input type="text" class="b-target" placeholder="Objetivo (ej. 8-12)" value="${target}">
                 <input type="url" class="b-video" placeholder="Enlace a YouTube / Vídeo (Opcional)" value="${videoUrl}">
             </div>`); 
         }
@@ -1434,6 +1687,7 @@
                 nameInput.style.display = 'block'; nameInput.value = '';
                 row.querySelector('.b-muscle').value = '';
                 row.querySelector('.b-extype').value = 'reps';
+                row.querySelector('.b-unilateral').value = 'false';
             } else {
                 nameInput.style.display = 'none';
                 const ex = getUniqueExercises().find(e => e.id === selectEl.value);
@@ -1441,6 +1695,7 @@
                     nameInput.value = ex.name;
                     row.querySelector('.b-muscle').value = ex.muscle || M_OTHER;
                     row.querySelector('.b-extype').value = ex.exType || 'reps';
+                    row.querySelector('.b-unilateral').value = ex.isUnilateral ? 'true' : 'false';
                 }
             }
         }
@@ -1454,7 +1709,8 @@
                 const exName = selectVal === 'NEW' ? row.querySelector('.b-name').value.trim() : row.querySelector('.b-select-ex').options[row.querySelector('.b-select-ex').selectedIndex].text;
                 
                 const muscle = row.querySelector('.b-muscle').value || M_OTHER; const sets = parseInt(row.querySelector('.b-sets').value) || 3; const target = row.querySelector('.b-target').value.trim() || "-"; const videoUrl = row.querySelector('.b-video').value.trim(); const exType = row.querySelector('.b-extype').value;
-                if(exName) { exercises.push({ id: exId, name: exName, muscle: muscle, sets: sets, target: target, videoUrl: videoUrl, exType: exType }); } 
+                const isUni = row.querySelector('.b-unilateral').value === 'true';
+                if(exName) { exercises.push({ id: exId, name: exName, muscle: muscle, sets: sets, target: target, videoUrl: videoUrl, exType: exType, isUnilateral: isUni }); } 
             }); 
             if(exercises.length === 0) { alert("Añade al menos un ejercicio"); return; } 
             let routineId = document.getElementById('routine-edit-select').value; if (routineId === 'NEW') routineId = 'custom_' + Date.now(); 
