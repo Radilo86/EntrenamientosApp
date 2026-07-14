@@ -497,7 +497,7 @@
                 lbl_date: "Data", lbl_start: "Inizio", lbl_end: "Fine", lbl_deload: "Scarico",
                 opt_new_routine: "+ Crea Nuova Routine", ph_routine_name: "Nome (es. Dorso C)", ph_routine_rule: "Regola/Nota (es. Riposo 2 min)",
                 btn_add_ex: "+ Aggiungi Esercizio", btn_save_routine: "Salva Routine", btn_archive: "Archivia", btn_restore: "Ripristina",
-                stat_cal: "Calendario", stat_habits: "Abitudini", stat_muscles: "Muscoli", stat_sessions: "Sessioni", stat_ex: "Esercizi", stat_records: "Record",
+                stat_cal: "Calendario", stat_habits: "Abitudini", stat_muscles: "Muscoli", stat_sessions: "Sessioni", stat_ex: "Eserizi", stat_records: "Record",
                 h_perf: "Prestazioni (30 gg)", h_sym: "Simmetria Muscolare", h_sym_sub: "Distribuzione volume (30 gg)", h_rir: "Qualità Sforzo (RIR)",
                 h_evo_rout: "Evoluzione per Routine", h_evo_rout_sub: "Tonnellaggio totale", h_over: "Sovraccarico Settimanal", h_over_sub: "Tonnellaggio (ultime 4 sett.)",
                 h_evo_ex: "Evoluzione per Esercizio", h_records: "Muro dei Record (PR)", h_records_sub: "Peso max, banda più dura o tempo iso.",
@@ -725,7 +725,8 @@
             const routines = getMergedRoutines(true); // Incluir archivados para la biblioteca
             for(let key in routines) {
                 routines[key].exercises.forEach(ex => {
-                    if(!exMap[ex.id]) exMap[ex.id] = { id: ex.id, name: ex.name, muscle: ex.muscle || M_OTHER, equip: ex.equip||'kg', exType: ex.exType||'reps', target: ex.target||'', isUnilateral: !!ex.isUnilateral, typeL: ex.typeL||'reps', equipL: ex.equipL||'kg', typeR: ex.typeR||'reps', equipR: ex.equipR||'kg' };
+                    if(!exMap[ex.id]) exMap[ex.id] = { id: ex.id, name: ex.name, muscle: ex.muscle || M_OTHER, equip: ex.equip||'kg', exType: ex.exType||'reps', target: ex.target||'', isUnilateral: !!ex.isUnilateral, typeL: ex.typeL||'reps', equipL: ex.equipL||'kg', typeR: ex.typeR||'reps', equipR: ex.equipR||'kg', videoUrl: ex.videoUrl || '' };
+                    else if (!exMap[ex.id].videoUrl && ex.videoUrl) exMap[ex.id].videoUrl = ex.videoUrl;
                 });
             }
             const history = JSON.parse(localStorage.getItem('workout_history') || '[]');
@@ -733,7 +734,8 @@
                 if(w.exerciseMetadata) {
                     Object.keys(w.exerciseMetadata).forEach(id => {
                         const m = w.exerciseMetadata[id];
-                        if(!exMap[id]) exMap[id] = { id: id, name: m.name, muscle: m.muscle || M_OTHER, equip: m.equip||'kg', exType: m.exType||'reps', target: "", isUnilateral: !!m.isUnilateral, typeL: m.typeL||'reps', equipL: m.equipL||'kg', typeR: m.typeR||'reps', equipR: m.equipR||'kg' };
+                        if(!exMap[id]) exMap[id] = { id: id, name: m.name, muscle: m.muscle || M_OTHER, equip: m.equip||'kg', exType: m.exType||'reps', target: "", isUnilateral: !!m.isUnilateral, typeL: m.typeL||'reps', equipL: m.equipL||'kg', typeR: m.typeR||'reps', equipR: m.equipR||'kg', videoUrl: m.videoUrl || '' };
+                        else if (!exMap[id].videoUrl && m.videoUrl) exMap[id].videoUrl = m.videoUrl;
                     });
                 }
             });
@@ -1835,6 +1837,28 @@
             document.getElementById('routine-edit-select').value = id; 
             loadRoutineForEdit();
         }
+
+        function handleBuilderExChange(selectEl) {
+            const row = selectEl.closest('.builder-row');
+            const nameInput = row.querySelector('.b-name');
+            if(selectEl.value === 'NEW') {
+                nameInput.style.display = 'block'; nameInput.value = '';
+                row.querySelector('.b-muscle').value = '';
+                row.querySelector('.b-extype').value = 'reps';
+                row.querySelector('.b-unilateral').value = 'false';
+                if(row.querySelector('.b-video')) row.querySelector('.b-video').value = '';
+            } else {
+                nameInput.style.display = 'none';
+                const ex = getUniqueExercises().find(e => e.id === selectEl.value);
+                if(ex) {
+                    nameInput.value = ex.name;
+                    row.querySelector('.b-muscle').value = ex.muscle || M_OTHER;
+                    row.querySelector('.b-extype').value = ex.exType || 'reps';
+                    row.querySelector('.b-unilateral').value = ex.isUnilateral ? 'true' : 'false';
+                    if (row.querySelector('.b-video')) row.querySelector('.b-video').value = ex.videoUrl || '';
+                }
+            }
+        }
         
         function addBuilderExerciseRow(ex = null) { 
             const exId = ex ? ex.id : `cust_${Date.now()}_${Math.floor(Math.random()*1000)}`; 
@@ -1873,30 +1897,13 @@
                     </select>
                     <input type="number" inputmode="numeric" class="b-sets" placeholder="3" style="flex:1;" value="${sets}">
                 </div>
-                <input type="text" class="b-target" placeholder="Objetivo/Target" value="${target}">
+                <div class="builder-flex">
+                    <input type="text" class="b-target" placeholder="Objetivo/Target" value="${target}" style="flex:1;">
+                    <input type="url" class="b-video" placeholder="🔗 Enlace YouTube" value="${videoUrl}" style="flex:1;">
+                </div>
             </div>`); 
         }
 
-        function handleBuilderExChange(selectEl) {
-            const row = selectEl.closest('.builder-row');
-            const nameInput = row.querySelector('.b-name');
-            if(selectEl.value === 'NEW') {
-                nameInput.style.display = 'block'; nameInput.value = '';
-                row.querySelector('.b-muscle').value = '';
-                row.querySelector('.b-extype').value = 'reps';
-                row.querySelector('.b-unilateral').value = 'false';
-            } else {
-                nameInput.style.display = 'none';
-                const ex = getUniqueExercises().find(e => e.id === selectEl.value);
-                if(ex) {
-                    nameInput.value = ex.name;
-                    row.querySelector('.b-muscle').value = ex.muscle || M_OTHER;
-                    row.querySelector('.b-extype').value = ex.exType || 'reps';
-                    row.querySelector('.b-unilateral').value = ex.isUnilateral ? 'true' : 'false';
-                }
-            }
-        }
-        
         function saveCustomRoutine() { 
             const name = document.getElementById('new-routine-name').value.trim(); const rule = document.getElementById('new-routine-rule').value.trim(); if(!name) return; 
             const rows = document.querySelectorAll('.builder-row'); let exercises = []; 
@@ -1905,9 +1912,14 @@
                 const exId = selectVal === 'NEW' ? 'cust_' + Math.floor(Math.random()*100000) : selectVal; 
                 const exName = selectVal === 'NEW' ? row.querySelector('.b-name').value.trim() : row.querySelector('.b-select-ex').options[row.querySelector('.b-select-ex').selectedIndex].text;
                 
-                const muscle = row.querySelector('.b-muscle').value || M_OTHER; const sets = parseInt(row.querySelector('.b-sets').value) || 3; const target = row.querySelector('.b-target').value.trim() || "-"; const exType = row.querySelector('.b-extype').value;
+                const muscle = row.querySelector('.b-muscle').value || M_OTHER; 
+                const sets = parseInt(row.querySelector('.b-sets').value) || 3; 
+                const target = row.querySelector('.b-target').value.trim() || "-"; 
+                const exType = row.querySelector('.b-extype').value;
                 const isUni = row.querySelector('.b-unilateral').value === 'true';
-                if(exName) { exercises.push({ id: exId, name: exName, muscle: muscle, sets: sets, target: target, videoUrl: "", exType: exType, isUnilateral: isUni }); } 
+                const videoUrl = row.querySelector('.b-video') ? row.querySelector('.b-video').value.trim() : "";
+                
+                if(exName) { exercises.push({ id: exId, name: exName, muscle: muscle, sets: sets, target: target, videoUrl: videoUrl, exType: exType, isUnilateral: isUni }); } 
             }); 
             if(exercises.length === 0) return; 
             let routineId = document.getElementById('routine-edit-select').value; if (routineId === 'NEW') routineId = 'custom_' + Date.now(); 
