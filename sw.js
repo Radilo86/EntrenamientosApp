@@ -1,6 +1,6 @@
 // Service worker de Tracker Premium: permite abrir la app y ver gráficas sin conexión.
 // Cambia CACHE al publicar una versión nueva para que los móviles descarguen los archivos actualizados.
-const CACHE = 'tracker-premium-v2';
+const CACHE = 'tracker-premium-v8';
 const APP_FILES = ['./', './index.html', './manifest.json', './icon-192.png', './icon-512.png', './apple-touch-icon.png'];
 const CDN_FILES = [
   'https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.js',
@@ -85,4 +85,14 @@ self.addEventListener('fetch', event => {
       return res;
     })());
   }
+});
+
+// Al tocar un aviso (fin del descanso o del intervalo) se vuelve a la app
+self.addEventListener('notificationclick', event => {
+  event.notification.close();
+  event.waitUntil((async () => {
+    const all = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
+    for (const c of all) { if ('focus' in c) return c.focus(); }
+    if (self.clients.openWindow) return self.clients.openWindow('./');
+  })());
 });
